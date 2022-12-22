@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "MarcX",
+  "version": "0.0.0",
+  "description": "A bookmarks manager",
+  "icons": {
+    "16": "images/bookmark.png",
+    "32": "images/bookmark.png"
+  },
+  "background": { "service_worker": "app/background.js" },
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_title": "Open the popup"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": ["activeTab", "scripting", "bookmarks"]
+}
