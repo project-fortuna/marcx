@@ -16,7 +16,7 @@
     "default_popup": "popup/index.html"
   },
   "chrome_url_overrides": {
-    "newtab": "index.html"
+    "bookmarks": "index.html"
   },
   "permissions": ["activeTab", "scripting", "storage", "bookmarks"]
 }

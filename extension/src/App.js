@@ -1,7 +1,53 @@
-import React from "react";
+/*global chrome*/
+
+import React, { useEffect, useState } from "react";
 
 const App = () => {
-  return <div>App</div>;
+  const [newBookmarkData, setNewBookmarkData] = useState([]);
+
+  const addNewBookmark = (bookmarkData) => {
+    console.log("adding new bookmark:", bookmarkData);
+    setNewBookmarkData((oldArray) => oldArray.concat(bookmarkData));
+  };
+
+  useEffect(() => {
+    console.log("Doing initial check for bookmark data");
+    chrome.storage.local.get(["newBookmarkData"]).then((data) => {
+      console.log("Got", data);
+      addNewBookmark(data.newBookmarkData[0]);
+    });
+
+    const listener = chrome.storage.onChanged.addListener((changes, namespace) => {
+      // Find the new bookmark data
+      for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+        console.log(
+          `Storage key "${key}" in namespace "${namespace}" changed.`,
+          `Old value was "${oldValue}", new value is "${newValue}".`
+        );
+        if (key === "newBookmarkData") {
+          addNewBookmark(newValue[0]);
+        }
+      }
+    });
+
+    return () => {
+      chrome.storage.onChanged.removeListener(listener);
+    };
+  }, []);
+
+  return (
+    <div>
+      App
+      <ul>
+        {newBookmarkData.map((data) => (
+          <li>
+            <code>{JSON.stringify(data)}</code>
+          </li>
+        ))}
+      </ul>
+      <button onClick={() => addNewBookmark({ data: "test" })}>Add new bookmark</button>
+    </div>
+  );
 };
 
 export default App;
