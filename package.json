@@ -6,7 +6,7 @@
   "scripts": {
     "hotloader": "webpack serve --config ./webpack.config.js --mode development --port 5000",
     "start": "nodemon --ignore client/",
-    "build": "webpack"
+    "build": "mkdir dist && cd extension && npm run build && cp -r build/* ../dist"
   },
   "repository": {
     "type": "git",
@@ -59,8 +59,8 @@
     "react-hot-loader": "^4.13.0",
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
-    "webpack": "^5.11.1",
-    "webpack-cli": "^4.3.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^3.11.1"
   }
 }

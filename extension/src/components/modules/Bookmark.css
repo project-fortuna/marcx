@@ -1,0 +1,95 @@
+.Bookmark-container {
+  width: 90px;
+  height: 72px;
+  /*outline-color: white;*/
+  text-align: center;
+  align-items: center;
+}
+
+.Bookmark-button {
+  width: 80px;
+  height: 72px;
+  background: transparent;
+  border: none !important;
+  border-radius: 10%;
+  text-align: center;
+}
+
+.Bookmark-button:hover {
+  /* background-color: rgba(0, 0, 0, 0.2); */
+  border: none !important;
+  border-radius: 10%;
+  cursor: pointer;
+}
+
+.Bookmark-button:focus {
+  background-color: rgba(0, 0, 0, 0.1);
+  /* outline: thin dotted; */
+  outline: none;
+}
+
+.Bookmark-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  align-items: center;
+  width: 160px;
+  text-align: center;
+  justify-content: center;
+  font-size: 20px;
+  margin: auto;
+}
+
+.Bookmark-image {
+  width: 72px;
+  height: 72px;
+  /*width: 120%;*/
+  /*height: 120%;*/
+  margin: auto;
+}
+
+.Bookmark-image:hover {
+  margin: auto;
+}
+
+
+@media (max-width: 1400px) {
+  .Bookmark-container {
+    width: 14vh;
+    height:14vh;
+  }
+  .Bookmark-button {
+    width: 8vh;
+    height:8vh;
+  }
+  .Bookmark-text {
+    width: 100px;
+    font-size: 20px;
+
+  }
+  .Bookmark-image {
+    width: 7vh;
+    height:7vh;
+  }
+}
+
+
+@media (max-width: 1000px) {
+  .Bookmark-container {
+    width: 14vh;
+    height:14vh;
+    }
+  .Bookmark-button {
+    width: 8vh;
+    height:8vh;
+  }
+  .Bookmark-text {
+    width: 100px;
+    font-size: 20px;
+
+  }
+  .Bookmark-image {
+    width: 7vh;
+    height:7vh;
+  }
+}

@@ -1,0 +1,46 @@
+
+.Home-group {
+  position: relative;
+  /*grid-area: a;*/
+  /*grid-row: 2 /4;*/
+  /*grid-column: 2/4;*/
+}
+.Home-content {
+}
+.Home-root {
+  position: relative;
+  flex-direction: column;
+  height: 100vh;
+  /*overflow-y: scroll;*/
+  /*overflow-x: hidden;*/
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.Home-toggleEdit {
+
+}
+
+.Home-edit-dropdown {
+  /*position: absolute;*/
+  /*top:2vh;*/
+  /*right:2vh;*/
+}
+
+.Home-top {
+  height: 8%;
+}
+
+.icon-button {
+  height: 1.2em;
+  width: auto;
+  display: flex!important;
+  justify-content: center!important;
+  /*flex-direction: row;*/
+  align-items: center!important;
+  text-align: center!important;
+  padding-left: 10%;
+
+}
+
