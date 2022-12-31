@@ -1,8 +1,9 @@
 /*global chrome*/
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 const App = () => {
+  const [initialBookmarks, setInitialBookmarks] = useState(null);
   const [newBookmarkData, setNewBookmarkData] = useState([]);
 
   const addNewBookmark = (bookmarkData) => {
@@ -15,6 +16,10 @@ const App = () => {
     chrome.storage.local.get(["newBookmarkData"]).then((data) => {
       console.log("Got", data);
       addNewBookmark(data.newBookmarkData[0]);
+    });
+
+    chrome.bookmarks.getTree().then((bookmarks) => {
+      setInitialBookmarks(bookmarks);
     });
 
     const listener = chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -46,6 +51,7 @@ const App = () => {
         ))}
       </ul>
       <button onClick={() => addNewBookmark({ data: "test" })}>Add new bookmark</button>
+      <code>{JSON.stringify(initialBookmarks)}</code>
     </div>
   );
 };
