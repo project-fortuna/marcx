@@ -7,6 +7,9 @@
     "16": "images/bookmark.png",
     "32": "images/bookmark.png"
   },
+  "background": {
+    "service_worker": "app/background.js"
+  },
   "action": {
     "default_icon": {
       "16": "images/bookmark.png",
@@ -17,5 +20,5 @@
   "chrome_url_overrides": {
     "bookmarks": "bookmarks.html"
   },
-  "permissions": ["activeTab", "storage", "bookmarks", "unlimited"]
+  "permissions": ["activeTab", "storage", "bookmarks", "unlimitedStorage"]
 }
