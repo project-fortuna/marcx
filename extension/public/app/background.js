@@ -4,28 +4,26 @@
  * @param {chrome.bookmarks.BookmarkTreeNode[]} bookmarks
  */
 function flattenTree(bookmarks) {
-  const allBookmarks = [];
-  const allFolders = [];
+  const allNodes = [];
 
   for (let bookmark of bookmarks) {
     if (!bookmark.children) {
       // Leaf node, represents an actual bookmark
-      allBookmarks.push({ ...bookmark, type: "bookmark" });
+      allNodes.push({ ...bookmark, type: "bookmark" });
       continue;
     }
 
     const childrenIds = bookmark.children.map((child) => child.id);
 
     // Node has children, represents a folder
-    allFolders.push({ ...bookmark, children: childrenIds, type: "folder" });
+    allNodes.push({ ...bookmark, children: childrenIds, type: "folder" });
 
     // Recurse
-    const [flatChildren, flatFolders] = flattenTree(bookmark.children);
-    allBookmarks.push(...flatChildren);
-    allFolders.push(...flatFolders);
+    const flatNodes = flattenTree(bookmark.children);
+    allNodes.push(...flatNodes);
   }
 
-  return [allBookmarks, allFolders];
+  return allNodes;
 }
 
 /**
@@ -44,6 +42,6 @@ chrome.runtime.onInstalled.addListener(async () => {
 
   // Create a deep copy of the Chrome bookmarks
   const chromeBookmarksCopy = structuredClone(chromeBookmarks);
-  const [flatBookmarks, flatFolders] = flattenTree(chromeBookmarksCopy);
-  await chrome.storage.local.set({ bookmarks: flatBookmarks, folders: flatFolders });
+  const flatNodes = flattenTree(chromeBookmarksCopy);
+  await chrome.storage.local.set({ bookmarkNodes: flatNodes });
 });

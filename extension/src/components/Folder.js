@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import FolderIcon from "@mui/icons-material/Folder";
 import Modal from "./Modal";
 import "../styles/Folder.css";
+import { getBookmarkNodes } from "../utils/functions";
 
 const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
@@ -15,11 +16,10 @@ const Folder = ({ folder }) => {
     getChildren();
   };
 
-  const getChildren = (childrenIds) => {
-    chrome.storage.local.get("bookmarks").then((res) => {
-      const children = res.bookmarks.filter((bookmark) => folder.children.includes(bookmark.id));
-      setChildren(children);
-    });
+  const getChildren = async () => {
+    const children = await getBookmarkNodes((bookmark) => folder.children.includes(bookmark.id));
+    console.log("Got", children);
+    setChildren(children);
   };
 
   return (

@@ -27,28 +27,19 @@ const App = () => {
       addNewBookmark(data.newBookmarkData[0]);
     });
 
-    // Get the top level items and group them together
+    // Get top level bookmark nodes (folders, groups, bookmarks)
+    chrome.storage.local.get("bookmarkNodes").then((res) => {
+      const topLevelNodes = res.bookmarkNodes.filter((node) => node.parentId == 0);
+      topLevelNodes.push(TEMP_BOOKMARK);
 
-    // Get top level bookmarks
-    Promise.all([chrome.storage.local.get("bookmarks"), chrome.storage.local.get("folders")]).then(
-      ([bookmarksRes, foldersRes]) => {
-        const topLevelBookmarks = bookmarksRes.bookmarks.filter(
-          (bookmark) => bookmark.parentId == 0
-        );
-        topLevelBookmarks.push(TEMP_BOOKMARK);
+      // Sort the items by index
+      topLevelNodes.sort((node1, node2) => node1.index - node2.index);
 
-        const topLevelFolders = foldersRes.folders.filter((folder) => folder.parentId == 0);
+      console.log(topLevelNodes);
 
-        const allItems = topLevelBookmarks.concat(topLevelFolders);
+      setTopLevelItems(topLevelNodes);
+    });
 
-        // Sort the items by index
-        allItems.sort((item1, item2) => item1.index - item2.index);
-
-        console.log(allItems);
-
-        setTopLevelItems(allItems);
-      }
-    );
     const listener = chrome.storage.onChanged.addListener((changes, namespace) => {
       // Find the new bookmark data
       for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
