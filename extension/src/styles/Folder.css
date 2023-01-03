@@ -1,4 +1,37 @@
 .Folder-modal {
+  max-width: 80vw;
+  height: 80vh;
   display: flex;
   flex-direction: column;
+  background-color: rgb(240, 240, 240);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.Folder-modal span {
+  display: flex;
+}
+
+.Folder-modal ul {
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.Folder-modal li {
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+  padding: 0.25rem 0;
+}
+
+.Folder-modal li img {
+  width: 1.5rem;
+}
+
+.Folder-modal li:hover {
+  background-color: rgb(235, 235, 235);
+}
+
+.Folder-modal nav {
 }

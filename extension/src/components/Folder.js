@@ -26,10 +26,30 @@ const Folder = ({ folder }) => {
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="Folder-modal">
-          Wow!
-          {children?.map((item) => {
-            return <span>{item.title}</span>;
-          })}
+          <span>
+            <h1>{folder.title}</h1>
+            <nav>breadcrumb navigation</nav>
+          </span>
+          <ul>
+            {children?.map((item) => {
+              return (
+                <li id={item.title}>
+                  <span>
+                    {item.type === "folder" ? (
+                      <FolderIcon></FolderIcon>
+                    ) : (
+                      <img
+                        src={`https://www.google.com/s2/favicons?sz=256&domain_url=${item.url}`}
+                        alt=""
+                      />
+                    )}
+                    <label htmlFor={`#${item.title}`}>{item.title}</label>
+                  </span>
+                  <button>edit</button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </Modal>
       <div onClick={openFolder}>
