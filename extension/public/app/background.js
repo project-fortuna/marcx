@@ -10,14 +10,14 @@ function flattenTree(bookmarks) {
   for (let bookmark of bookmarks) {
     if (!bookmark.children) {
       // Leaf node, represents an actual bookmark
-      allBookmarks.push(bookmark);
+      allBookmarks.push({ ...bookmark, type: "bookmark" });
       continue;
     }
 
     const childrenIds = bookmark.children.map((child) => child.id);
 
     // Node has children, represents a folder
-    allFolders.push({ ...bookmark, children: childrenIds });
+    allFolders.push({ ...bookmark, children: childrenIds, type: "folder" });
 
     // Recurse
     const [flatChildren, flatFolders] = flattenTree(bookmark.children);

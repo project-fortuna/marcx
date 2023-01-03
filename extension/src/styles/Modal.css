@@ -1,0 +1,13 @@
+.modal-background {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(55, 55, 55, 0.3);
+  backdrop-filter: blur(1px);
+  display: grid;
+  place-items: center;
+}
+
+.modal-container {
+  background-color: white;
+  cursor: default;
+}

@@ -1,10 +1,18 @@
 /*global chrome*/
 
 import React, { useEffect, useState, useMemo } from "react";
+import Board from "./components/Board";
+
+const TEMP_BOOKMARK = {
+  id: "9999",
+  index: 3,
+  title: "Test Bookmark",
+  url: "https://reactjs.org/docs/hooks-custom.html",
+  type: "bookmark",
+};
 
 const App = () => {
-  const [bookmarks, setBookmarks] = useState(null);
-  const [folders, setFolders] = useState(null);
+  const [topLevelItems, setTopLevelItems] = useState(null);
   const [newBookmarkData, setNewBookmarkData] = useState([]);
 
   const addNewBookmark = (bookmarkData) => {
@@ -19,18 +27,28 @@ const App = () => {
       addNewBookmark(data.newBookmarkData[0]);
     });
 
+    // Get the top level items and group them together
+
     // Get top level bookmarks
-    chrome.storage.local.get("bookmarks").then((res) => {
-      const topLevelBookmarks = res.bookmarks.filter((bookmark) => bookmark.parentId == 0);
-      setBookmarks(topLevelBookmarks);
-    });
+    Promise.all([chrome.storage.local.get("bookmarks"), chrome.storage.local.get("folders")]).then(
+      ([bookmarksRes, foldersRes]) => {
+        const topLevelBookmarks = bookmarksRes.bookmarks.filter(
+          (bookmark) => bookmark.parentId == 0
+        );
+        topLevelBookmarks.push(TEMP_BOOKMARK);
 
-    // Get top level folders
-    chrome.storage.local.get("folders").then((res) => {
-      const topLevelFolders = res.folders.filter((folder) => folder.parentId == 0);
-      setFolders(topLevelFolders);
-    });
+        const topLevelFolders = foldersRes.folders.filter((folder) => folder.parentId == 0);
 
+        const allItems = topLevelBookmarks.concat(topLevelFolders);
+
+        // Sort the items by index
+        allItems.sort((item1, item2) => item1.index - item2.index);
+
+        console.log(allItems);
+
+        setTopLevelItems(allItems);
+      }
+    );
     const listener = chrome.storage.onChanged.addListener((changes, namespace) => {
       // Find the new bookmark data
       for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
@@ -51,8 +69,8 @@ const App = () => {
 
   return (
     <div>
-      Hello World, this is a test
-      <ul>
+      <Board items={topLevelItems}></Board>
+      {/* <ul>
         {newBookmarkData.map((data) => (
           <li>
             <code>{JSON.stringify(data)}</code>
@@ -61,7 +79,7 @@ const App = () => {
       </ul>
       <button onClick={() => addNewBookmark({ data: "test" })}>Add new bookmark</button>
       <code>{JSON.stringify(bookmarks)}</code>
-      <code>{JSON.stringify(folders)}</code>
+      <code>{JSON.stringify(folders)}</code> */}
     </div>
   );
 };

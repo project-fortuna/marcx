@@ -1,0 +1,7 @@
+.grid-item {
+  background-color: antiquewhite;
+}
+
+.grid-item:hover {
+  cursor: pointer;
+}

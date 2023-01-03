@@ -1,0 +1,68 @@
+.Board-grid-square {
+  background-color: aliceblue;
+  border: 1px solid black;
+  display: grid;
+  place-items: center;
+}
+
+.home-board {
+  width: 100%;
+  height: 90%;
+  /*display: flex;*/
+  /*flex-wrap: wrap;*/
+  /*align-items: center;*/
+  /*text-align: center;*/
+  /*justify-content: center;*/
+  /*padding-bottom: 2em;*/
+  /*flex-shrink: 0;*/
+  /*grid-template-columns: repeat(8,1fr);*/
+  /*grid-template-rows: repeat(6,1fr);*/
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(224px, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
+  row-gap: 22px;
+  /*padding: 16px;*/
+  padding-top: 8px;
+  padding-left: 24px;
+  /*overflow-y: inherit;*/
+  overflow: hidden;
+  /*overflow-x: hidden;*/
+}
+
+@media (max-height: 990px) {
+  .home-board {
+    overflow-y: scroll;
+  }
+}
+
+@media (max-width: 1800px) {
+  .home-board {
+    overflow-y: scroll;
+  }
+}
+
+@media (max-width: 1000px) {
+  .home-board {
+    grid-template-columns: repeat(auto-fit, minmax(10vh, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(10vh, 1fr));
+    padding-left: 56px;
+    flex-shrink: 0;
+    row-gap: 72px;
+    column-gap: 72px;
+    overflow-y: scroll;
+  }
+}
+
+.group-board {
+  width: 100%;
+  height: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  /*padding-bottom: 2em;*/
+  /*flex-shrink: 0;*/
+  /*row-gap: 24px;*/
+  /*padding: 8px;*/
+}
