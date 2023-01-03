@@ -1,5 +1,6 @@
 .Folder-modal {
   max-width: 80vw;
+  min-width: 50vw;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -34,4 +35,5 @@
 }
 
 .Folder-modal nav {
+  display: flex;
 }
