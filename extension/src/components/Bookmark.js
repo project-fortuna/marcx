@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { FAVICON_URL } from "../utils/types";
 // import "./Bookmark.css";
 // import "../../utilities.css";
 // import { Button, Icon, Input, Menu, Popup } from "semantic-ui-react";
@@ -7,8 +8,6 @@ import React, { useState, useEffect, useRef } from "react";
 // import { useDrag } from "react-dnd";
 // import { ItemTypes } from "../pages/Home";
 // import { createContextFromEvent } from "../../utilities";
-
-const FAVICON_URL = "https://www.google.com/s2/favicons?sz=256&domain_url=";
 
 const Bookmark = ({ bookmark }) => {
   return (

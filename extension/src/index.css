@@ -1,7 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+:root {
+  --primary: #03045e;
+  --primary--dim: #0077b6;
+  --darkgrey: #00b4d8;
+  --medgrey: #48cae4;
+  --grey: #90e0ef;
+  --white: #caf0f8;
+
+  --xs: 4px;
+  --s: 8px;
+  --m: 16px;
+  --l: 24px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Quicksand", sans-serif;
+}
+
 .grid-item {
   background-color: antiquewhite;
 }
 
 .grid-item:hover {
   cursor: pointer;
+}
+
+.App {
+  height: 100vh;
 }

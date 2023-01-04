@@ -1,7 +1,7 @@
 /*global chrome*/
 
 import React, { useState } from "react";
-import { BookmarkNode } from "../utils/types";
+import { BookmarkNode, FAVICON_URL } from "../utils/types";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
@@ -103,10 +103,7 @@ const Folder = ({ folder }) => {
                     {item.type === "folder" ? (
                       <FolderIcon />
                     ) : (
-                      <img
-                        src={`https://www.google.com/s2/favicons?sz=256&domain_url=${item.url}`}
-                        alt=""
-                      />
+                      <img src={`${FAVICON_URL}${item.url}`} alt="" />
                     )}
                     <label htmlFor={`#${item.title}`}>{item.title}</label>
                   </span>

@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Board from "./components/Board";
+import Navbar from "./components/Navbar";
+import { getBookmarkNodes } from "./utils/functions";
+import { ITEMS_PER_PAGE } from "./utils/types";
 
 const TEMP_BOOKMARK = {
   id: "9999",
@@ -12,12 +15,35 @@ const TEMP_BOOKMARK = {
 };
 
 const App = () => {
+  const [page, setPage] = useState(0);
   const [topLevelItems, setTopLevelItems] = useState(null);
   const [newBookmarkData, setNewBookmarkData] = useState([]);
 
   const addNewBookmark = (bookmarkData) => {
     console.log("adding new bookmark:", bookmarkData);
     setNewBookmarkData((oldArray) => oldArray.concat(bookmarkData));
+  };
+
+  /**
+   * Handles a page change to the new page index.
+   *
+   * Gets the top level items (groups/bookmarks/folders) displayed on that page
+   * from local storage and updates the appropriate state
+   *
+   * @param {number} newPageIdx - The new page index
+   */
+  const handleChangePage = async (newPageIdx) => {
+    const newTopLevelItems = await getBookmarkNodes(
+      (bookmarkNode) =>
+        bookmarkNode.parentId == 0 &&
+        // Get only the items on the new page
+        bookmarkNode.index >= newPageIdx * ITEMS_PER_PAGE &&
+        bookmarkNode.index < (newPageIdx + 1) * ITEMS_PER_PAGE
+    );
+
+    // Update state
+    setPage(newPageIdx);
+    setTopLevelItems(newTopLevelItems);
   };
 
   useEffect(() => {
@@ -59,18 +85,13 @@ const App = () => {
   }, []);
 
   return (
-    <div>
+    <div className="App">
+      <Navbar
+        page={page}
+        onNextPage={() => handleChangePage(page + 1)}
+        onPreviousPage={() => handleChangePage(page - 1)}
+      />
       <Board items={topLevelItems}></Board>
-      {/* <ul>
-        {newBookmarkData.map((data) => (
-          <li>
-            <code>{JSON.stringify(data)}</code>
-          </li>
-        ))}
-      </ul>
-      <button onClick={() => addNewBookmark({ data: "test" })}>Add new bookmark</button>
-      <code>{JSON.stringify(bookmarks)}</code>
-      <code>{JSON.stringify(folders)}</code> */}
     </div>
   );
 };
