@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Folder from "./Folder";
 import Bookmark from "./Bookmark";
+import { ItemTypes } from "../utils/types";
 // import "../../utilities.css";
 // import { useDrop } from 'react-dnd'
 // import { ItemTypes } from "../pages/Home";
@@ -11,9 +12,9 @@ import Bookmark from "./Bookmark";
 const GridItem = ({ item, moveItemsOut }) => {
   const displayedItem = useMemo(() => {
     switch (item.type) {
-      case "folder":
+      case ItemTypes.FOLDER:
         return <Folder folder={item} moveItemsOut={moveItemsOut} />;
-      case "bookmark":
+      case ItemTypes.BOOKMARK:
         return <Bookmark bookmark={item} />;
       default:
         return <></>;

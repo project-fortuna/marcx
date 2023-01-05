@@ -26,4 +26,17 @@ const TEST_BOOKMARK = {
   type: "bookmark",
 };
 
-module.exports = { FAVICON_URL, ROOT_ID, ITEMS_PER_PAGE, ITEMS_PER_GROUP, TEST_BOOKMARK };
+const ItemTypes = {
+  BOOKMARK: "bookmark",
+  FOLDER: "folder",
+  GROUP: "group",
+};
+
+module.exports = {
+  FAVICON_URL,
+  ROOT_ID,
+  ITEMS_PER_PAGE,
+  ITEMS_PER_GROUP,
+  TEST_BOOKMARK,
+  ItemTypes,
+};

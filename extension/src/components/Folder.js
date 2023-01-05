@@ -1,7 +1,7 @@
 /*global chrome*/
 
 import React, { useState } from "react";
-import { BookmarkNode, FAVICON_URL } from "../utils/types";
+import { BookmarkNode, FAVICON_URL, ItemTypes } from "../utils/types";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -78,11 +78,11 @@ const Folder = ({ folder, moveItemsOut }) => {
    */
   const openListItem = (item) => {
     switch (item.type) {
-      case "bookmark":
+      case ItemTypes.BOOKMARK:
         // If bookmark, opens the URL in a new tab
         window.open(item.url, "_blank");
         break;
-      case "folder":
+      case ItemTypes.FOLDER:
         // If folder, displays the contents
         getChildren(item.id);
         setBreadcrumbs((oldBreadcrumbs) => oldBreadcrumbs.concat(item));
@@ -125,13 +125,13 @@ const Folder = ({ folder, moveItemsOut }) => {
                   onDoubleClick={() => openListItem(item)}
                 >
                   <span>
-                    {item.type === "folder" ? (
+                    {item.type === ItemTypes.FOLDER ? (
                       <FolderIcon />
                     ) : (
                       <img src={`${FAVICON_URL}${item.url}`} alt="" />
                     )}
                     <label
-                      className={item.type === "folder" ? "" : "Folder-menu-item-title"}
+                      className={item.type === ItemTypes.FOLDER ? "" : "Folder-menu-item-title"}
                       htmlFor={`#${item.title}`}
                     >
                       {item.title}
