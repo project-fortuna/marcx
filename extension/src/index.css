@@ -59,3 +59,22 @@ img {
 .App {
   height: 100vh;
 }
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(0.01turn);
+  }
+  50% {
+    transform: rotate(0turn);
+  }
+  75% {
+    transform: rotate(-0.01turn);
+  }
+}
+
+.wiggle {
+  animation: wiggle 0.25s infinite linear;
+}

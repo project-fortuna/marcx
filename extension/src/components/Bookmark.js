@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FAVICON_URL } from "../utils/types";
+import { useDrag } from "react-dnd";
+import { FAVICON_URL, ItemTypes } from "../utils/types";
 // import "./Bookmark.css";
 // import "../../utilities.css";
 // import { Button, Icon, Input, Menu, Popup } from "semantic-ui-react";
@@ -10,11 +11,27 @@ import { FAVICON_URL } from "../utils/types";
 // import { createContextFromEvent } from "../../utilities";
 
 const Bookmark = ({ bookmark }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemTypes.BOOKMARK,
+    item: bookmark,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
   return (
     <>
-      <a className="grid-item" href={bookmark.url} target="_blank" rel="noopener noreferrer">
+      <a
+        ref={drag}
+        className={`grid-item`}
+        href={bookmark.url}
+        target="_blank"
+        style={{ cursor: isDragging ? "grab" : "default" }}
+        rel="noopener noreferrer"
+      >
         <img
           id="bookmarkImage"
+          className={`Bookmark-image ${isDragging ? "wiggle" : ""}`}
           style={{
             // opacity: isDragging ? 0 : 1,
             fontSize: 25,
@@ -22,7 +39,6 @@ const Bookmark = ({ bookmark }) => {
             // cursor: isDragging ? "grabbing" : inEditMode ? "grab" : "pointer",
             borderRadius: "20%",
           }}
-          className="Bookmark-image u-flex-alignCenter u-grow"
           src={FAVICON_URL + bookmark.url}
           // onError={handleError}
         />

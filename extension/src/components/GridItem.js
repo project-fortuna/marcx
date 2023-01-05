@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import Folder from "./Folder";
 import Bookmark from "./Bookmark";
 import { ItemTypes } from "../utils/types";
+import { useDrop } from "react-dnd";
 // import "../../utilities.css";
 // import { useDrop } from 'react-dnd'
 // import { ItemTypes } from "../pages/Home";
@@ -9,7 +10,22 @@ import { ItemTypes } from "../utils/types";
 // import Group from "./Group";
 // import "./Grid.css"
 
-const GridItem = ({ item, moveItemsOut }) => {
+const GridItem = ({ index, item, moveItemsOut }) => {
+  const moveBookmark = (targetIndex, incomingItem) => {
+    console.log(`MOVING ${JSON.stringify(incomingItem)} to ${targetIndex}`);
+  };
+
+  const [{ isOverGrid }, drop] = useDrop(
+    () => ({
+      accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
+      drop: (item) => moveBookmark(index, item),
+      collect: (monitor) => ({
+        isOverGrid: !!monitor.isOver(),
+      }),
+    }),
+    [index]
+  );
+
   const displayedItem = useMemo(() => {
     switch (item.type) {
       case ItemTypes.FOLDER:
@@ -21,7 +37,15 @@ const GridItem = ({ item, moveItemsOut }) => {
     }
   }, []);
 
-  return <>{displayedItem}</>;
+  return (
+    <div
+      ref={drop}
+      className="Board-grid-square"
+      style={{ backgroundColor: isOverGrid ? "red" : "aliceblue" }}
+    >
+      {displayedItem}
+    </div>
+  );
 };
 
 export default GridItem;

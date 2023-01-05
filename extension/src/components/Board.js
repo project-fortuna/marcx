@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useMemo, useState } from "react";
 import GridItem from "./GridItem";
 import "../styles/Board.css";
 // import Bookmark from "./Bookmark";
@@ -6,17 +6,37 @@ import "../styles/Board.css";
 // import { ItemTypes } from "../pages/Home";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
+import { ITEMS_PER_GROUP, ITEMS_PER_PAGE } from "../utils/types";
 
+// Invariant: items are sorted by index
 const Board = ({ items, isGroup, moveItemsOut }) => {
+  const grids = useMemo(() => {
+    if (!items) {
+      return [];
+    }
+
+    const gridItems = [];
+    const numItems = isGroup ? ITEMS_PER_GROUP : ITEMS_PER_PAGE;
+
+    // Create the grid items.
+    // If no item found at that index, push an empty grid item.
+    for (let i = 0; i < numItems; i++) {
+      if (items[i]?.index % numItems === i) {
+        const item = items[i];
+        gridItems.push(
+          <GridItem index={i} key={item.id} item={item} moveItemsOut={moveItemsOut} />
+        );
+        continue;
+      }
+      gridItems.push(<GridItem index={i} key={`empty-item-${i}`} item={{ type: "empty" }} />);
+    }
+
+    return gridItems;
+  }, [items, isGroup]);
+
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className={isGroup ? "group-board" : "home-board"}>
-        {items?.map((item) => (
-          <div className="Board-grid-square" key={item.id}>
-            <GridItem key={item.id} item={item} moveItemsOut={moveItemsOut}></GridItem>
-          </div>
-        ))}
-      </div>
+      <div className={isGroup ? "group-board" : "home-board"}>{grids}</div>
     </DndProvider>
   );
 };
