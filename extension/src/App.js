@@ -6,14 +6,6 @@ import Navbar from "./components/Navbar";
 import { getBookmarkNodes } from "./utils/functions";
 import { ITEMS_PER_PAGE, BookmarkNode, ROOT_ID } from "./utils/types";
 
-const TEMP_BOOKMARK = {
-  id: "9999",
-  index: 3,
-  title: "Test Bookmark",
-  url: "https://reactjs.org/docs/hooks-custom.html",
-  type: "bookmark",
-};
-
 const App = () => {
   const [page, setPage] = useState(0);
   const [topLevelItems, setTopLevelItems] = useState(null);
@@ -27,24 +19,11 @@ const App = () => {
   /**
    * Handles a page change to the new page index.
    *
-   * Gets the top level items (groups/bookmarks/folders) displayed on that page
-   * from local storage and updates the appropriate state
-   *
    * @param {number} newPageIdx - The new page index
    */
-  const handleChangePage = async (newPageIdx) => {
-    // TODO: Make sure bookmark nodes are sorted by index
-    const newTopLevelItems = await getBookmarkNodes(
-      (bookmarkNode) =>
-        bookmarkNode.parentId == 0 &&
-        // Get only the items on the new page
-        bookmarkNode.index >= newPageIdx * ITEMS_PER_PAGE &&
-        bookmarkNode.index < (newPageIdx + 1) * ITEMS_PER_PAGE
-    );
-
+  const handleChangePage = (newPageIdx) => {
     // Update state
     setPage(newPageIdx);
-    setTopLevelItems(newTopLevelItems);
   };
 
   useEffect(() => {
@@ -54,18 +33,10 @@ const App = () => {
       addNewBookmark(data.newBookmarkData[0]);
     });
 
-    // Get top level bookmark nodes (folders, groups, bookmarks)
-    chrome.storage.local.get("bookmarkNodes").then((res) => {
-      const topLevelNodes = res.bookmarkNodes.filter((node) => node.parentId == ROOT_ID);
-      topLevelNodes.push(TEMP_BOOKMARK);
-
-      // Sort the items by index
-      topLevelNodes.sort((node1, node2) => node1.index - node2.index);
-
-      console.log(topLevelNodes);
-
-      setTopLevelItems(topLevelNodes);
-    });
+    // Get ALL top level bookmark nodes (folders, groups, bookmarks)
+    getBookmarkNodes((node) => node.parentId == ROOT_ID).then((topLevelNodes) =>
+      setTopLevelItems(topLevelNodes)
+    );
 
     // Add chrome storage changed
     const listener = chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -91,6 +62,7 @@ const App = () => {
   };
 
   /**
+   * Moves the given items to the primary board (top-level).
    *
    * @param {string[]} itemIds - The list of item IDs to move
    */
@@ -118,12 +90,31 @@ const App = () => {
         // Move the nodes to the top level in the front end after backend has
         // been updated
         console.debug("New top level nodes:", newTopLevelNodes);
-        // TODO: If more top level nodes are added than fit on the current page,
-        // make sure that they don't get displayed on the current page
         setTopLevelItems(topLevelItems.concat(newTopLevelNodes));
       });
     });
   };
+
+  /**
+   * Variable that stores only the top level items that should be displayed
+   * (i.e., the top level items on the current page)
+   */
+  const displayedTopLevelItems = useMemo(() => {
+    if (!topLevelItems) {
+      return [];
+    }
+
+    const currentPageItems = topLevelItems.filter(
+      (item) =>
+        // Get only the items on the current page
+        item.index >= page * ITEMS_PER_PAGE && item.index < (page + 1) * ITEMS_PER_PAGE
+    );
+
+    // Sort the items by index
+    currentPageItems.sort((node1, node2) => node1.index - node2.index);
+
+    return currentPageItems;
+  }, [topLevelItems, page]);
 
   return (
     <div className="App">
@@ -132,7 +123,7 @@ const App = () => {
         onNextPage={() => handleChangePage(page + 1)}
         onPreviousPage={() => handleChangePage(page - 1)}
       />
-      <Board items={topLevelItems} moveItemsOut={moveItemsToTopLevel}></Board>
+      <Board items={displayedTopLevelItems} moveItemsOut={moveItemsToTopLevel}></Board>
     </div>
   );
 };

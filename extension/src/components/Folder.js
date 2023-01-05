@@ -18,6 +18,15 @@ const Folder = ({ folder, moveItemsOut }) => {
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [folderOptionsOpen, setFolderOptionsOpen] = useState(false);
 
+  const handleMoveAllItemsOut = () => {
+    // Move items out on the backend
+    const itemIds = children.map((child) => child.id);
+    moveItemsOut(itemIds);
+
+    // Clear the current children list
+    setChildren([]);
+  };
+
   /**
    * Opens the primary folder menu in a modal
    *
@@ -99,10 +108,7 @@ const Folder = ({ folder, moveItemsOut }) => {
               ))}
             </nav>
             <Dropdown buttonIcon={<MoreVertIcon />}>
-              <button
-                id="move-all-out"
-                onClick={() => moveItemsOut(children.map((child) => child.id))}
-              >
+              <button id="move-all-out" onClick={handleMoveAllItemsOut}>
                 <OutboxIcon />
                 <label htmlFor="move-all-out">Move all folder contents out</label>
               </button>
@@ -124,7 +130,15 @@ const Folder = ({ folder, moveItemsOut }) => {
                     ) : (
                       <img src={`${FAVICON_URL}${item.url}`} alt="" />
                     )}
-                    <label htmlFor={`#${item.title}`}>{item.title}</label>
+                    <label
+                      className={item.type === "folder" ? "" : "Folder-menu-item-title"}
+                      htmlFor={`#${item.title}`}
+                    >
+                      {item.title}
+                    </label>
+                    <label className="Folder-menu-item-url" htmlFor={`#${item.title}`}>
+                      {item.url}
+                    </label>
                   </span>
                   <button>
                     <MoreVertIcon />

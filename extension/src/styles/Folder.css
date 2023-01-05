@@ -39,3 +39,19 @@
 .Folder-menu-item:hover {
   background-color: rgb(235, 235, 235);
 }
+
+.Folder-menu-item-url {
+  display: none;
+}
+
+.Folder-menu-item-title {
+  display: initial;
+}
+
+.Folder-menu-item:hover .Folder-menu-item-url {
+  display: initial;
+}
+
+.Folder-menu-item:hover .Folder-menu-item-title {
+  display: none;
+}

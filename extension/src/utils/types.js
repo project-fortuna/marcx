@@ -18,4 +18,12 @@ const ROOT_ID = 0;
 const ITEMS_PER_PAGE = 48;
 const ITEMS_PER_GROUP = 9;
 
-module.exports = { FAVICON_URL, ROOT_ID, ITEMS_PER_PAGE, ITEMS_PER_GROUP };
+const TEST_BOOKMARK = {
+  id: "9999",
+  index: 3,
+  title: "Test Bookmark",
+  url: "https://reactjs.org/docs/hooks-custom.html",
+  type: "bookmark",
+};
+
+module.exports = { FAVICON_URL, ROOT_ID, ITEMS_PER_PAGE, ITEMS_PER_GROUP, TEST_BOOKMARK };

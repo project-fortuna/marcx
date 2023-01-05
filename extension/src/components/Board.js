@@ -12,7 +12,7 @@ const Board = ({ items, isGroup, moveItemsOut }) => {
     <DndProvider backend={HTML5Backend}>
       <div className={isGroup ? "group-board" : "home-board"}>
         {items?.map((item) => (
-          <div className="Board-grid-square">
+          <div className="Board-grid-square" key={item.id}>
             <GridItem key={item.id} item={item} moveItemsOut={moveItemsOut}></GridItem>
           </div>
         ))}
