@@ -14,8 +14,8 @@
  */
 
 const FAVICON_URL = "https://www.google.com/s2/favicons?sz=256&domain_url=";
-const ROOT_INDEX = 0;
+const ROOT_ID = 0;
 const ITEMS_PER_PAGE = 48;
 const ITEMS_PER_GROUP = 9;
 
-module.exports = { FAVICON_URL, ROOT_INDEX, ITEMS_PER_PAGE, ITEMS_PER_GROUP };
+module.exports = { FAVICON_URL, ROOT_ID, ITEMS_PER_PAGE, ITEMS_PER_GROUP };

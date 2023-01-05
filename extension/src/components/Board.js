@@ -7,13 +7,13 @@ import "../styles/Board.css";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 
-const Board = ({ items, isGroup }) => {
+const Board = ({ items, isGroup, moveItemsOut }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className={isGroup ? "group-board" : "home-board"}>
         {items?.map((item) => (
           <div className="Board-grid-square">
-            <GridItem key={item.id} item={item}></GridItem>
+            <GridItem key={item.id} item={item} moveItemsOut={moveItemsOut}></GridItem>
           </div>
         ))}
       </div>

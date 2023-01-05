@@ -4,15 +4,19 @@ import React, { useState } from "react";
 import { BookmarkNode, FAVICON_URL } from "../utils/types";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import OutboxIcon from "@mui/icons-material/Outbox";
 
 import Modal from "./Modal";
 import "../styles/Folder.css";
 import { getBookmarkNodes } from "../utils/functions";
+import Dropdown from "./utility-components/Dropdown";
 
-const Folder = ({ folder }) => {
+const Folder = ({ folder, moveItemsOut }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
+  const [folderOptionsOpen, setFolderOptionsOpen] = useState(false);
 
   /**
    * Opens the primary folder menu in a modal
@@ -83,10 +87,10 @@ const Folder = ({ folder }) => {
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="Folder-modal">
-          <span>
-            <h1 onClick={resetBreadcrumbs}>{folder.title}</h1>
+        <div className="Folder-menu">
+          <span className="Folder-menu-header">
             <nav>
+              <h1 onClick={resetBreadcrumbs}>{folder.title}</h1>
               {breadcrumbs.map((breadcrumb) => (
                 <>
                   <ArrowRightIcon />
@@ -94,11 +98,26 @@ const Folder = ({ folder }) => {
                 </>
               ))}
             </nav>
+            <Dropdown buttonIcon={<MoreVertIcon />}>
+              <button
+                id="move-all-out"
+                onClick={() => moveItemsOut(children.map((child) => child.id))}
+              >
+                <OutboxIcon />
+                <label htmlFor="move-all-out">Move all folder contents out</label>
+              </button>
+              <button>Other</button>
+            </Dropdown>
           </span>
-          <ul>
+          <ul className="Folder-menu-item-list">
             {children?.map((item) => {
               return (
-                <li id={item.title} onDoubleClick={() => openListItem(item)}>
+                <li
+                  key={item.id}
+                  className="Folder-menu-item"
+                  id={item.title}
+                  onDoubleClick={() => openListItem(item)}
+                >
                   <span>
                     {item.type === "folder" ? (
                       <FolderIcon />
@@ -107,7 +126,9 @@ const Folder = ({ folder }) => {
                     )}
                     <label htmlFor={`#${item.title}`}>{item.title}</label>
                   </span>
-                  <button>edit</button>
+                  <button>
+                    <MoreVertIcon />
+                  </button>
                 </li>
               );
             })}

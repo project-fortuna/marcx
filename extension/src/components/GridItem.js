@@ -8,11 +8,11 @@ import Bookmark from "./Bookmark";
 // import Group from "./Group";
 // import "./Grid.css"
 
-const GridItem = ({ item }) => {
+const GridItem = ({ item, moveItemsOut }) => {
   const displayedItem = useMemo(() => {
     switch (item.type) {
       case "folder":
-        return <Folder folder={item} />;
+        return <Folder folder={item} moveItemsOut={moveItemsOut} />;
       case "bookmark":
         return <Bookmark bookmark={item} />;
       default:

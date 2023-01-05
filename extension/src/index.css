@@ -20,6 +20,12 @@ body {
   font-family: "Quicksand", sans-serif;
 }
 
+/* Buttons by default should have no styling */
+button {
+  background-color: transparent;
+  border: none;
+}
+
 .grid-item {
   background-color: antiquewhite;
 }

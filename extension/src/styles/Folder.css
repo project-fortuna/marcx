@@ -1,4 +1,4 @@
-.Folder-modal {
+.Folder-menu {
   max-width: 80vw;
   min-width: 50vw;
   height: 80vh;
@@ -9,31 +9,32 @@
   border-radius: 1rem;
 }
 
-.Folder-modal span {
+.Folder-menu-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Folder-menu nav {
   display: flex;
 }
 
-.Folder-modal ul {
+.Folder-menu-item-list {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
 }
 
-.Folder-modal li {
+.Folder-menu-item {
   display: flex;
   justify-content: space-between;
   text-decoration: none;
   padding: 0.25rem 0;
 }
 
-.Folder-modal li img {
+.Folder-menu-item img {
   width: 1.5rem;
 }
 
-.Folder-modal li:hover {
+.Folder-menu-item:hover {
   background-color: rgb(235, 235, 235);
-}
-
-.Folder-modal nav {
-  display: flex;
 }
