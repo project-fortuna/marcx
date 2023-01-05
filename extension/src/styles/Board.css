@@ -12,21 +12,20 @@
   grid-template-columns: repeat(auto-fill, minmax(224px, 1fr));
   grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
   row-gap: 22px;
-  /*padding: 16px;*/
-  /*overflow-y: inherit;*/
+  padding-left: 16px;
   overflow: hidden;
   /*overflow-x: hidden;*/
 }
 
 @media (max-height: 990px) {
   .home-board {
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
   }
 }
 
 @media (max-width: 1800px) {
   .home-board {
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
   }
 }
 

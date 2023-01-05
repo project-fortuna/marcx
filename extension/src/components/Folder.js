@@ -135,7 +135,7 @@ const Folder = ({ folder, moveItemsOut }) => {
           </ul>
         </div>
       </Modal>
-      <div onClick={openFolderModal}>
+      <div className="grid-item" onClick={openFolderModal}>
         <FolderIcon></FolderIcon>
         <span>{folder.title}</span>
       </div>

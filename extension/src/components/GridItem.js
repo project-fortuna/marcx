@@ -20,7 +20,7 @@ const GridItem = ({ item, moveItemsOut }) => {
     }
   }, []);
 
-  return <div className="grid-item">{displayedItem}</div>;
+  return <>{displayedItem}</>;
 };
 
 export default GridItem;

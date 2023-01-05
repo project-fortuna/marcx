@@ -12,7 +12,7 @@ import { FAVICON_URL } from "../utils/types";
 const Bookmark = ({ bookmark }) => {
   return (
     <>
-      <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
+      <a className="grid-item" href={bookmark.url} target="_blank" rel="noopener noreferrer">
         <img
           id="bookmarkImage"
           style={{
@@ -26,7 +26,7 @@ const Bookmark = ({ bookmark }) => {
           src={FAVICON_URL + bookmark.url}
           // onError={handleError}
         />
-        <span>{bookmark.title}</span>
+        <span className="grid-item-label">{bookmark.title}</span>
       </a>
     </>
   );

@@ -27,7 +27,29 @@ button {
 }
 
 .grid-item {
+  display: flex;
   background-color: antiquewhite;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  text-decoration: none;
+}
+
+.grid-item-label {
+  font-size: 0.75rem;
+  text-align: center;
+  color: black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+.grid-item > svg,
+img {
+  width: 72px;
+  height: 72px;
 }
 
 .grid-item:hover {
