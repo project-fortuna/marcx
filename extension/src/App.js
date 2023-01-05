@@ -2,35 +2,20 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Board from "./components/Board";
+import Modal from "./components/Modal";
 import Navbar from "./components/Navbar";
-import { getBookmarkNodes } from "./utils/functions";
+import { addNewBookmarkNode, getBookmarkNodes } from "./utils/functions";
 import { ITEMS_PER_PAGE, BookmarkNode, ROOT_ID } from "./utils/types";
 
 const App = () => {
   const [page, setPage] = useState(0);
   const [topLevelItems, setTopLevelItems] = useState(null);
-  const [newBookmarkData, setNewBookmarkData] = useState([]);
-
-  const addNewBookmark = (bookmarkData) => {
-    console.log("adding new bookmark:", bookmarkData);
-    setNewBookmarkData((oldArray) => oldArray.concat(bookmarkData));
-  };
-
-  /**
-   * Handles a page change to the new page index.
-   *
-   * @param {number} newPageIdx - The new page index
-   */
-  const handleChangePage = (newPageIdx) => {
-    // Update state
-    setPage(newPageIdx);
-  };
+  const [newItems, setNewItems] = useState([]);
 
   useEffect(() => {
     console.log("Doing initial check for bookmark data");
-    chrome.storage.local.get(["newBookmarkData"]).then((data) => {
-      console.log("Got", data);
-      addNewBookmark(data.newBookmarkData[0]);
+    chrome.storage.local.get(["newBookmarkNodes"]).then((res) => {
+      setNewItems(res.newBookmarkNodes);
     });
 
     // Get ALL top level bookmark nodes (folders, groups, bookmarks)
@@ -46,8 +31,10 @@ const App = () => {
           `Storage key "${key}" in namespace "${namespace}" changed.`,
           `Old value was "${oldValue}", new value is "${newValue}".`
         );
-        if (key === "newBookmarkData") {
-          addNewBookmark(newValue[0]);
+        if (key === "newBookmarkNodes") {
+          console.log("Received new bookmark node");
+          setNewItems(newValue);
+          addNewBookmarkNode(newValue);
         }
       }
     });
@@ -56,6 +43,16 @@ const App = () => {
       chrome.storage.onChanged.removeListener(listener);
     };
   }, []);
+
+  /**
+   * Handles a page change to the new page index.
+   *
+   * @param {number} newPageIdx - The new page index
+   */
+  const handleChangePage = (newPageIdx) => {
+    // Update state
+    setPage(newPageIdx);
+  };
 
   const getNextTopLevelIndex = () => {
     return Math.max(...topLevelItems.map((item) => item.index)) + 1;
@@ -118,6 +115,10 @@ const App = () => {
 
   return (
     <div className="App">
+      {/* <Modal open={newItems.length}>
+        New bookmarks have been added!
+        {JSON.stringify(newItems)}
+      </Modal> */}
       <Navbar
         page={page}
         onNextPage={() => handleChangePage(page + 1)}

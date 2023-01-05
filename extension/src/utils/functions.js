@@ -15,3 +15,9 @@ export async function getBookmarkNodes(matchingFn) {
   const filteredNodes = res.bookmarkNodes.filter(matchingFn);
   return filteredNodes;
 }
+
+export async function addNewBookmarkNode(item) {
+  const res = await chrome.storage.local.get("bookmarkNodes");
+  const currentNodes = res.bookmarkNodes;
+  await chrome.storage.local.set({ bookmarkNodes: currentNodes.concat(item) });
+}
