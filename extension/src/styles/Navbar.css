@@ -1,4 +1,30 @@
-nav {
+.Navbar {
   display: flex;
   justify-content: space-between;
+  padding: 0 1rem;
+}
+
+.Navbar-page-nav {
+  display: flex;
+  align-items: center;
+}
+
+.Navbar-page-nav > button {
+  transition: all 100ms ease-out;
+  border-radius: 0.5rem;
+}
+
+.Navbar-page-nav > button > svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.Navbar-page-nav > button:hover:not(:disabled) {
+  cursor: pointer;
+  background-color: aliceblue;
+  transform: scale(1.2);
+}
+
+.Navbar-actions {
+  display: flex;
 }

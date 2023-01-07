@@ -9,6 +9,7 @@
   min-width: 5rem;
   width: max-content;
   top: 100%;
+  right: 0;
   margin: 0;
   padding: 0.25rem;
   background-color: white;
@@ -30,6 +31,10 @@
 .Dropdown-list > *:hover {
   cursor: pointer;
   background-color: aliceblue;
+}
+
+.Dropdown-toggle-button > svg {
+  transition: filter 100ms ease-out;
 }
 
 .Dropdown-toggle-button:hover > svg {
