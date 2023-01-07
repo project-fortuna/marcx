@@ -26,16 +26,15 @@ const Bookmark = ({ bookmark }) => {
         className={`grid-item`}
         href={bookmark.url}
         target="_blank"
-        style={{ cursor: isDragging ? "grab" : "default" }}
         rel="noopener noreferrer"
       >
         <img
           id="bookmarkImage"
-          className={`Bookmark-image ${isDragging ? "wiggle" : ""}`}
+          className={`${isDragging ? "wiggle" : ""}`}
           style={{
             // opacity: isDragging ? 0 : 1,
-            fontSize: 25,
-            fontWeight: "bold",
+            // fontSize: 25,
+            // fontWeight: "bold",
             // cursor: isDragging ? "grabbing" : inEditMode ? "grab" : "pointer",
             borderRadius: "20%",
           }}

@@ -158,10 +158,10 @@ const Folder = ({ folder, moveItemsOut }) => {
           </ul>
         </div>
       </Modal>
-      <div ref={drag} className="grid-item" onClick={openFolderModal}>
-        <FolderIcon></FolderIcon>
-        <span>{folder.title}</span>
-      </div>
+      <button ref={drag} className="grid-item" onClick={openFolderModal}>
+        <FolderIcon className={`${isDragging ? "wiggle" : ""}`}></FolderIcon>
+        <span className="grid-item-label">{folder.title}</span>
+      </button>
     </>
   );
 };

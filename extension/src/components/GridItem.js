@@ -43,7 +43,7 @@ const GridItem = ({ index, item, moveItemsOut, moveItem }) => {
     <div
       ref={drop}
       className="Board-grid-square"
-      style={{ backgroundColor: isOverGrid ? (canDrop ? "green" : "red") : "aliceblue" }}
+      style={{ backgroundColor: isOverGrid ? (canDrop ? "green" : "red") : "transparent" }}
     >
       {displayedItem}
     </div>
