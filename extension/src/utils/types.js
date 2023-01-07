@@ -30,6 +30,7 @@ const ItemTypes = {
   BOOKMARK: "bookmark",
   FOLDER: "folder",
   GROUP: "group",
+  EMPTY: "empty",
 };
 
 module.exports = {

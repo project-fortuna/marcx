@@ -11,12 +11,21 @@ import Modal from "./Modal";
 import "../styles/Folder.css";
 import { getBookmarkNodes } from "../utils/functions";
 import Dropdown from "./utility-components/Dropdown";
+import { useDrag } from "react-dnd";
 
 const Folder = ({ folder, moveItemsOut }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [folderOptionsOpen, setFolderOptionsOpen] = useState(false);
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemTypes.FOLDER,
+    item: folder,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
 
   const handleMoveAllItemsOut = () => {
     // Move items out on the backend
@@ -149,7 +158,7 @@ const Folder = ({ folder, moveItemsOut }) => {
           </ul>
         </div>
       </Modal>
-      <div className="grid-item" onClick={openFolderModal}>
+      <div ref={drag} className="grid-item" onClick={openFolderModal}>
         <FolderIcon></FolderIcon>
         <span>{folder.title}</span>
       </div>

@@ -21,3 +21,25 @@ export async function addNewBookmarkNode(item) {
   const currentNodes = res.bookmarkNodes;
   await chrome.storage.local.set({ bookmarkNodes: currentNodes.concat(item) });
 }
+
+/**
+ *
+ * @param {string[]} itemIds
+ * @param {function} updateFn - Function that takes in an item/bookmark node and
+ *    returns the updated item
+ */
+export async function updateBookmarkNodes(itemIds, updateFn) {
+  const res = await chrome.storage.local.get("bookmarkNodes");
+  const currentNodes = res.bookmarkNodes;
+  const updatedNodes = currentNodes.map((item) => {
+    if (itemIds.includes(item.id)) {
+      console.log("Updating");
+      return updateFn(item);
+    }
+    return item;
+  });
+
+  await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
+
+  return updatedNodes;
+}

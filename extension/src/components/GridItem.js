@@ -10,17 +10,19 @@ import { useDrop } from "react-dnd";
 // import Group from "./Group";
 // import "./Grid.css"
 
-const GridItem = ({ index, item, moveItemsOut }) => {
+const GridItem = ({ index, item, moveItemsOut, moveItem }) => {
   const moveBookmark = (targetIndex, incomingItem) => {
-    console.log(`MOVING ${JSON.stringify(incomingItem)} to ${targetIndex}`);
+    moveItem(incomingItem, targetIndex);
   };
 
-  const [{ isOverGrid }, drop] = useDrop(
+  const [{ isOverGrid, canDrop }, drop] = useDrop(
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
-      drop: (item) => moveBookmark(index, item),
+      canDrop: () => item.type === ItemTypes.EMPTY,
+      drop: (incomingItem) => moveBookmark(index, incomingItem),
       collect: (monitor) => ({
         isOverGrid: !!monitor.isOver(),
+        canDrop: !!monitor.canDrop(),
       }),
     }),
     [index]
@@ -35,13 +37,13 @@ const GridItem = ({ index, item, moveItemsOut }) => {
       default:
         return <></>;
     }
-  }, []);
+  }, [item]);
 
   return (
     <div
       ref={drop}
       className="Board-grid-square"
-      style={{ backgroundColor: isOverGrid ? "red" : "aliceblue" }}
+      style={{ backgroundColor: isOverGrid ? (canDrop ? "green" : "red") : "aliceblue" }}
     >
       {displayedItem}
     </div>

@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Board from "./components/Board";
 import Modal from "./components/Modal";
 import Navbar from "./components/Navbar";
-import { addNewBookmarkNode, getBookmarkNodes } from "./utils/functions";
+import { addNewBookmarkNode, getBookmarkNodes, updateBookmarkNodes } from "./utils/functions";
 import { ITEMS_PER_PAGE, BookmarkNode, ROOT_ID } from "./utils/types";
 
 const App = () => {
@@ -28,8 +28,8 @@ const App = () => {
       // Find the new bookmark data
       for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
         console.log(
-          `Storage key "${key}" in namespace "${namespace}" changed.`,
-          `Old value was "${oldValue}", new value is "${newValue}".`
+          `Storage key "${key}" in namespace "${namespace}" changed.`
+          // `Old value was "${oldValue}", new value is "${newValue}".`
         );
         if (key === "newBookmarkNodes") {
           console.log("Received new bookmark node");
@@ -92,6 +92,17 @@ const App = () => {
     });
   };
 
+  const moveItem = (itemToMove, targetIndex) => {
+    console.debug(`Moving item ${itemToMove.id} (${itemToMove.title}) to index ${targetIndex}`);
+    updateBookmarkNodes([itemToMove.id], (item) => ({
+      ...item,
+      index: targetIndex,
+    })).then((updatedNodes) => {
+      const updatedTopLevelItems = updatedNodes.filter((node) => node.parentId == ROOT_ID);
+      setTopLevelItems(updatedTopLevelItems);
+    });
+  };
+
   /**
    * Variable that stores only the top level items that should be displayed
    * (i.e., the top level items on the current page)
@@ -124,7 +135,11 @@ const App = () => {
         onNextPage={() => handleChangePage(page + 1)}
         onPreviousPage={() => handleChangePage(page - 1)}
       />
-      <Board items={displayedTopLevelItems} moveItemsOut={moveItemsToTopLevel}></Board>
+      <Board
+        items={displayedTopLevelItems}
+        moveItemsOut={moveItemsToTopLevel}
+        moveItem={moveItem}
+      />
     </div>
   );
 };

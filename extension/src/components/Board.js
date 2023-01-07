@@ -6,29 +6,53 @@ import "../styles/Board.css";
 // import { ItemTypes } from "../pages/Home";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
-import { ITEMS_PER_GROUP, ITEMS_PER_PAGE } from "../utils/types";
+import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
 
-// Invariant: items are sorted by index
-const Board = ({ items, isGroup, moveItemsOut }) => {
+/**
+ * Invariants:
+ *  * `items`
+ *    * Items are all sorted by index
+ *    * No two items have the same index
+ *
+ */
+const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
   const grids = useMemo(() => {
     if (!items) {
       return [];
     }
 
+    // Create the grid items
     const gridItems = [];
     const numItems = isGroup ? ITEMS_PER_GROUP : ITEMS_PER_PAGE;
+    let nextItemIdx = 0;
+    for (let gridIdx = 0; gridIdx < numItems; gridIdx++) {
+      // Check if the next item's index matches the current grid index; if so,
+      // push the item into that grid space
+      if (items[nextItemIdx]?.index % numItems === gridIdx) {
+        const item = items[nextItemIdx];
+        nextItemIdx++;
 
-    // Create the grid items.
-    // If no item found at that index, push an empty grid item.
-    for (let i = 0; i < numItems; i++) {
-      if (items[i]?.index % numItems === i) {
-        const item = items[i];
         gridItems.push(
-          <GridItem index={i} key={item.id} item={item} moveItemsOut={moveItemsOut} />
+          <GridItem
+            index={gridIdx}
+            key={item.id}
+            item={item}
+            moveItemsOut={moveItemsOut}
+            moveItem={moveItem}
+          />
         );
         continue;
       }
-      gridItems.push(<GridItem index={i} key={`empty-item-${i}`} item={{ type: "empty" }} />);
+
+      // No item was found at that grid index, push an empty grid item
+      gridItems.push(
+        <GridItem
+          index={gridIdx}
+          key={`empty-item-${gridIdx}`}
+          item={{ type: ItemTypes.EMPTY }}
+          moveItem={moveItem}
+        />
+      );
     }
 
     return gridItems;
