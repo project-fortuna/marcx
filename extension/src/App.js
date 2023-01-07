@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Board from "./components/Board";
-import Modal from "./components/Modal";
+import Modal from "./components/utility-components/Modal";
 import Navbar from "./components/Navbar";
 import { addNewBookmarkNode, getBookmarkNodes, updateBookmarkNodes } from "./utils/functions";
 import { ITEMS_PER_PAGE, BookmarkNode, ROOT_ID } from "./utils/types";

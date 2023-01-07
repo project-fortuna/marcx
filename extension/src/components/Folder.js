@@ -7,7 +7,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OutboxIcon from "@mui/icons-material/Outbox";
 
-import Modal from "./Modal";
+import Modal from "./utility-components/Modal";
 import "../styles/Folder.css";
 import { getBookmarkNodes } from "../utils/functions";
 import Dropdown from "./utility-components/Dropdown";
