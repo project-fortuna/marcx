@@ -1,0 +1,16 @@
+.Group-thumbnail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  column-gap: 0.5rem;
+  row-gap: 0.5rem;
+  padding: 0.5rem;
+
+  background-color: rgba(209, 209, 209, 0.505);
+  border-radius: 0.5rem;
+}
+
+.Group-thumbnail > img {
+  width: 1rem;
+  margin: auto;
+}

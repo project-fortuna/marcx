@@ -5,7 +5,7 @@ import Board from "./components/Board";
 import Modal from "./components/utility-components/Modal";
 import Navbar from "./components/Navbar";
 import { addNewBookmarkNode, getBookmarkNodes, updateBookmarkNodes } from "./utils/functions";
-import { ITEMS_PER_PAGE, BookmarkNode, ROOT_ID } from "./utils/types";
+import { ITEMS_PER_PAGE, BookmarkNode, ROOT_ID, TEST_GROUP } from "./utils/types";
 
 const App = () => {
   const [page, setPage] = useState(0);
@@ -19,9 +19,11 @@ const App = () => {
     });
 
     // Get ALL top level bookmark nodes (folders, groups, bookmarks)
-    getBookmarkNodes((node) => node.parentId == ROOT_ID).then((topLevelNodes) =>
-      setTopLevelItems(topLevelNodes)
-    );
+    getBookmarkNodes((node) => node.parentId == ROOT_ID).then((topLevelNodes) => {
+      // FIXME: Remove this after testing
+      topLevelNodes.push(TEST_GROUP);
+      setTopLevelItems(topLevelNodes);
+    });
 
     // Add chrome storage changed
     const listener = chrome.storage.onChanged.addListener((changes, namespace) => {

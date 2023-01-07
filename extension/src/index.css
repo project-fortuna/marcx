@@ -52,8 +52,7 @@ button {
   max-width: 210px;
 }
 
-.grid-item > svg,
-.grid-item > img {
+.grid-item-container {
   width: 72px;
   height: 72px;
   transition: transform 100ms ease-out;
@@ -63,8 +62,7 @@ button {
   cursor: pointer;
 }
 
-.grid-item:hover > svg:not(.wiggle),
-.grid-item:hover > img:not(.wiggle) {
+.grid-item:hover .grid-item-container:not(.wiggle) {
   transform: scale(1.1);
 }
 

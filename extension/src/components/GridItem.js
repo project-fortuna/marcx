@@ -3,6 +3,7 @@ import Folder from "./Folder";
 import Bookmark from "./Bookmark";
 import { ItemTypes } from "../utils/types";
 import { useDrop } from "react-dnd";
+import Group from "./Group";
 // import "../../utilities.css";
 // import { useDrop } from 'react-dnd'
 // import { ItemTypes } from "../pages/Home";
@@ -10,7 +11,7 @@ import { useDrop } from "react-dnd";
 // import Group from "./Group";
 // import "./Grid.css"
 
-const GridItem = ({ index, item, moveItemsOut, moveItem }) => {
+const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
   const moveBookmark = (targetIndex, incomingItem) => {
     moveItem(incomingItem, targetIndex);
   };
@@ -34,6 +35,8 @@ const GridItem = ({ index, item, moveItemsOut, moveItem }) => {
         return <Folder folder={item} moveItemsOut={moveItemsOut} />;
       case ItemTypes.BOOKMARK:
         return <Bookmark bookmark={item} />;
+      case ItemTypes.GROUP:
+        return <Group group={item} moveItemsOut={moveItemsOut} />;
       default:
         return <></>;
     }
@@ -42,7 +45,7 @@ const GridItem = ({ index, item, moveItemsOut, moveItem }) => {
   return (
     <div
       ref={drop}
-      className="Board-grid-square"
+      className={inGroup ? "Board-grid-square-group" : "Board-grid-square"}
       style={{ backgroundColor: isOverGrid ? (canDrop ? "green" : "red") : "transparent" }}
     >
       {displayedItem}

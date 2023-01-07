@@ -39,6 +39,7 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
             item={item}
             moveItemsOut={moveItemsOut}
             moveItem={moveItem}
+            inGroup={isGroup}
           />
         );
         continue;
@@ -51,6 +52,7 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
           key={`empty-item-${gridIdx}`}
           item={{ type: ItemTypes.EMPTY }}
           moveItem={moveItem}
+          inGroup={isGroup}
         />
       );
     }

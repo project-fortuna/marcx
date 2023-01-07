@@ -1,6 +1,6 @@
 /*global chrome*/
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BookmarkNode, FAVICON_URL, ItemTypes } from "../utils/types";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
@@ -8,24 +8,27 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OutboxIcon from "@mui/icons-material/Outbox";
 
 import Modal from "./utility-components/Modal";
-import "../styles/Folder.css";
-import { getBookmarkNodes } from "../utils/functions";
 import Dropdown from "./utility-components/Dropdown";
+import "../styles/Group.css";
+import { getBookmarkNodes } from "../utils/functions";
 import { useDrag } from "react-dnd";
+import Board from "./Board";
 
-const Folder = ({ folder, moveItemsOut }) => {
+const Group = ({ group, moveItemsOut }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
-  const [breadcrumbs, setBreadcrumbs] = useState([]);
-  const [folderOptionsOpen, setFolderOptionsOpen] = useState(false);
 
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.FOLDER,
-    item: folder,
+    type: ItemTypes.GROUP,
+    item: group,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
+
+  useEffect(() => {
+    getChildren(group.id);
+  }, []);
 
   const handleMoveAllItemsOut = () => {
     // Move items out on the backend
@@ -41,70 +44,26 @@ const Folder = ({ folder, moveItemsOut }) => {
    *
    * Triggered by clicking the folder icon from the home screen icon
    */
-  const openFolderModal = () => {
+  const openGroupModal = () => {
     setOpen(true);
-    getChildren(folder.id);
+    getChildren(group.id);
   };
 
-  const getChildren = async (folderId) => {
-    if (children && folderId === children[0]?.parentId) {
+  const getChildren = async (groupId) => {
+    if (children && groupId === children[0]?.parentId) {
       // Avoid repetitive calls if the correct children are already being
       // displayed
       return;
     }
 
-    const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === folderId);
+    const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
     console.log("Got", newChildren);
     setChildren(newChildren);
   };
 
-  /**
-   * Resets the breadcrumb list and opens the original folder.
-   */
-  const resetBreadcrumbs = () => {
-    setBreadcrumbs([]);
-    getChildren(folder.id);
-  };
-
-  /**
-   * Truncates the breadcrumb list and updates the children.
-   *
-   * @param {BookmarkNode} breadcrumb - The breadcrumb that was clicked
-   */
-  const onBreadcrumbClick = (breadcrumb) => {
-    const index = breadcrumbs.indexOf(breadcrumb);
-    console.debug("Truncating breadcrumbs to", index);
-    setBreadcrumbs(breadcrumbs.slice(0, index + 1));
-    getChildren(breadcrumb.id);
-  };
-
-  /**
-   * Opens the list item within the folder menu.
-   *
-   * The list item may be another folder or a bookmark
-   *
-   * @param {BookmarkNode} item - The list item that was selected
-   */
-  const openListItem = (item) => {
-    switch (item.type) {
-      case ItemTypes.BOOKMARK:
-        // If bookmark, opens the URL in a new tab
-        window.open(item.url, "_blank");
-        break;
-      case ItemTypes.FOLDER:
-        // If folder, displays the contents
-        getChildren(item.id);
-        setBreadcrumbs((oldBreadcrumbs) => oldBreadcrumbs.concat(item));
-        break;
-      default:
-        console.warn(`Item type '${item.type}' not recognized!`);
-        break;
-    }
-  };
-
   return (
     <>
-      <Modal open={open} onClose={() => setOpen(false)}>
+      {/* <Modal open={open} onClose={() => setOpen(false)}>
         <div className="Folder-menu">
           <span className="Folder-menu-header">
             <nav>
@@ -157,15 +116,19 @@ const Folder = ({ folder, moveItemsOut }) => {
             })}
           </ul>
         </div>
-      </Modal>
-      <button ref={drag} className="grid-item" onClick={openFolderModal}>
-        <div className={`grid-item-container ${isDragging ? "wiggle" : ""}`}>
-          <FolderIcon style={{ width: "inherit", height: "inherit" }} />
-        </div>
-        <span className="grid-item-label">{folder.title}</span>
+      </Modal> */}
+      <button ref={drag} className="grid-item" onClick={openGroupModal}>
+        <article className="Group-thumbnail grid-item-container">
+          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
+          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
+          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
+          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
+          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
+        </article>
+        <span className="grid-item-label">{group.title}</span>
       </button>
     </>
   );
 };
 
-export default Folder;
+export default Group;

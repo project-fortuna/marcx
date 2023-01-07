@@ -30,7 +30,7 @@ const Bookmark = ({ bookmark }) => {
       >
         <img
           id="bookmarkImage"
-          className={`${isDragging ? "wiggle" : ""}`}
+          className={`grid-item-container ${isDragging ? "wiggle" : ""}`}
           style={{
             // opacity: isDragging ? 0 : 1,
             // fontSize: 25,

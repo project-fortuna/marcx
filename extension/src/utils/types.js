@@ -18,19 +18,27 @@ const ROOT_ID = 0;
 const ITEMS_PER_PAGE = 48;
 const ITEMS_PER_GROUP = 9;
 
-const TEST_BOOKMARK = {
-  id: "9999",
-  index: 3,
-  title: "Test Bookmark",
-  url: "https://reactjs.org/docs/hooks-custom.html",
-  type: "bookmark",
-};
-
 const ItemTypes = {
   BOOKMARK: "bookmark",
   FOLDER: "folder",
   GROUP: "group",
   EMPTY: "empty",
+};
+
+const TEST_BOOKMARK = {
+  id: "9999",
+  index: 3,
+  title: "Test Bookmark",
+  url: "https://reactjs.org/docs/hooks-custom.html",
+  type: ItemTypes.BOOKMARK,
+};
+
+const TEST_GROUP = {
+  id: "888888",
+  index: 45,
+  title: "Test group",
+  type: ItemTypes.GROUP,
+  children: [TEST_BOOKMARK.id],
 };
 
 module.exports = {
@@ -39,5 +47,6 @@ module.exports = {
   ITEMS_PER_PAGE,
   ITEMS_PER_GROUP,
   TEST_BOOKMARK,
+  TEST_GROUP,
   ItemTypes,
 };
