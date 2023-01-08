@@ -46,13 +46,8 @@ const Folder = ({ folder, moveItemsOut }) => {
   };
 
   const getChildren = async (folderId) => {
-    if (children && folderId === children[0]?.parentId) {
-      // Avoid repetitive calls if the correct children are already being
-      // displayed
-      return;
-    }
-
     const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === folderId);
+    newChildren.sort((item1, item2) => item1.index - item2.index);
     console.log("Got", newChildren);
     setChildren(newChildren);
   };
@@ -61,6 +56,11 @@ const Folder = ({ folder, moveItemsOut }) => {
    * Resets the breadcrumb list and opens the original folder.
    */
   const resetBreadcrumbs = () => {
+    // Early return if already showing the root folder items
+    if (children && folder.id === children[0]?.parentId) {
+      return;
+    }
+
     setBreadcrumbs([]);
     getChildren(folder.id);
   };
@@ -71,6 +71,11 @@ const Folder = ({ folder, moveItemsOut }) => {
    * @param {BookmarkNode} breadcrumb - The breadcrumb that was clicked
    */
   const onBreadcrumbClick = (breadcrumb) => {
+    // Early return if already showing the selected breadcrumb items
+    if (children && breadcrumb.id === children[0]?.parentId) {
+      return;
+    }
+
     const index = breadcrumbs.indexOf(breadcrumb);
     console.debug("Truncating breadcrumbs to", index);
     setBreadcrumbs(breadcrumbs.slice(0, index + 1));

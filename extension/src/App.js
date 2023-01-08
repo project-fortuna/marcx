@@ -105,7 +105,9 @@ const App = () => {
         break;
       case ItemTypes.FOLDER:
       case ItemTypes.GROUP:
-        moveItemsIntoContainer([itemToMove], targetItem.id);
+        moveItemsIntoContainer([itemToMove], targetItem.id).then((updatedNodes) => {
+          setTopLevelItems(updatedNodes.filter((node) => node.parentId == ROOT_ID));
+        });
         break;
       default:
         console.error("Invalid target item type, could not move");

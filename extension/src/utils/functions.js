@@ -80,13 +80,14 @@ export function getAvailableIndices(items, numIncomingItems) {
       // If there are, add the all indices to the list of available indices
       for (let j = items[i - 1].index + 1; j < currentItem.index; j++) {
         availableIndices.push(j);
+        numIncomingItems--;
       }
     }
   }
 
   // Add the remaining indices after the last item
   const lastIndex = items[items.length - 1].index;
-  for (let i = lastIndex + 1; i < lastIndex + numIncomingItems; i++) {
+  for (let i = lastIndex + 1; i < lastIndex + 1 + numIncomingItems; i++) {
     availableIndices.push(i);
   }
 

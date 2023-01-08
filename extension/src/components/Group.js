@@ -49,13 +49,8 @@ const Group = ({ group, moveItemsOut }) => {
   };
 
   const getChildren = async (groupId) => {
-    if (children && groupId === children[0]?.parentId) {
-      // Avoid repetitive calls if the correct children are already being
-      // displayed
-      return;
-    }
-
     const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
+    newChildren.sort((item1, item2) => item1.index - item2.index);
     console.log("Got", newChildren);
     setChildren(newChildren);
   };
@@ -117,7 +112,8 @@ const Group = ({ group, moveItemsOut }) => {
         </div>
       </Modal> */}
       <button ref={drag} className="grid-item" onClick={openGroupModal}>
-        <article className="Group-thumbnail grid-item-container">
+        <article className={`Group-thumbnail grid-item-container ${isDragging ? "wiggle" : ""}`}>
+          {/* TODO: Create proper thumbnail children display (with empty item support) */}
           {children?.map((child) => (
             <img src={`${FAVICON_URL}${child.url}`} alt="" />
           ))}
