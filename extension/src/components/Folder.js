@@ -29,8 +29,7 @@ const Folder = ({ folder, moveItemsOut }) => {
 
   const handleMoveAllItemsOut = () => {
     // Move items out on the backend
-    const itemIds = children.map((child) => child.id);
-    moveItemsOut(itemIds);
+    moveItemsOut(children);
 
     // Clear the current children list
     setChildren([]);

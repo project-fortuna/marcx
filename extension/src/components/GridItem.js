@@ -12,21 +12,21 @@ import Group from "./Group";
 // import "./Grid.css"
 
 const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
-  const moveBookmark = (targetIndex, incomingItem) => {
-    moveItem(incomingItem, targetIndex);
-  };
-
   const [{ isOverGrid, canDrop }, drop] = useDrop(
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
-      canDrop: () => item.type === ItemTypes.EMPTY,
-      drop: (incomingItem) => moveBookmark(index, incomingItem),
+      canDrop: (incomingItem) =>
+        // Can drop a bookmark anywhere as long as the target is not a bookmark
+        // Anything can be dropped in empty grids
+        item.type === ItemTypes.EMPTY ||
+        (incomingItem.type === ItemTypes.BOOKMARK && item.type !== ItemTypes.BOOKMARK),
+      drop: (incomingItem) => moveItem(incomingItem, item),
       collect: (monitor) => ({
         isOverGrid: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [index]
+    [item]
   );
 
   const displayedItem = useMemo(() => {

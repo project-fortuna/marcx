@@ -4,8 +4,20 @@ import React, { useEffect, useState, useMemo } from "react";
 import Board from "./components/Board";
 import Modal from "./components/utility-components/Modal";
 import Navbar from "./components/Navbar";
-import { addNewBookmarkNode, getBookmarkNodes, updateBookmarkNodes } from "./utils/functions";
-import { ITEMS_PER_PAGE, BookmarkNode, ROOT_ID, TEST_GROUP } from "./utils/types";
+import {
+  addNewBookmarkNode,
+  getBookmarkNodes,
+  moveItemsIntoContainer,
+  updateBookmarkNodes,
+} from "./utils/functions";
+import {
+  ITEMS_PER_PAGE,
+  BookmarkNode,
+  ROOT_ID,
+  TEST_GROUP,
+  TEST_BOOKMARK,
+  ItemTypes,
+} from "./utils/types";
 
 const App = () => {
   const [page, setPage] = useState(0);
@@ -56,53 +68,49 @@ const App = () => {
     setPage(newPageIdx);
   };
 
-  const getNextTopLevelIndex = () => {
-    return Math.max(...topLevelItems.map((item) => item.index)) + 1;
-  };
-
   /**
    * Moves the given items to the primary board (top-level).
    *
-   * @param {string[]} itemIds - The list of item IDs to move
+   * @param {BookmarkNode[]} items - The list of items to move
    */
-  const moveItemsToTopLevel = (itemIds) => {
+  const moveItemsToTopLevel = (items) => {
     console.debug("Moving out the following items:");
-    console.debug(itemIds);
+    console.debug(items.map((item) => item.id));
 
-    let newStartIndex = getNextTopLevelIndex();
-
-    // Change the parent ID to the top level ID
-    chrome.storage.local.get("bookmarkNodes").then((res) => {
-      const newTopLevelNodes = [];
-      const updatedNodes = res.bookmarkNodes.map((node) => {
-        // Only update the given nodes
-        if (itemIds.includes(node.id)) {
-          const updatedNode = { ...node, parentId: ROOT_ID, index: newStartIndex };
-          newTopLevelNodes.push(updatedNode);
-          newStartIndex++;
-          return updatedNode;
-        }
-        return node;
-      });
-
-      chrome.storage.local.set({ bookmarkNodes: updatedNodes }, () => {
-        // Move the nodes to the top level in the front end after backend has
-        // been updated
-        console.debug("New top level nodes:", newTopLevelNodes);
-        setTopLevelItems(topLevelItems.concat(newTopLevelNodes));
-      });
+    moveItemsIntoContainer(items, ROOT_ID).then((updatedNodes) => {
+      const updatedTopLevelNodes = updatedNodes.filter((node) => node.parentId == ROOT_ID);
+      // Move the nodes to the top level in the front end after backend has
+      // been updated
+      setTopLevelItems(updatedTopLevelNodes);
     });
   };
 
-  const moveItem = (itemToMove, targetIndex) => {
-    console.debug(`Moving item ${itemToMove.id} (${itemToMove.title}) to index ${targetIndex}`);
-    updateBookmarkNodes([itemToMove.id], (item) => ({
-      ...item,
-      index: targetIndex,
-    })).then((updatedNodes) => {
-      const updatedTopLevelItems = updatedNodes.filter((node) => node.parentId == ROOT_ID);
-      setTopLevelItems(updatedTopLevelItems);
-    });
+  /**
+   *
+   * @param {BookmarkNode} itemToMove
+   * @param {BookmarkNode} targetItem
+   */
+  const moveItem = (itemToMove, targetItem) => {
+    console.log(`Moving item ${itemToMove.id} (${itemToMove.title}) to index ${targetItem.index}`);
+    console.debug(`Target item is type '${targetItem.type}'`);
+    switch (targetItem.type) {
+      case ItemTypes.EMPTY:
+        updateBookmarkNodes([itemToMove.id], (item) => ({
+          ...item,
+          index: targetItem.index,
+        })).then((updatedNodes) => {
+          const updatedTopLevelItems = updatedNodes.filter((node) => node.parentId == ROOT_ID);
+          setTopLevelItems(updatedTopLevelItems);
+        });
+        break;
+      case ItemTypes.FOLDER:
+      case ItemTypes.GROUP:
+        moveItemsIntoContainer([itemToMove], targetItem.id);
+        break;
+      default:
+        console.error("Invalid target item type, could not move");
+        break;
+    }
   };
 
   /**

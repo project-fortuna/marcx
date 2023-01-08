@@ -50,7 +50,7 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
         <GridItem
           index={gridIdx}
           key={`empty-item-${gridIdx}`}
-          item={{ type: ItemTypes.EMPTY }}
+          item={{ index: gridIdx, type: ItemTypes.EMPTY }}
           moveItem={moveItem}
           inGroup={isGroup}
         />

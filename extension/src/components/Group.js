@@ -32,8 +32,7 @@ const Group = ({ group, moveItemsOut }) => {
 
   const handleMoveAllItemsOut = () => {
     // Move items out on the backend
-    const itemIds = children.map((child) => child.id);
-    moveItemsOut(itemIds);
+    moveItemsOut(children);
 
     // Clear the current children list
     setChildren([]);
@@ -119,11 +118,9 @@ const Group = ({ group, moveItemsOut }) => {
       </Modal> */}
       <button ref={drag} className="grid-item" onClick={openGroupModal}>
         <article className="Group-thumbnail grid-item-container">
-          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
-          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
-          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
-          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
-          <img src={FAVICON_URL + "https://reactjs.org/docs/hooks-custom.html"} alt="" />
+          {children?.map((child) => (
+            <img src={`${FAVICON_URL}${child.url}`} alt="" />
+          ))}
         </article>
         <span className="grid-item-label">{group.title}</span>
       </button>
