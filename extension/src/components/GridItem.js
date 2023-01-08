@@ -16,9 +16,11 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
       canDrop: (incomingItem) =>
-        // Can drop a bookmark anywhere as long as the target is not a bookmark
-        // Anything can be dropped in empty grids
+        // Anything can be dropped into empty grids
+        // Bookmarks can be dropped anywhere except other bookmarks
+        // Folders can be dropped into other folders
         item.type === ItemTypes.EMPTY ||
+        (incomingItem.type === ItemTypes.FOLDER && item.type === ItemTypes.FOLDER) ||
         (incomingItem.type === ItemTypes.BOOKMARK && item.type !== ItemTypes.BOOKMARK),
       drop: (incomingItem) => moveItem(incomingItem, item),
       collect: (monitor) => ({
