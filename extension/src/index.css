@@ -88,3 +88,23 @@ button {
 .wiggle {
   animation: wiggle 0.2s infinite linear;
 }
+
+.primary-button {
+  color: aliceblue;
+  background-color: #0077b6;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+
+  transition: all 0.1s ease-out;
+}
+
+.primary-button:hover {
+  background-color: #00507a;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.text-input {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}

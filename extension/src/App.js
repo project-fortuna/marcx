@@ -9,6 +9,8 @@ import {
   getBookmarkNodes,
   moveItemsIntoContainer,
   updateBookmarkNodes,
+  getAvailableIndices,
+  getNewId,
 } from "./utils/functions";
 import {
   ITEMS_PER_PAGE,
@@ -17,6 +19,7 @@ import {
   TEST_GROUP,
   TEST_BOOKMARK,
   ItemTypes,
+  FORMS,
 } from "./utils/types";
 
 const App = () => {
@@ -32,8 +35,6 @@ const App = () => {
 
     // Get ALL top level bookmark nodes (folders, groups, bookmarks)
     getBookmarkNodes((node) => node.parentId == ROOT_ID).then((topLevelNodes) => {
-      // FIXME: Remove this after testing
-      topLevelNodes.push(TEST_GROUP);
       setTopLevelItems(topLevelNodes);
     });
 
@@ -115,6 +116,29 @@ const App = () => {
     }
   };
 
+  const createNewGroup = async (data) => {
+    console.log("Creating new group");
+    console.log(data);
+
+    const availableIndex = getAvailableIndices(topLevelItems, 1)[0];
+    const id = await getNewId();
+
+    const newGroup = {
+      id,
+      index: availableIndex,
+      title: data[FORMS.newGroup.name],
+      parentId: ROOT_ID,
+      type: ItemTypes.GROUP,
+      dateAdded: Date.now(),
+      children: [],
+    };
+
+    const group = await addNewBookmarkNode(newGroup);
+    console.log("Successfully added new group");
+    console.log(group);
+    setTopLevelItems(topLevelItems.concat(group));
+  };
+
   /**
    * Variable that stores only the top level items that should be displayed
    * (i.e., the top level items on the current page)
@@ -146,6 +170,7 @@ const App = () => {
         page={page}
         onNextPage={() => handleChangePage(page + 1)}
         onPreviousPage={() => handleChangePage(page - 1)}
+        createNewGroup={createNewGroup}
       />
       <Board
         items={displayedTopLevelItems}

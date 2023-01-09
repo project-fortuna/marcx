@@ -27,6 +27,7 @@ export async function getBookmarkNodes(matchingFn) {
 export async function addNewBookmarkNode(item) {
   const currentNodes = await getBookmarkNodes();
   await chrome.storage.local.set({ bookmarkNodes: currentNodes.concat(item) });
+  return item;
 }
 
 /**
@@ -61,6 +62,7 @@ export async function updateBookmarkNodes(itemIds, updateFn) {
  *    the items given above
  */
 export function getAvailableIndices(items, numIncomingItems) {
+  // TODO: Allow passing in just the root index
   const availableIndices = [];
 
   if (!items.length) {
@@ -148,4 +150,9 @@ export async function moveItemsIntoContainer(items, containerId) {
   await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
 
   return updatedNodes;
+}
+
+export async function getNewId() {
+  const nodes = await getBookmarkNodes();
+  return Math.max(...nodes.map((node) => node.id)) + 1;
 }

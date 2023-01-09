@@ -41,6 +41,12 @@ const TEST_GROUP = {
   children: [TEST_BOOKMARK.id],
 };
 
+const FORMS = {
+  newGroup: {
+    name: "groupName",
+  },
+};
+
 module.exports = {
   FAVICON_URL,
   ROOT_ID,
@@ -49,4 +55,5 @@ module.exports = {
   TEST_BOOKMARK,
   TEST_GROUP,
   ItemTypes,
+  FORMS,
 };
