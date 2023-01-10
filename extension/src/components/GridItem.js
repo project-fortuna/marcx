@@ -16,15 +16,24 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
       canDrop: (incomingItem) =>
+        // You can't move an item into a container if it's already in that container
         // Anything can be dropped into empty grids
         // Bookmarks can be dropped anywhere except other bookmarks
         // Folders can be dropped into other folders
-        item.type === ItemTypes.EMPTY ||
-        (incomingItem.type === ItemTypes.FOLDER && item.type === ItemTypes.FOLDER) ||
-        (incomingItem.type === ItemTypes.BOOKMARK && item.type !== ItemTypes.BOOKMARK),
-      drop: (incomingItem) => moveItem(incomingItem, item),
+        incomingItem.parentId !== item.id &&
+        (item.type === ItemTypes.EMPTY ||
+          (incomingItem.type === ItemTypes.FOLDER && item.type === ItemTypes.FOLDER) ||
+          (incomingItem.type === ItemTypes.BOOKMARK && item.type !== ItemTypes.BOOKMARK)),
+      drop: (incomingItem, monitor) => {
+        if (!monitor.didDrop()) {
+          // Only move the item if the monitor has not already dropped it
+          // Prevents multiple moves from happening (i.e. moving an item within
+          // a group)
+          moveItem(incomingItem, item);
+        }
+      },
       collect: (monitor) => ({
-        isOverGrid: !!monitor.isOver(),
+        isOverGrid: !!monitor.isOver({ shallow: true }),
         canDrop: !!monitor.canDrop(),
       }),
     }),
@@ -38,7 +47,7 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
       case ItemTypes.BOOKMARK:
         return <Bookmark bookmark={item} />;
       case ItemTypes.GROUP:
-        return <Group group={item} moveItemsOut={moveItemsOut} />;
+        return <Group group={item} moveItemsOut={moveItemsOut} moveItem={moveItem} />;
       default:
         return <></>;
     }

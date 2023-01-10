@@ -21,6 +21,9 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
       return [];
     }
 
+    // FIXME: Potential bug if there are multiple items at x % numItems. Test by
+    // creating multiple pages with items and check the grid
+
     // Create the grid items
     const gridItems = [];
     const numItems = isGroup ? ITEMS_PER_GROUP : ITEMS_PER_PAGE;
@@ -62,7 +65,7 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className={isGroup ? "group-board" : "home-board"}>{grids}</div>
+      <div className={`board ${isGroup ? "group-board" : "home-board"}`}>{grids}</div>
     </DndProvider>
   );
 };

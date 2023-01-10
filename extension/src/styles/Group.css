@@ -6,11 +6,33 @@
   row-gap: 0.5rem;
   padding: 0.5rem;
 
-  background-color: rgba(209, 209, 209, 0.505);
+  background-color: var(--group-bgcolor);
   border-radius: 0.5rem;
 }
 
-.Group-thumbnail > img {
+.Group-thumbnail > img,
+.Group-thumbnail > div {
   width: 1rem;
   margin: auto;
+}
+
+.Group-main {
+  display: flex;
+  justify-content: center;
+}
+
+.Group-container {
+  background-color: var(--group-bgcolor);
+  border-radius: 2rem;
+  height: 70vh;
+  max-height: 100vh;
+  width: 70vh;
+
+  padding: 1rem;
+}
+
+.Group-footer,
+.Group-header {
+  display: flex;
+  justify-content: center;
 }
