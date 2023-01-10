@@ -42,9 +42,10 @@
 
 .Dropdown-toggle-button > svg {
   transition: filter 100ms ease-out;
+  filter: invert(0.3);
 }
 
 .Dropdown-toggle-button:hover > svg {
-  filter: invert(0.7);
+  filter: none;
   cursor: pointer;
 }

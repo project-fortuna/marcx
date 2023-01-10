@@ -67,12 +67,29 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
     }
   }, [item]);
 
+  const className = useMemo(() => {
+    const classes = [];
+    // Add primary class
+    if (inGroup) {
+      classes.push("Board-grid-square-group");
+    } else {
+      classes.push("Board-grid-square");
+    }
+
+    // Add any hover stylings
+    if (isOverGrid) {
+      if (canDrop) {
+        classes.push("droppable");
+      } else {
+        classes.push("not-droppable");
+      }
+    }
+
+    return classes.join(" ");
+  }, [inGroup, isOverGrid, canDrop]);
+
   return (
-    <div
-      ref={drop}
-      className={inGroup ? "Board-grid-square-group" : "Board-grid-square"}
-      style={{ backgroundColor: isOverGrid ? (canDrop ? "green" : "red") : "transparent" }}
-    >
+    <div ref={drop} className={className}>
       {displayedItem}
     </div>
   );

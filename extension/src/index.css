@@ -9,17 +9,44 @@
 
   --group-bgcolor: hsla(0, 0%, 90%, 0.821);
 
+  --white: hsl(0, 0%, 97%);
+  --off-white: hsl(0, 0%, 94%);
+
+  --droppable-bgcolor: rgba(51, 208, 51, 0.5);
+  --not-droppable-bgcolor: rgba(255, 82, 82, 0.5);
+
   --xs: 4px;
   --s: 8px;
   --m: 16px;
   --l: 24px;
+
+  --font: "Quicksand", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background-color: #888;
+  transition: all 200ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background-color: #555;
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
-  font-family: "Quicksand", sans-serif;
+  font-family: var(--font);
 }
 
 .App {
@@ -35,7 +62,6 @@ button {
 
 .grid-item {
   display: flex;
-  /* background-color: antiquewhite; */
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
@@ -44,6 +70,7 @@ button {
 }
 
 .grid-item-label {
+  font-family: var(--font);
   font-size: 0.75rem;
   text-align: center;
   color: rgb(22, 22, 22);
@@ -109,4 +136,12 @@ button {
 .text-input {
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
+}
+
+.droppable {
+  background-color: var(--droppable-bgcolor);
+}
+
+.not-droppable {
+  background-color: var(--not-droppable-bgcolor);
 }

@@ -22,7 +22,16 @@ const Dropdown = ({ children, onClose, buttonIcon }) => {
 
   return (
     <div className="Dropdown-container">
-      <button className="Dropdown-toggle-button" onClick={() => setIsOpen(!isOpen)}>
+      <button
+        className="Dropdown-toggle-button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         {buttonIcon}
       </button>
       {isOpen && (

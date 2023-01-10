@@ -112,11 +112,23 @@ const Folder = ({ folder, moveItemsOut }) => {
         <div className="Folder-menu">
           <span className="Folder-menu-header">
             <nav>
-              <h1 onClick={resetBreadcrumbs}>{folder.title}</h1>
+              <button
+                className="Folder-menu-breadcrumb"
+                onClick={resetBreadcrumbs}
+                title={`Open ${folder.title}`}
+              >
+                {folder.title}
+              </button>
               {breadcrumbs.map((breadcrumb) => (
                 <>
                   <ArrowRightIcon />
-                  <h2 onClick={() => onBreadcrumbClick(breadcrumb)}>{breadcrumb.title}</h2>
+                  <button
+                    className="Folder-menu-breadcrumb"
+                    title={`Open ${breadcrumb.title}`}
+                    onClick={() => onBreadcrumbClick(breadcrumb)}
+                  >
+                    {breadcrumb.title}
+                  </button>
                 </>
               ))}
             </nav>
@@ -137,7 +149,7 @@ const Folder = ({ folder, moveItemsOut }) => {
                   id={item.title}
                   onDoubleClick={() => openListItem(item)}
                 >
-                  <span>
+                  <span className="Folder-menu-item-content">
                     {item.type === ItemTypes.FOLDER ? (
                       <FolderIcon />
                     ) : (
@@ -153,9 +165,13 @@ const Folder = ({ folder, moveItemsOut }) => {
                       {item.url}
                     </label>
                   </span>
-                  <button>
-                    <MoreVertIcon />
-                  </button>
+                  <Dropdown buttonIcon={<MoreVertIcon />}>
+                    <button id="move-all-out" onClick={handleMoveAllItemsOut}>
+                      <OutboxIcon />
+                      <label htmlFor="move-all-out">Move all folder contents out</label>
+                    </button>
+                    <button>Other</button>
+                  </Dropdown>
                 </li>
               );
             })}
