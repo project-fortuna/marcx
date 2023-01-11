@@ -15,7 +15,7 @@ import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
  *    * No two items have the same index
  *
  */
-const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
+const Board = ({ items, isGroup, moveItemsOut, moveItem, page }) => {
   const grids = useMemo(() => {
     if (!items) {
       return [];
@@ -53,7 +53,8 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
         <GridItem
           index={gridIdx}
           key={`empty-item-${gridIdx}`}
-          item={{ index: gridIdx, type: ItemTypes.EMPTY }}
+          // Make sure the index is the index across *all* pages
+          item={{ index: page * numItems + gridIdx, type: ItemTypes.EMPTY }}
           moveItem={moveItem}
           inGroup={isGroup}
         />
@@ -63,11 +64,7 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem }) => {
     return gridItems;
   }, [items, isGroup]);
 
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <div className={`board ${isGroup ? "group-board" : "home-board"}`}>{grids}</div>
-    </DndProvider>
-  );
+  return <div className={`board ${isGroup ? "group-board" : "home-board"}`}>{grids}</div>;
 };
 
 export default Board;

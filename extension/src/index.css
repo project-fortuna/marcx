@@ -54,6 +54,14 @@ body {
   height: 100vh;
 }
 
+.App > main {
+  display: flex;
+}
+
+.App > main > .board {
+  flex: 1;
+}
+
 /* Buttons by default should have no styling */
 button {
   background-color: transparent;

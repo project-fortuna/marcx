@@ -21,6 +21,9 @@ import {
   ItemTypes,
   FORMS,
 } from "./utils/types";
+import PageBorder from "./components/PageBorder";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const App = () => {
   const [page, setPage] = useState(0);
@@ -161,23 +164,30 @@ const App = () => {
   }, [topLevelItems, page]);
 
   return (
-    <div className="App">
-      {/* <Modal open={newItems.length}>
+    <DndProvider backend={HTML5Backend}>
+      <div className="App">
+        {/* <Modal open={newItems.length}>
         New bookmarks have been added!
         {JSON.stringify(newItems)}
       </Modal> */}
-      <Navbar
-        page={page}
-        onNextPage={() => handleChangePage(page + 1)}
-        onPreviousPage={() => handleChangePage(page - 1)}
-        createNewGroup={createNewGroup}
-      />
-      <Board
-        items={displayedTopLevelItems}
-        moveItemsOut={moveItemsToTopLevel}
-        moveItem={moveItem}
-      />
-    </div>
+        <Navbar
+          page={page}
+          onNextPage={() => handleChangePage(page + 1)}
+          onPreviousPage={() => handleChangePage(page - 1)}
+          createNewGroup={createNewGroup}
+        />
+        <main>
+          <PageBorder page={page} onHover={() => page !== 0 && handleChangePage(page - 1)} left />
+          <Board
+            items={displayedTopLevelItems}
+            moveItemsOut={moveItemsToTopLevel}
+            moveItem={moveItem}
+            page={page}
+          />
+          <PageBorder page={page} onHover={() => handleChangePage(page + 1)} />
+        </main>
+      </div>
+    </DndProvider>
   );
 };
 

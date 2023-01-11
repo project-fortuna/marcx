@@ -98,6 +98,8 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
                 isGroup={true}
                 moveItemsOut={moveItemsOut}
                 moveItem={moveItem}
+                // TODO: Update
+                page={0}
               />
             </div>
             <button title="Next Page">
