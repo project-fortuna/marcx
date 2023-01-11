@@ -2,10 +2,13 @@
 
 import React, { useState } from "react";
 import { BookmarkNode, FAVICON_URL, ItemTypes } from "../utils/types";
+
+// Materical icons
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OutboxIcon from "@mui/icons-material/Outbox";
+import EditIcon from "@mui/icons-material/Edit";
 
 import Modal from "./utility-components/Modal";
 import "../styles/Folder.css";
@@ -33,6 +36,14 @@ const Folder = ({ folder, moveItemsOut }) => {
 
     // Clear the current children list
     setChildren([]);
+  };
+
+  const handleMoveChildOut = (item) => {
+    // Move item out on the backend
+    moveItemsOut([item]);
+
+    // Remove from the children list
+    setChildren((curChildren) => curChildren.filter((child) => child.id != item.id));
   };
 
   /**
@@ -166,11 +177,14 @@ const Folder = ({ folder, moveItemsOut }) => {
                     </label>
                   </span>
                   <Dropdown buttonIcon={<MoreVertIcon />}>
-                    <button id="move-all-out" onClick={handleMoveAllItemsOut}>
+                    <button id="move-out" onClick={() => handleMoveChildOut(item)}>
                       <OutboxIcon />
-                      <label htmlFor="move-all-out">Move all folder contents out</label>
+                      <label htmlFor="move-out">Move this {item.type} out</label>
                     </button>
-                    <button>Other</button>
+                    <button id="edit">
+                      <EditIcon />
+                      <label htmlFor="edit">Edit {item.type}</label>
+                    </button>
                   </Dropdown>
                 </li>
               );
