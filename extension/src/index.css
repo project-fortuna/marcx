@@ -7,9 +7,9 @@
   --grey: #90e0ef;
   --white: #caf0f8;
 
-  --group-bgcolor: hsla(0, 0%, 90%, 0.821);
+  --group-bgcolor: hsla(0, 0%, 90%, 0.5);
 
-  --white: hsl(0, 0%, 97%);
+  --white: hsl(0, 0%, 98%);
   --off-white: hsl(0, 0%, 94%);
 
   --droppable-bgcolor: rgba(51, 208, 51, 0.5);
@@ -152,4 +152,21 @@ button {
 
 .not-droppable {
   background-color: var(--not-droppable-bgcolor);
+}
+
+.shadow {
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.glass {
+  background: linear-gradient(157.81deg, hsla(0, 0%, 67%, 0.4) 3.65%, hsla(0, 0%, 67%, 0.1) 96.08%);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid hsla(0, 0%, 50%, 0.397);
 }

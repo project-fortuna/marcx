@@ -29,6 +29,7 @@
   align-items: center;
   justify-content: center;
 
+  /* Right page border */
   background: linear-gradient(to left, hsla(0, 0%, 50%, 50%), hsla(0, 0%, 50%, 0%));
   border-radius: 1rem 0 0 1rem;
 }

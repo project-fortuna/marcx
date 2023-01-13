@@ -22,7 +22,6 @@
 }
 
 .Group-container {
-  background-color: var(--group-bgcolor);
   border-radius: 2rem;
   height: 70vh;
   max-height: 100vh;

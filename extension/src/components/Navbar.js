@@ -37,14 +37,16 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewGroup }) => {
           formData={formData}
           onUpdate={updateFormData}
         >
-          <label htmlFor={FORMS.newGroup.name}>Group name</label>
-          <input
-            className="text-input"
-            id={FORMS.newGroup.name}
-            type="text"
-            value={formData.groupName || ""}
-            onChange={(e) => updateFormData({ [FORMS.newGroup.name]: e.target.value })}
-          />
+          <div className="form-item">
+            <label htmlFor={FORMS.newGroup.name}>Group name</label>
+            <input
+              className="text-input"
+              id={FORMS.newGroup.name}
+              type="text"
+              value={formData.groupName || ""}
+              onChange={(e) => updateFormData({ [FORMS.newGroup.name]: e.target.value })}
+            />
+          </div>
         </NewItemForm>
       </Modal>
       <nav className="Navbar">

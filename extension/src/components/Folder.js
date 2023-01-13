@@ -120,7 +120,7 @@ const Folder = ({ folder, moveItemsOut }) => {
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="Folder-menu">
+        <div className="Folder-menu shadow">
           <span className="Folder-menu-header">
             <nav>
               <button

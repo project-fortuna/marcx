@@ -92,7 +92,7 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
             <button title="Previous Page">
               <ArrowLeftIcon />
             </button>
-            <div className="Group-container">
+            <div className="Group-container glass shadow">
               <Board
                 items={children}
                 isGroup={true}

@@ -35,7 +35,7 @@ const Dropdown = ({ children, onClose, buttonIcon }) => {
         {buttonIcon}
       </button>
       {isOpen && (
-        <ul ref={dropdownMenu} className="Dropdown-list">
+        <ul ref={dropdownMenu} className="Dropdown-list shadow">
           {children}
         </ul>
       )}

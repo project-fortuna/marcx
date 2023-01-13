@@ -1,10 +1,10 @@
 import React from "react";
-import "../../styles/Form.css";
+import "../../styles/NewItemForm.css";
 
 const NewItemForm = ({ itemType, children, onSubmit }) => {
   return (
     <form
-      className="NewItemForm"
+      className="NewItemForm shadow"
       onSubmit={(e) => {
         e.preventDefault();
         console.debug(e);
