@@ -92,7 +92,8 @@ button {
 .grid-item-container {
   width: 72px;
   height: 72px;
-  transition: transform 100ms ease-out;
+  border-radius: 20%;
+  transition: all 100ms ease-out;
 }
 
 .grid-item:hover {

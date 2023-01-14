@@ -90,7 +90,6 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewGroup }) => {
         </span>
         <h2>Page {page + 1}</h2>
         <span className="Navbar-actions">
-          <button>Edit mode</button>
           <Dropdown buttonIcon={<MenuIcon />}>
             <button onClick={() => setOpenModal("bookmark")}>New Bookmark</button>
             <button onClick={() => setOpenModal("group")}>New Group</button>
