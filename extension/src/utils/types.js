@@ -42,6 +42,10 @@ const TEST_GROUP = {
 };
 
 const FORMS = {
+  newBookmark: {
+    name: "bookmarkName",
+    url: "bookmarkUrl",
+  },
   newGroup: {
     name: "groupName",
   },

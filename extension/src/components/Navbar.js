@@ -23,6 +23,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewGroup }) => {
   };
 
   const handleSubmitForm = () => {
+    // TODO: Handle different types
     createNewGroup(formData);
 
     setOpenModal(null);
@@ -30,6 +31,35 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewGroup }) => {
 
   return (
     <>
+      <Modal open={openModal === "bookmark"} onClose={() => setOpenModal(null)}>
+        <NewItemForm
+          onSubmit={handleSubmitForm}
+          itemType={ItemTypes.BOOKMARK}
+          formData={formData}
+          onUpdate={updateFormData}
+        >
+          <div className="form-item">
+            <label htmlFor={FORMS.newBookmark.name}>Bookmark name</label>
+            <input
+              className="text-input"
+              id={FORMS.newBookmark.name}
+              type="text"
+              value={formData[FORMS.newBookmark.name] || ""}
+              onChange={(e) => updateFormData({ [FORMS.newBookmark.name]: e.target.value })}
+            />
+          </div>
+          <div className="form-item">
+            <label htmlFor={FORMS.newBookmark.url}>URL</label>
+            <input
+              className="text-input"
+              id={FORMS.newBookmark.url}
+              type="text"
+              value={formData[FORMS.newBookmark.url] || ""}
+              onChange={(e) => updateFormData({ [FORMS.newBookmark.url]: e.target.value })}
+            />
+          </div>
+        </NewItemForm>
+      </Modal>
       <Modal open={openModal === "group"} onClose={() => setOpenModal(null)}>
         <NewItemForm
           onSubmit={handleSubmitForm}
@@ -43,7 +73,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewGroup }) => {
               className="text-input"
               id={FORMS.newGroup.name}
               type="text"
-              value={formData.groupName || ""}
+              value={formData[FORMS.newGroup.name] || ""}
               onChange={(e) => updateFormData({ [FORMS.newGroup.name]: e.target.value })}
             />
           </div>
@@ -62,7 +92,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewGroup }) => {
         <span className="Navbar-actions">
           <button>Edit mode</button>
           <Dropdown buttonIcon={<MenuIcon />}>
-            <button onClick={() => setOpenModal("group")}>New Bookmark</button>
+            <button onClick={() => setOpenModal("bookmark")}>New Bookmark</button>
             <button onClick={() => setOpenModal("group")}>New Group</button>
             <button onClick={() => setOpenModal("group")}>New Folder</button>
             <button onClick={() => setOpenModal("group")}>Settings</button>
