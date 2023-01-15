@@ -20,7 +20,7 @@
   --m: 16px;
   --l: 24px;
 
-  --font: "Quicksand", sans-serif;
+  --font: "Roboto", sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -51,6 +51,7 @@ body {
 
 .App {
   background: linear-gradient(30deg, #cef6ff, #dddfff);
+  /* background-color: white; */
   height: 100vh;
 }
 
@@ -81,7 +82,7 @@ button {
   font-family: var(--font);
   font-size: 0.75rem;
   text-align: center;
-  color: rgb(22, 22, 22);
+  color: rgb(29, 29, 29);
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;

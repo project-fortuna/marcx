@@ -119,7 +119,9 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
         </div>
       </Modal>
       <button ref={drag} className="grid-item" onClick={openGroupModal}>
-        <article className={`Group-thumbnail grid-item-container ${isDragging ? "wiggle" : ""}`}>
+        <article
+          className={`Group-thumbnail grid-item-container glass ${isDragging ? "wiggle" : ""}`}
+        >
           {displayedThumbnailItems}
         </article>
         <span className="grid-item-label">{group.title}</span>
