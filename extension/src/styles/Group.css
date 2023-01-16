@@ -9,10 +9,16 @@
   border-radius: 0.5rem;
 }
 
+.Group-thumbnail:hover {
+  /* FIXME: Should not blur the foreground items */
+  backdrop-filter: none;
+}
+
 .Group-thumbnail > img,
 .Group-thumbnail > div {
   width: 1rem;
   margin: auto;
+  border-radius: 0.25rem;
 }
 
 .Group-main {
