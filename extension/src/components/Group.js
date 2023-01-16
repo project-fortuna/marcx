@@ -12,7 +12,7 @@ import Modal from "./utility-components/Modal";
 import Dropdown from "./utility-components/Dropdown";
 import "../styles/Group.css";
 import { getBookmarkNodes } from "../utils/functions";
-import { useDrag } from "react-dnd";
+import { useDrag, useDrop } from "react-dnd";
 import Board from "./Board";
 import { useItemsByPage } from "../utils/hooks";
 import PageBorder from "./PageBorder";
@@ -86,15 +86,55 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
 
   const displayedChildren = useItemsByPage(children, page, ITEMS_PER_GROUP);
 
+  const [{ isOver }, moveOutDrop] = useDrop(
+    () => ({
+      accept: [ItemTypes.BOOKMARK],
+      canDrop: (incomingItem, monitor) => {
+        // console.log(incomingItem);
+        return monitor.isOver({ shallow: true });
+      },
+      drop: (incomingItem, monitor) => {
+        if (!monitor.didDrop()) {
+          console.debug("Dropped outside!");
+          moveItemsOut([incomingItem]);
+        }
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver({ shallow: true }),
+      }),
+    }),
+    []
+  );
+
+  const [{ isOverGroup }, noDrop] = useDrop(
+    () => ({
+      accept: [ItemTypes.BOOKMARK],
+      canDrop: (incomingItem, monitor) => {
+        // console.debug(monitor.isOver({ shallow: true }));
+        return false;
+      },
+      collect: (monitor) => ({
+        isOverGroup: !!monitor.isOver({ shallow: true }),
+      }),
+    }),
+    []
+  );
+
   return (
     <>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="Group">
+      <Modal open={open} onClose={() => setOpen(false)} droppableBackgroundRef={moveOutDrop}>
+        <div
+          className="Group-droppable-area"
+          style={{ backgroundColor: isOver ? "hsla(0, 0%, 100%, 10%)" : "transparent" }}
+        >
+          {isOver && <h1>Drop to move item out of group</h1>}
+        </div>
+        <div className="Group" ref={noDrop}>
           <header className="Group-header">
             <h2>Page {page + 1}</h2>
           </header>
           <main className="Group-main">
-            <PageBorder onHover={() => setPage(page - 1)} page={page} left invisible>
+            <PageBorder onHover={() => page > 0 && setPage(page - 1)} page={page} left invisible>
               <button
                 id="group-previous"
                 title="Previous Page"
