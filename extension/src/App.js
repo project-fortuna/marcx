@@ -24,6 +24,7 @@ import {
 import PageBorder from "./components/PageBorder";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useItemsByPage } from "./utils/hooks";
 
 const App = () => {
   const [page, setPage] = useState(0);
@@ -61,16 +62,6 @@ const App = () => {
       chrome.storage.onChanged.removeListener(listener);
     };
   }, []);
-
-  /**
-   * Handles a page change to the new page index.
-   *
-   * @param {number} newPageIdx - The new page index
-   */
-  const handleChangePage = (newPageIdx) => {
-    // Update state
-    setPage(newPageIdx);
-  };
 
   /**
    * Moves the given items to the primary board (top-level).
@@ -142,26 +133,7 @@ const App = () => {
     setTopLevelItems(topLevelItems.concat(group));
   };
 
-  /**
-   * Variable that stores only the top level items that should be displayed
-   * (i.e., the top level items on the current page)
-   */
-  const displayedTopLevelItems = useMemo(() => {
-    if (!topLevelItems) {
-      return [];
-    }
-
-    const currentPageItems = topLevelItems.filter(
-      (item) =>
-        // Get only the items on the current page
-        item.index >= page * ITEMS_PER_PAGE && item.index < (page + 1) * ITEMS_PER_PAGE
-    );
-
-    // Sort the items by index
-    currentPageItems.sort((node1, node2) => node1.index - node2.index);
-
-    return currentPageItems;
-  }, [topLevelItems, page]);
+  const displayedTopLevelItems = useItemsByPage(topLevelItems, page, ITEMS_PER_PAGE);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -172,19 +144,19 @@ const App = () => {
       </Modal> */}
         <Navbar
           page={page}
-          onNextPage={() => handleChangePage(page + 1)}
-          onPreviousPage={() => handleChangePage(page - 1)}
+          onNextPage={() => setPage(page + 1)}
+          onPreviousPage={() => setPage(page - 1)}
           createNewGroup={createNewGroup}
         />
         <main>
-          <PageBorder page={page} onHover={() => page !== 0 && handleChangePage(page - 1)} left />
+          <PageBorder page={page} onHover={() => page !== 0 && setPage(page - 1)} left />
           <Board
             items={displayedTopLevelItems}
             moveItemsOut={moveItemsToTopLevel}
             moveItem={moveItem}
             page={page}
           />
-          <PageBorder page={page} onHover={() => handleChangePage(page + 1)} />
+          <PageBorder page={page} onHover={() => setPage(page + 1)} />
         </main>
       </div>
     </DndProvider>

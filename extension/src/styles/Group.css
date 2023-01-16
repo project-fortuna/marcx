@@ -26,6 +26,32 @@
   justify-content: center;
 }
 
+#group-previous,
+#group-next {
+  border-radius: 1rem;
+  padding: 0 1.5rem;
+}
+
+.Group-main svg {
+  transition: all 150ms ease;
+  font-size: 3rem;
+}
+
+#group-previous:hover > svg,
+#group-next:hover > svg {
+  transform: scale(1.1);
+}
+
+#group-previous:hover:not(:disabled) {
+  cursor: pointer;
+  background: linear-gradient(to right, hsla(0, 0%, 75%, 50%), hsla(0, 0%, 50%, 0%));
+}
+
+#group-next:hover:not(:disabled) {
+  cursor: pointer;
+  background: linear-gradient(to left, hsla(0, 0%, 75%, 50%), hsla(0, 0%, 50%, 0%));
+}
+
 .Group-container {
   border-radius: 2rem;
   height: 70vh;

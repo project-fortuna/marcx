@@ -14,10 +14,12 @@ import "../styles/Group.css";
 import { getBookmarkNodes } from "../utils/functions";
 import { useDrag } from "react-dnd";
 import Board from "./Board";
+import { useItemsByPage } from "../utils/hooks";
 
 const Group = ({ group, moveItemsOut, moveItem }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
+  const [page, setPage] = useState(0);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.GROUP,
@@ -81,29 +83,35 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
     return thumbnailItems;
   }, [children]);
 
+  const displayedChildren = useItemsByPage(children, page, ITEMS_PER_GROUP);
+
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="Group">
           <header className="Group-header">
-            <h2>Page {1}</h2>
+            <h2>Page {page + 1}</h2>
           </header>
           <main className="Group-main">
-            <button title="Previous Page">
-              <ArrowLeftIcon />
+            <button
+              id="group-previous"
+              title="Previous Page"
+              disabled={page <= 0}
+              onClick={() => page > 0 && setPage(page - 1)}
+            >
+              <ArrowLeftIcon fontSize="inherit" />
             </button>
             <div className="Group-container glass shadow">
               <Board
-                items={children}
+                items={displayedChildren}
                 isGroup={true}
                 moveItemsOut={moveItemsOut}
                 moveItem={moveItem}
-                // TODO: Update
-                page={0}
+                page={page}
               />
             </div>
-            <button title="Next Page">
-              <ArrowRightIcon />
+            <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>
+              <ArrowRightIcon fontSize="inherit" />
             </button>
           </main>
           <footer className="Group-footer">
