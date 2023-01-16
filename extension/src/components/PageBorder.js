@@ -5,7 +5,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import "../styles/PageBorder.css";
 
-const PageBorder = ({ left, page, onHover }) => {
+const PageBorder = ({ left, page, onHover, invisible, children }) => {
   const [{ isOver }, drop] = useDrop(
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
@@ -34,7 +34,7 @@ const PageBorder = ({ left, page, onHover }) => {
       timer.current = setTimeout(() => {
         console.log("Hover complete");
         onHover();
-      }, 1500);
+      }, 1000);
     } else {
       clearTimeout(timer.current);
     }
@@ -57,12 +57,16 @@ const PageBorder = ({ left, page, onHover }) => {
   }, [left, page, isOver]);
 
   return (
-    <div ref={drop} className={`PageBorder`}>
+    <div ref={drop} className={`PageBorder${invisible ? "-invisible" : ""}`}>
       {showContent && (
-        <div className={`PageBorder-content ${left ? "left" : ""}`}>
-          {left ? <ArrowLeftIcon fontSize="large" /> : <ArrowRightIcon fontSize="large" />}
+        <div
+          className={`PageBorder-content ${left ? "left" : ""} ${invisible ? "full-border" : ""}`}
+        >
+          {!invisible &&
+            (left ? <ArrowLeftIcon fontSize="large" /> : <ArrowRightIcon fontSize="large" />)}
         </div>
       )}
+      <div style={{ height: "100%" }}>{children}</div>
     </div>
   );
 };

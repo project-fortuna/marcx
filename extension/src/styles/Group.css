@@ -28,8 +28,11 @@
 
 #group-previous,
 #group-next {
+  display: flex;
+  align-items: center;
   border-radius: 1rem;
   padding: 0 1.5rem;
+  height: 100%;
 }
 
 .Group-main svg {

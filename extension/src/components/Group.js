@@ -15,6 +15,7 @@ import { getBookmarkNodes } from "../utils/functions";
 import { useDrag } from "react-dnd";
 import Board from "./Board";
 import { useItemsByPage } from "../utils/hooks";
+import PageBorder from "./PageBorder";
 
 const Group = ({ group, moveItemsOut, moveItem }) => {
   const [open, setOpen] = useState(false);
@@ -93,14 +94,16 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
             <h2>Page {page + 1}</h2>
           </header>
           <main className="Group-main">
-            <button
-              id="group-previous"
-              title="Previous Page"
-              disabled={page <= 0}
-              onClick={() => page > 0 && setPage(page - 1)}
-            >
-              <ArrowLeftIcon fontSize="inherit" />
-            </button>
+            <PageBorder onHover={() => setPage(page - 1)} page={page} left invisible>
+              <button
+                id="group-previous"
+                title="Previous Page"
+                disabled={page <= 0}
+                onClick={() => page > 0 && setPage(page - 1)}
+              >
+                <ArrowLeftIcon fontSize="inherit" />
+              </button>
+            </PageBorder>
             <div className="Group-container glass shadow">
               <Board
                 items={displayedChildren}
@@ -110,9 +113,11 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
                 page={page}
               />
             </div>
-            <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>
-              <ArrowRightIcon fontSize="inherit" />
-            </button>
+            <PageBorder onHover={() => setPage(page + 1)} page={page} invisible>
+              <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>
+                <ArrowRightIcon fontSize="inherit" />
+              </button>
+            </PageBorder>
           </main>
           <footer className="Group-footer">
             <h1>{group.title}</h1>
