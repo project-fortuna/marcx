@@ -9,6 +9,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OutboxIcon from "@mui/icons-material/Outbox";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import Modal from "./utility-components/Modal";
 import "../styles/Folder.css";
@@ -148,7 +149,10 @@ const Folder = ({ folder, moveItemsOut }) => {
                 <OutboxIcon />
                 <label htmlFor="move-all-out">Move all folder contents out</label>
               </button>
-              <button>Other</button>
+              <button id="delete-folder">
+                <DeleteIcon />
+                <label htmlFor="delete-folder">Delete Folder</label>
+              </button>
             </Dropdown>
           </span>
           <ul className="Folder-menu-item-list">
