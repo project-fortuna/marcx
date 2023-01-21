@@ -189,6 +189,10 @@ const Folder = ({ folder, moveItemsOut }) => {
                       <EditIcon />
                       <label htmlFor="edit">Edit {item.type}</label>
                     </button>
+                    <button id="delete">
+                      <EditIcon />
+                      <label htmlFor="delete">Delete {item.type}</label>
+                    </button>
                   </Dropdown>
                 </li>
               );
