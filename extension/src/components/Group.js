@@ -76,9 +76,9 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
         nextItemIdx++;
         thumbnailItems.push(
           <img
+            key={item.id}
             src={`${FAVICON_URL}${item.url}`}
             alt={item.url}
-            key={item.id}
             onError={() => console.warn(`Could not load ${item.title}`)}
           />
         );
@@ -86,7 +86,7 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
       }
 
       // No item was found at that grid index, push an empty div
-      thumbnailItems.push(<div />);
+      thumbnailItems.push(<div key={`empty-item-${gridIdx}`} />);
     }
 
     return thumbnailItems;
