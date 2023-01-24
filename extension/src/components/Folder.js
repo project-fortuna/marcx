@@ -1,7 +1,7 @@
 /*global chrome*/
 
 import React, { useState } from "react";
-import { BookmarkNode, FAVICON_URL, ItemTypes } from "../utils/types";
+import { BookmarkNode, FAVICON_URL, ItemTypes, ROOT_ID } from "../utils/types";
 
 // Materical icons
 import FolderIcon from "@mui/icons-material/Folder";
@@ -13,7 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import Modal from "./utility-components/Modal";
 import "../styles/Folder.css";
-import { getBookmarkNodes } from "../utils/functions";
+import { deleteBookmarkNodes, getBookmarkNodes } from "../utils/functions";
 import Dropdown from "./utility-components/Dropdown";
 import { useDrag } from "react-dnd";
 
@@ -118,30 +118,58 @@ const Folder = ({ folder, moveItemsOut }) => {
     }
   };
 
+  /**
+   *
+   * @param {string[]} itemIds
+   */
+  const deleteItems = (itemIds) => {
+    console.debug(`About to deleting items: ${itemIds}`);
+    deleteBookmarkNodes(itemIds).then(() => {
+      // Update the children
+      const updatedChildren = children.filter((child) => !itemIds.includes(child.id));
+      setChildren(updatedChildren);
+    });
+  };
+
+  const deleteCurrentFolder = () => {
+    const currentFolder = breadcrumbs[breadcrumbs.length - 1];
+    console.debug(`About to delete ${currentFolder.id} (${currentFolder.title})`);
+
+    deleteBookmarkNodes([currentFolder.id]).then(() => {
+      // If the top-level folder is deleted, close the modal
+      if (currentFolder.parentId == ROOT_ID) {
+        console.debug("Deleting the top-level folder, closing modal");
+        setOpen(false);
+        return;
+      }
+
+      // Otherwise update the breadcrumbs (and children)
+      setBreadcrumbs(breadcrumbs.slice(0, breadcrumbs.length - 1));
+      getChildren(currentFolder.parentId);
+    });
+  };
+
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="Folder-menu shadow">
           <span className="Folder-menu-header">
             <nav>
-              <button
-                className="Folder-menu-breadcrumb"
-                onClick={resetBreadcrumbs}
-                title={`Open ${folder.title}`}
-              >
-                {folder.title}
-              </button>
+              <span className="Folder-menu-breadcrumb">
+                <button onClick={resetBreadcrumbs} title={`Open ${folder.title}`}>
+                  {folder.title}
+                </button>
+              </span>
               {breadcrumbs.map((breadcrumb) => (
-                <>
+                <span className="Folder-menu-breadcrumb" key={breadcrumb.id}>
                   <ArrowRightIcon />
                   <button
-                    className="Folder-menu-breadcrumb"
                     title={`Open ${breadcrumb.title}`}
                     onClick={() => onBreadcrumbClick(breadcrumb)}
                   >
                     {breadcrumb.title}
                   </button>
-                </>
+                </span>
               ))}
             </nav>
             <Dropdown buttonIcon={<MoreVertIcon />}>
@@ -149,7 +177,7 @@ const Folder = ({ folder, moveItemsOut }) => {
                 <OutboxIcon />
                 <label htmlFor="move-all-out">Move all folder contents out</label>
               </button>
-              <button id="delete-folder">
+              <button id="delete-folder" onClick={deleteCurrentFolder}>
                 <DeleteIcon />
                 <label htmlFor="delete-folder">Delete Folder</label>
               </button>
@@ -189,8 +217,8 @@ const Folder = ({ folder, moveItemsOut }) => {
                       <EditIcon />
                       <label htmlFor="edit">Edit {item.type}</label>
                     </button>
-                    <button id="delete">
-                      <EditIcon />
+                    <button id="delete" onClick={() => deleteItems([item.id])}>
+                      <DeleteIcon />
                       <label htmlFor="delete">Delete {item.type}</label>
                     </button>
                   </Dropdown>

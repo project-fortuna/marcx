@@ -21,6 +21,11 @@
 }
 
 .Folder-menu-breadcrumb {
+  display: flex;
+  align-items: center;
+}
+
+.Folder-menu-breadcrumb > button {
   font-family: var(--font);
   font-size: large;
   font-weight: bold;
@@ -28,7 +33,7 @@
   transition: all 100ms ease;
 }
 
-.Folder-menu-breadcrumb:hover {
+.Folder-menu-breadcrumb > button:hover {
   cursor: pointer;
   font-weight: bolder;
   color: black;

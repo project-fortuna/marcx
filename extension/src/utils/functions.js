@@ -31,6 +31,19 @@ export async function addNewBookmarkNode(item) {
 }
 
 /**
+ * Deletes the given list of bookmark nodes from the list
+ *
+ * @param {string[]} itemIds - List of items IDs to delete
+ */
+export async function deleteBookmarkNodes(itemIds) {
+  const currentNodes = await getBookmarkNodes();
+  const updatedNodes = currentNodes.filter((item) => !itemIds.includes(item.id));
+  await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
+
+  return updatedNodes;
+}
+
+/**
  * Updates a given list of bookmark nodes/items.
  *
  * @param {string[]} itemIds
