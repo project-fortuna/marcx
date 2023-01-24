@@ -1,6 +1,6 @@
 /*global chrome*/
 
-import { BookmarkNode, ItemTypes } from "./types";
+import { BookmarkNode, ItemTypes, ROOT_ID } from "./types";
 
 /**
  * Gets bookmark nodes from Chrome storage based on a matching function.
@@ -167,9 +167,18 @@ export async function moveItemsIntoContainer(items, containerId) {
 
 export async function convertFolderToGroup(folderId) {
   const currentNodes = await getBookmarkNodes();
+
   const updatedNodes = currentNodes.map((node) => {
     if (node.id == folderId) {
-      return { ...node, type: ItemTypes.GROUP };
+      // Change the targeted folder to a group
+      // Note that folders cannot be nested so automatically move it to the top
+      // level if not already
+      let newIndex = node.index;
+      if (node.parentId != ROOT_ID) {
+        const topLevelItems = currentNodes.filter((node) => node.parentId == ROOT_ID);
+        newIndex = getAvailableIndices(topLevelItems, 1)[0];
+      }
+      return { ...node, type: ItemTypes.GROUP, parentId: ROOT_ID, index: newIndex };
     }
     return node;
   });

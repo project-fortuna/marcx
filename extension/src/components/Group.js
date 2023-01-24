@@ -18,6 +18,8 @@ import { useItemsByPage } from "../utils/hooks";
 import PageBorder from "./PageBorder";
 import globeDark from "../images/globe-dark.png";
 
+// TODO: MAke sure you can open folders properly within groups
+
 const Group = ({ group, moveItemsOut, moveItem }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
