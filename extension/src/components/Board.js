@@ -15,7 +15,7 @@ import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
  *    * No two items have the same index
  *
  */
-const Board = ({ items, isGroup, moveItemsOut, moveItem, page }) => {
+const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer }) => {
   const grids = useMemo(() => {
     if (!items) {
       return [];
@@ -43,6 +43,7 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem, page }) => {
             moveItemsOut={moveItemsOut}
             moveItem={moveItem}
             inGroup={isGroup}
+            convertContainer={convertContainer}
           />
         );
         continue;

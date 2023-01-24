@@ -1,6 +1,6 @@
 /*global chrome*/
 
-import { BookmarkNode } from "./types";
+import { BookmarkNode, ItemTypes } from "./types";
 
 /**
  * Gets bookmark nodes from Chrome storage based on a matching function.
@@ -162,6 +162,18 @@ export async function moveItemsIntoContainer(items, containerId) {
   // Set updated nodes in the backend
   await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
 
+  return updatedNodes;
+}
+
+export async function convertFolderToGroup(folderId) {
+  const currentNodes = await getBookmarkNodes();
+  const updatedNodes = currentNodes.map((node) => {
+    if (node.id == folderId) {
+      return { ...node, type: ItemTypes.GROUP };
+    }
+    return node;
+  });
+  await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
   return updatedNodes;
 }
 

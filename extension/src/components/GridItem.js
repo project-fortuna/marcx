@@ -25,7 +25,7 @@ import Group from "./Group";
  * @returns {JSX.Element}
  * @constructor
  */
-const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
+const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup, convertContainer }) => {
   const [{ isOverGrid, canDrop }, drop] = useDrop(
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
@@ -57,11 +57,20 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup }) => {
   const displayedItem = useMemo(() => {
     switch (item.type) {
       case ItemTypes.FOLDER:
-        return <Folder folder={item} moveItemsOut={moveItemsOut} />;
+        return (
+          <Folder folder={item} moveItemsOut={moveItemsOut} convertContainer={convertContainer} />
+        );
       case ItemTypes.BOOKMARK:
         return <Bookmark bookmark={item} />;
       case ItemTypes.GROUP:
-        return <Group group={item} moveItemsOut={moveItemsOut} moveItem={moveItem} />;
+        return (
+          <Group
+            group={item}
+            moveItemsOut={moveItemsOut}
+            moveItem={moveItem}
+            convertContainer={convertContainer}
+          />
+        );
       default:
         return <></>;
     }

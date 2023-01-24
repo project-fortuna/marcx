@@ -16,6 +16,7 @@ import { useDrag, useDrop } from "react-dnd";
 import Board from "./Board";
 import { useItemsByPage } from "../utils/hooks";
 import PageBorder from "./PageBorder";
+import globeDark from "../images/globe-dark.png";
 
 const Group = ({ group, moveItemsOut, moveItem }) => {
   const [open, setOpen] = useState(false);
@@ -73,7 +74,14 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
       if (children[nextItemIdx]?.index % ITEMS_PER_GROUP === gridIdx) {
         const item = children[nextItemIdx];
         nextItemIdx++;
-        thumbnailItems.push(<img src={`${FAVICON_URL}${item.url}`} alt={item.url} />);
+        thumbnailItems.push(
+          <img
+            src={`${FAVICON_URL}${item.url}`}
+            alt={item.url}
+            key={item.id}
+            onError={() => console.warn(`Could not load ${item.title}`)}
+          />
+        );
         continue;
       }
 

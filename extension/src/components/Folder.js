@@ -10,14 +10,15 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OutboxIcon from "@mui/icons-material/Outbox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import GroupIcon from "@mui/icons-material/CropSquare";
 
 import Modal from "./utility-components/Modal";
 import "../styles/Folder.css";
-import { deleteBookmarkNodes, getBookmarkNodes } from "../utils/functions";
+import { convertFolderToGroup, deleteBookmarkNodes, getBookmarkNodes } from "../utils/functions";
 import Dropdown from "./utility-components/Dropdown";
 import { useDrag } from "react-dnd";
 
-const Folder = ({ folder, moveItemsOut }) => {
+const Folder = ({ folder, moveItemsOut, convertContainer }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
@@ -118,6 +119,14 @@ const Folder = ({ folder, moveItemsOut }) => {
     }
   };
 
+  const getCurrentFolder = () => {
+    if (!breadcrumbs.length) {
+      return folder;
+    }
+
+    return breadcrumbs[breadcrumbs.length - 1];
+  };
+
   /**
    *
    * @param {string[]} itemIds
@@ -132,7 +141,7 @@ const Folder = ({ folder, moveItemsOut }) => {
   };
 
   const deleteCurrentFolder = () => {
-    const currentFolder = breadcrumbs[breadcrumbs.length - 1];
+    const currentFolder = getCurrentFolder();
     console.debug(`About to delete ${currentFolder.id} (${currentFolder.title})`);
 
     deleteBookmarkNodes([currentFolder.id]).then(() => {
@@ -147,6 +156,12 @@ const Folder = ({ folder, moveItemsOut }) => {
       setBreadcrumbs(breadcrumbs.slice(0, breadcrumbs.length - 1));
       getChildren(currentFolder.parentId);
     });
+  };
+
+  const convertToGroup = () => {
+    const currentFolder = getCurrentFolder();
+    console.debug(`Converting "${currentFolder.title}" to group`);
+    convertContainer(currentFolder.id, currentFolder.type).then(() => setOpen(false));
   };
 
   return (
@@ -179,7 +194,11 @@ const Folder = ({ folder, moveItemsOut }) => {
               </button>
               <button id="delete-folder" onClick={deleteCurrentFolder}>
                 <DeleteIcon />
-                <label htmlFor="delete-folder">Delete Folder</label>
+                <label htmlFor="delete-folder">Delete folder</label>
+              </button>
+              <button id="convert-to-group" onClick={convertToGroup}>
+                <GroupIcon />
+                <label htmlFor="convert-to-group">Convert to Group</label>
               </button>
             </Dropdown>
           </span>
@@ -211,7 +230,7 @@ const Folder = ({ folder, moveItemsOut }) => {
                   <Dropdown buttonIcon={<MoreVertIcon />}>
                     <button id="move-out" onClick={() => handleMoveChildOut(item)}>
                       <OutboxIcon />
-                      <label htmlFor="move-out">Move this {item.type} out</label>
+                      <label htmlFor="move-out">Move {item.type} out</label>
                     </button>
                     <button id="edit">
                       <EditIcon />

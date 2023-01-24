@@ -11,6 +11,7 @@ import {
   updateBookmarkNodes,
   getAvailableIndices,
   getNewId,
+  convertFolderToGroup,
 } from "./utils/functions";
 import {
   ITEMS_PER_PAGE,
@@ -110,6 +111,10 @@ const App = () => {
     }
   };
 
+  /**
+   *
+   * @param {object} data
+   */
   const createNewGroup = async (data) => {
     console.log("Creating new group");
     console.log(data);
@@ -131,6 +136,19 @@ const App = () => {
     console.log("Successfully added new group");
     console.log(group);
     setTopLevelItems(topLevelItems.concat(group));
+  };
+
+  /**
+   *
+   * @param {string} itemId
+   * @param {string} currentType
+   */
+  const convertContainer = async (itemId, currentType) => {
+    if (currentType === ItemTypes.FOLDER) {
+      const updatedNodes = await convertFolderToGroup(itemId);
+      setTopLevelItems(updatedNodes.filter((node) => node.parentId == ROOT_ID));
+      return true;
+    }
   };
 
   const displayedTopLevelItems = useItemsByPage(topLevelItems, page, ITEMS_PER_PAGE);
@@ -155,6 +173,7 @@ const App = () => {
             moveItemsOut={moveItemsToTopLevel}
             moveItem={moveItem}
             page={page}
+            convertContainer={convertContainer}
           />
           <PageBorder page={page} onHover={() => setPage(page + 1)} />
         </main>
