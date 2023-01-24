@@ -49,6 +49,9 @@ const FORMS = {
   newGroup: {
     name: "groupName",
   },
+  newFolder: {
+    name: "folderName",
+  },
 };
 
 module.exports = {

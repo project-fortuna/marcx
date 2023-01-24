@@ -113,29 +113,33 @@ const App = () => {
 
   /**
    *
-   * @param {object} data
+   * @param {object} newItem
    */
-  const createNewGroup = async (data) => {
-    console.log("Creating new group");
-    console.log(data);
+  const createNewItem = async (newItem) => {
+    console.log("Creating new item");
+    console.log(newItem);
 
     const availableIndex = getAvailableIndices(topLevelItems, 1)[0];
     const id = await getNewId();
 
-    const newGroup = {
+    // New item with default fields, can be overwritten by the incoming item
+    // object
+    const itemToAdd = {
       id,
       index: availableIndex,
-      title: data[FORMS.newGroup.name],
+      title: "No title",
       parentId: ROOT_ID,
-      type: ItemTypes.GROUP,
+      type: ItemTypes.EMPTY,
       dateAdded: Date.now(),
-      children: [],
+      ...newItem,
     };
 
-    const group = await addNewBookmarkNode(newGroup);
-    console.log("Successfully added new group");
-    console.log(group);
-    setTopLevelItems(topLevelItems.concat(group));
+    const addedItem = await addNewBookmarkNode(itemToAdd);
+    console.log(`Successfully added new ${addedItem.type}`);
+    console.log(addedItem);
+    if (addedItem.parentId == ROOT_ID) {
+      setTopLevelItems(topLevelItems.concat(addedItem));
+    }
   };
 
   /**
@@ -164,7 +168,7 @@ const App = () => {
           page={page}
           onNextPage={() => setPage(page + 1)}
           onPreviousPage={() => setPage(page - 1)}
-          createNewGroup={createNewGroup}
+          createNewItem={createNewItem}
         />
         <main>
           <PageBorder page={page} onHover={() => page !== 0 && setPage(page - 1)} left />
