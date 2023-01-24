@@ -18,8 +18,6 @@ import { useItemsByPage } from "../utils/hooks";
 import PageBorder from "./PageBorder";
 import globeDark from "../images/globe-dark.png";
 
-// TODO: MAke sure you can open folders properly within groups
-
 const Group = ({ group, moveItemsOut, moveItem }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
@@ -151,10 +149,19 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
                 disabled={page <= 0}
                 onClick={() => page > 0 && setPage(page - 1)}
               >
-                <ArrowLeftIcon fontSize="inherit" />
+                <ArrowLeftIcon style={{ fontSize: "3rem" }} fontSize="inherit" />
               </button>
             </PageBorder>
-            <div className="Group-container glass shadow">
+            <div className="Group-container glass shadow" style={{ backdropFilter: "none" }}>
+              <div
+                style={{
+                  position: "absolute",
+                  inset: "0",
+                  backdropFilter: "blur(2px)",
+                  zIndex: "-1",
+                  borderRadius: "2rem",
+                }}
+              ></div>
               <Board
                 items={displayedChildren}
                 isGroup={true}
@@ -165,7 +172,7 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
             </div>
             <PageBorder onHover={() => setPage(page + 1)} page={page} invisible>
               <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>
-                <ArrowRightIcon fontSize="inherit" />
+                <ArrowRightIcon style={{ fontSize: "3rem" }} fontSize="inherit" />
               </button>
             </PageBorder>
           </main>

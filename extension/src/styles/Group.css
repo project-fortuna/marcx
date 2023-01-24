@@ -10,7 +10,7 @@
 }
 
 .Group-thumbnail:hover {
-  /* FIXME: Should not blur the foreground items */
+  /* FIXME: Should not blur the foreground items on hover */
   backdrop-filter: none;
 }
 
@@ -37,7 +37,6 @@
 
 .Group-main svg {
   transition: all 150ms ease;
-  font-size: 3rem;
 }
 
 #group-previous:hover > svg,
@@ -56,11 +55,11 @@
 }
 
 .Group-container {
+  position: relative;
   border-radius: 2rem;
   height: 70vh;
   max-height: 100vh;
   width: 70vh;
-
   padding: 1rem;
 }
 
