@@ -39,4 +39,4 @@ cd extension/
 npm version $1
 
 cd ..
-npm version $1
+npm version $1 --force
