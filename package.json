@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "build": "cd extension && npm run build",
-    "dev": "cd extension && npm run dev"
+    "dev": "cd extension && npm run dev",
+    "preversion": "git add extension/public/manifest.json extension/package*"
   },
   "repository": {
     "type": "git",
