@@ -149,6 +149,7 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
       if (currentFolder.parentId == ROOT_ID) {
         console.debug("Deleting the top-level folder, closing modal");
         setOpen(false);
+        // TODO: Remove from top level automatically
         return;
       }
 

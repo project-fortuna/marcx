@@ -27,6 +27,16 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
     setFormData((prevData) => ({ ...prevData, ...newData }));
   };
 
+  const openForm = (itemType) => {
+    setFormData({});
+    setOpenModal(itemType);
+  };
+
+  const clearAndCloseForm = () => {
+    setFormData({});
+    setOpenModal(null);
+  };
+
   const handleSubmitForm = () => {
     switch (openModal) {
       case ItemTypes.BOOKMARK:
@@ -35,7 +45,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
           type: ItemTypes.BOOKMARK,
           url: formData[FORMS.newBookmark.url],
         };
-        createNewItem(bookmarkData).then(() => setOpenModal(null));
+        createNewItem(bookmarkData).then(clearAndCloseForm);
         break;
       case ItemTypes.GROUP:
         const groupData = {
@@ -43,14 +53,16 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
           type: ItemTypes.GROUP,
           children: [],
         };
-        createNewItem(groupData).then(() => setOpenModal(null));
+        createNewItem(groupData).then(clearAndCloseForm);
+        break;
       case ItemTypes.FOLDER:
         const folderData = {
           title: formData[FORMS.newFolder.name],
           type: ItemTypes.FOLDER,
           children: [],
         };
-        createNewItem(folderData).then(() => setOpenModal(null));
+        createNewItem(folderData).then(clearAndCloseForm);
+        break;
       default:
         console.warn("Not a valid item type, could not create");
         setOpenModal(null);
@@ -155,19 +167,19 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
         <h2>Page {page + 1}</h2>
         <span className="Navbar-actions">
           <Dropdown buttonIcon={<MenuIcon />}>
-            <button onClick={() => setOpenModal("bookmark")}>
+            <button onClick={() => openForm("bookmark")}>
               <BookmarkAddIcon />
               <label htmlFor="">New Bookmark</label>
             </button>
-            <button onClick={() => setOpenModal("group")}>
+            <button onClick={() => openForm("group")}>
               <AddBoxIcon />
               <label htmlFor="">New Group</label>
             </button>
-            <button onClick={() => setOpenModal("folder")}>
+            <button onClick={() => openForm("folder")}>
               <CreateNewFolderIcon />
               <label htmlFor="">New Folder</label>
             </button>
-            <button onClick={() => setOpenModal("settings")}>
+            <button onClick={() => openForm("settings")}>
               <label htmlFor="">Settings</label>
             </button>
             <button onClick={downloadBookmarkData}>
