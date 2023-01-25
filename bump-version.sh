@@ -37,3 +37,6 @@ sed -i s/'"version": ".*"'/'"version": "'$updated'"'/g extension/public/manifest
 # Finally update the package version and push
 cd extension/
 npm version $1
+
+cd ..
+npm version $1
