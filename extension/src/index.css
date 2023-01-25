@@ -1,0 +1,192 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+:root {
+  --primary: #03045e;
+  --primary--dim: #0077b6;
+  --darkgrey: #00b4d8;
+  --medgrey: #48cae4;
+  --grey: #90e0ef;
+  --white: #caf0f8;
+
+  --group-bgcolor: hsla(0, 0%, 90%, 0.5);
+
+  --white: hsl(0, 0%, 98%);
+  --off-white: hsl(0, 0%, 94%);
+
+  --droppable-bgcolor: rgba(51, 208, 51, 0.5);
+  --not-droppable-bgcolor: rgba(255, 82, 82, 0.5);
+
+  --xs: 4px;
+  --s: 8px;
+  --m: 16px;
+  --l: 24px;
+
+  --font: "Roboto", sans-serif;
+}
+
+@keyframes glow {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background-color: #888;
+  transition: all 200ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background-color: #555;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+}
+
+.App {
+  background: linear-gradient(30deg, #cef6ff, #dddfff);
+  /* background-color: white; */
+  height: 100vh;
+}
+
+.App > main {
+  display: flex;
+}
+
+.App > main > .board {
+  flex: 1;
+}
+
+/* Buttons by default should have no styling */
+button {
+  background-color: transparent;
+  border: none;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  text-decoration: none;
+}
+
+.grid-item-label {
+  font-family: var(--font);
+  font-size: 0.75rem;
+  text-align: center;
+  color: rgb(29, 29, 29);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 210px;
+}
+
+.grid-item-container {
+  width: 72px;
+  height: 72px;
+  border-radius: 20%;
+  transition: all 100ms ease-out;
+}
+
+.grid-item:hover {
+  cursor: pointer;
+}
+
+.grid-item:hover .grid-item-container:not(.wiggle) {
+  transform: scale(1.1);
+}
+
+/* Add scale to maintain scale from hover */
+@keyframes wiggle {
+  0% {
+    transform: rotate(0) scale(1.1);
+  }
+  25% {
+    transform: rotate(0.01turn) scale(1.1);
+  }
+  50% {
+    transform: rotate(0turn) scale(1.1);
+  }
+  75% {
+    transform: rotate(-0.01turn) scale(1.1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.wiggle {
+  animation: wiggle 0.2s infinite linear;
+}
+
+.primary-button {
+  color: aliceblue;
+  background-color: #0077b6;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+
+  transition: all 0.1s ease-out;
+}
+
+.primary-button:hover {
+  background-color: #00507a;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.text-input {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.droppable {
+  background-color: var(--droppable-bgcolor);
+}
+
+.not-droppable {
+  background-color: var(--not-droppable-bgcolor);
+}
+
+.shadow {
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.glass {
+  background: linear-gradient(157.81deg, hsla(0, 0%, 67%, 0.4) 3.65%, hsla(0, 0%, 67%, 0.1) 96.08%);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid hsla(0, 0%, 50%, 0.397);
+}

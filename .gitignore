@@ -1,6 +1,5 @@
-client/dist/bundle.js
 node_modules/
 .env
 .DS_Store
 .idea/
-client/dist/bundle.js.LICENSE.txt
+client/dist/
