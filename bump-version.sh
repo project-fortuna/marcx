@@ -1,5 +1,4 @@
 echo Updating $1 version
-echo Updating manifest
 
 update_type=$1
 
@@ -30,8 +29,13 @@ fi
 # Concatenate the updated components to form the new version number
 updated="$major.$minor.$patch"
 
-# Update the version number in the manifest file
 echo New version: $updated
+
+echo Checking out release branch...
+git checkout -b release-$updated develop
+
+# Update the version number in the manifest file
+echo Updating Chrome extension manifest...
 sed -i s/'"version": ".*"'/'"version": "'$updated'"'/g extension/public/manifest.json
 
 # Finally update the package version and push
