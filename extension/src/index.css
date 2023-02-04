@@ -184,6 +184,14 @@ button {
   gap: 0.4rem;
 }
 
+.standard-modal-container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
 .glass {
   background: linear-gradient(157.81deg, hsla(0, 0%, 67%, 0.4) 3.65%, hsla(0, 0%, 67%, 0.1) 96.08%);
   -webkit-backdrop-filter: blur(10px);

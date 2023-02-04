@@ -4,7 +4,7 @@ import "../../styles/NewItemForm.css";
 const NewItemForm = ({ itemType, children, onSubmit }) => {
   return (
     <form
-      className="NewItemForm shadow"
+      className="standard-modal-container NewItemForm shadow"
       onSubmit={(e) => {
         e.preventDefault();
         console.debug(e);

@@ -168,7 +168,7 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="Folder-menu shadow">
+        <div className="standard-modal-container Folder-menu shadow">
           <span className="Folder-menu-header">
             <nav>
               <span className="Folder-menu-breadcrumb">
