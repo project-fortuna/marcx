@@ -1,0 +1,86 @@
+.Group-thumbnail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  column-gap: 0.5rem;
+  row-gap: 0.5rem;
+  padding: 0.5rem;
+
+  border-radius: 0.5rem;
+}
+
+.Group-thumbnail:hover {
+  /* FIXME: Should not blur the foreground items on hover */
+  backdrop-filter: none;
+}
+
+.Group-thumbnail > img,
+.Group-thumbnail > div {
+  width: 1rem;
+  margin: auto;
+  border-radius: 0.25rem;
+}
+
+.Group-main {
+  display: flex;
+  justify-content: center;
+}
+
+#group-previous,
+#group-next {
+  display: flex;
+  align-items: center;
+  border-radius: 1rem;
+  padding: 0 1.5rem;
+  height: 100%;
+}
+
+.Group-main svg {
+  transition: all 150ms ease;
+}
+
+#group-previous:hover > svg,
+#group-next:hover > svg {
+  transform: scale(1.1);
+}
+
+#group-previous:hover:not(:disabled) {
+  cursor: pointer;
+  background: linear-gradient(to right, hsla(0, 0%, 75%, 50%), hsla(0, 0%, 50%, 0%));
+}
+
+#group-next:hover:not(:disabled) {
+  cursor: pointer;
+  background: linear-gradient(to left, hsla(0, 0%, 75%, 50%), hsla(0, 0%, 50%, 0%));
+}
+
+.Group-container {
+  position: relative;
+  border-radius: 2rem;
+  height: 70vh;
+  max-height: 100vh;
+  width: 70vh;
+  padding: 1rem;
+}
+
+.Group-footer,
+.Group-header {
+  display: flex;
+  justify-content: center;
+}
+
+.Group-droppable-area {
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  transition: all 200ms ease;
+}
+
+.Group-droppable-area > h1 {
+  color: hsl(0, 0%, 15%);
+  padding: 2rem;
+  animation: glow 1s linear 0.2s infinite alternate;
+}
