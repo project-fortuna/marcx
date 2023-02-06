@@ -157,7 +157,7 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
                 style={{
                   position: "absolute",
                   inset: "0",
-                  backdropFilter: "blur(2px)",
+                  backdropFilter: "blur(10px)",
                   zIndex: "-1",
                   borderRadius: "2rem",
                 }}

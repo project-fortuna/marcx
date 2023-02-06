@@ -1,0 +1,35 @@
+.Settings {
+  gap: 1rem;
+}
+
+.Settings .upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.Settings .section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.upload-modal {
+  height: 80vh;
+  max-width: 80vw;
+}
+
+.upload-modal ul {
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: inset 0px 4px 8px 0px hsla(0, 0%, 0%, 0.1);
+}
+
+.upload-modal section > span {
+  display: flex;
+  gap: 0.5rem;
+}

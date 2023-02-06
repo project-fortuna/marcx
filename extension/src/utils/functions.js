@@ -66,6 +66,16 @@ export async function updateBookmarkNodes(itemIds, updateFn) {
 }
 
 /**
+ * Overwrites all bookmark nodes
+ *
+ * @param {BookmarkNode[]} newNodes
+ */
+export async function overwriteBookmarkNodes(newNodes) {
+  await chrome.storage.local.set({ bookmarkNodes: newNodes });
+  return newNodes;
+}
+
+/**
  * Gets the available indices within a list of items.
  *
  * Adapted from ChatGPT solution

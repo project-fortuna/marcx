@@ -6,15 +6,15 @@ import MenuIcon from "@mui/icons-material/Menu";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 import "../styles/Navbar.css";
 import Modal from "./utility-components/Modal";
 import NewItemForm from "./utility-components/NewItemForm";
 import { FORMS, ItemTypes } from "../utils/types";
-import { getBookmarkNodes } from "../utils/functions";
+import Settings from "./Settings";
 
-const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
+const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem, overwriteBookmarkData }) => {
   const [openModal, setOpenModal] = useState(null);
   const [formData, setFormData] = useState({});
 
@@ -70,24 +70,11 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
     }
   };
 
-  const downloadBookmarkData = async () => {
-    const allBookmarkData = await getBookmarkNodes();
-
-    // Create the file object
-    const file = new Blob([JSON.stringify(allBookmarkData)], { type: "application/json" });
-
-    // Create anchor link
-    const element = document.createElement("a");
-    element.href = URL.createObjectURL(file);
-    element.download = "marcx-bookmarks-" + Date.now() + ".json";
-
-    // Simulate link click
-    document.body.appendChild(element);
-    element.click();
-  };
-
   return (
     <>
+      <Modal open={openModal === "settings"} onClose={() => setOpenModal(null)}>
+        <Settings overwriteBookmarkData={overwriteBookmarkData} />
+      </Modal>
       <Modal open={openModal === "bookmark"} onClose={() => setOpenModal(null)}>
         <NewItemForm
           onSubmit={handleSubmitForm}
@@ -180,11 +167,8 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
               <label htmlFor="">New Folder</label>
             </button>
             <button onClick={() => openForm("settings")}>
+              <SettingsIcon />
               <label htmlFor="">Settings</label>
-            </button>
-            <button onClick={downloadBookmarkData}>
-              <FileDownloadIcon />
-              <label htmlFor="">Export bookmark data</label>
             </button>
           </Dropdown>
         </span>

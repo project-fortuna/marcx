@@ -12,6 +12,7 @@ import {
   getAvailableIndices,
   getNewId,
   convertFolderToGroup,
+  overwriteBookmarkNodes,
 } from "./utils/functions";
 import {
   ITEMS_PER_PAGE,
@@ -157,6 +158,19 @@ const App = () => {
 
   const displayedTopLevelItems = useItemsByPage(topLevelItems, page, ITEMS_PER_PAGE);
 
+  const overwriteBookmarkData = (uploadedData) => {
+    if (!uploadedData) {
+      console.warn("No bookmark data to upload");
+      return;
+    }
+    console.log("About to upload", uploadedData.length, "items");
+
+    overwriteBookmarkNodes(uploadedData).then((updatedNodes) =>
+      setTopLevelItems(updatedNodes.filter((node) => node.parentId == ROOT_ID))
+    );
+    // TODO: Make sure the JSON file is valid
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="App">
@@ -169,6 +183,7 @@ const App = () => {
           onNextPage={() => setPage(page + 1)}
           onPreviousPage={() => setPage(page - 1)}
           createNewItem={createNewItem}
+          overwriteBookmarkData={overwriteBookmarkData}
         />
         <main>
           <PageBorder page={page} onHover={() => page !== 0 && setPage(page - 1)} left />

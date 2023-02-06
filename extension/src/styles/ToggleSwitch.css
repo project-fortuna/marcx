@@ -1,0 +1,41 @@
+.ToggleSwitch input[type="checkbox"] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+
+.ToggleSwitch label {
+  cursor: pointer;
+  text-indent: -9999px;
+  width: 5rem;
+  height: 2.5rem;
+  background: grey;
+  display: block;
+  border-radius: 100px;
+  position: relative;
+}
+
+.ToggleSwitch label:after {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  left: 5px;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: #fff;
+  border-radius: 90px;
+  transition: 0.3s;
+}
+
+.ToggleSwitch input:checked + label {
+  background: #151515;
+}
+
+.ToggleSwitch input:checked + label:after {
+  left: calc(100% - 5px);
+  transform: translateX(-100%);
+}
+
+.ToggleSwitch label:active:after {
+  width: 2rem;
+}
