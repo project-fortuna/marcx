@@ -221,7 +221,7 @@ const Folder = ({ folder, convertContainer }) => {
             </Dropdown>
           </span>
           <ul className="Folder-menu-item-list">
-            {children?.map((item) => {
+            {children?.map((item, i) => {
               return (
                 <li
                   key={item.id}
@@ -245,7 +245,7 @@ const Folder = ({ folder, convertContainer }) => {
                       {item.url}
                     </label>
                   </span>
-                  <Dropdown buttonIcon={<MoreVertIcon />}>
+                  <Dropdown buttonIcon={<MoreVertIcon />} dropup={i >= children.length - 5}>
                     <button id="move-out" onClick={() => handleMoveChildOut(item)}>
                       <OutboxIcon />
                       <label htmlFor="move-out">Move {item.type} out</label>

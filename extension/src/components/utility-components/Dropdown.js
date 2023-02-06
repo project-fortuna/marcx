@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../styles/Dropdown.css";
 
-const Dropdown = ({ children, onClose, buttonIcon }) => {
+const Dropdown = ({ children, buttonIcon, dropup }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dropdownMenu = useRef(null);
@@ -35,7 +35,12 @@ const Dropdown = ({ children, onClose, buttonIcon }) => {
         {buttonIcon}
       </button>
       {isOpen && (
-        <ul onClick={() => setIsOpen(false)} ref={dropdownMenu} className="Dropdown-list shadow">
+        <ul
+          onClick={() => setIsOpen(false)}
+          ref={dropdownMenu}
+          className="Dropdown-list shadow"
+          style={dropup ? { bottom: "100%" } : { top: "100%" }}
+        >
           {children}
         </ul>
       )}
