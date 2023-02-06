@@ -14,15 +14,24 @@ import GroupIcon from "@mui/icons-material/CropSquare";
 
 import Modal from "./utility-components/Modal";
 import "../styles/Folder.css";
-import { convertFolderToGroup, deleteBookmarkNodes, getBookmarkNodes } from "../utils/functions";
+import {
+  convertFolderToGroup,
+  deleteBookmarkNodes,
+  getBookmarkNodes,
+  moveItemsIntoContainer,
+} from "../utils/functions";
 import Dropdown from "./utility-components/Dropdown";
 import { useDrag } from "react-dnd";
+import { useDispatch } from "react-redux";
+import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
-const Folder = ({ folder, moveItemsOut, convertContainer }) => {
+const Folder = ({ folder, convertContainer }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [folderOptionsOpen, setFolderOptionsOpen] = useState(false);
+
+  const dispatch = useDispatch();
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.FOLDER,
@@ -33,8 +42,10 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
   }));
 
   const handleMoveAllItemsOut = () => {
-    // Move items out on the backend
-    moveItemsOut(children);
+    // Move items out to the top level
+    moveItemsIntoContainer(children, ROOT_ID).then((updatedNodes) =>
+      dispatch(updateTopLevelItems(updatedNodes))
+    );
 
     // Clear the current children list
     setChildren([]);
@@ -42,7 +53,9 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
 
   const handleMoveChildOut = (item) => {
     // Move item out on the backend
-    moveItemsOut([item]);
+    moveItemsIntoContainer([item], ROOT_ID).then((updatedNodes) =>
+      dispatch(updateTopLevelItems(updatedNodes))
+    );
 
     // Remove from the children list
     setChildren((curChildren) => curChildren.filter((child) => child.id != item.id));
@@ -162,7 +175,11 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
   const convertToGroup = () => {
     const currentFolder = getCurrentFolder();
     console.debug(`Converting "${currentFolder.title}" to group`);
-    convertContainer(currentFolder.id, currentFolder.type).then(() => setOpen(false));
+
+    convertFolderToGroup(currentFolder.id).then((updatedNodes) => {
+      dispatch(updateTopLevelItems(updatedNodes));
+      setOpen(false);
+    });
   };
 
   return (

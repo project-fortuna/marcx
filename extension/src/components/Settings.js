@@ -10,10 +10,14 @@ import ImageIcon from "@mui/icons-material/Image";
 import "../styles/Settings.css";
 import Modal from "./utility-components/Modal";
 import { ItemTypes } from "../utils/types";
+import { useDispatch } from "react-redux";
+import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
-const Settings = ({ overwriteBookmarkData }) => {
+const Settings = () => {
   const [openModal, setOpenModal] = useState(null);
   const [uploadedData, setUploadedData] = useState(null);
+
+  const dispatch = useDispatch();
 
   const downloadBookmarkData = async () => {
     const allBookmarkData = await getBookmarkNodes();
@@ -41,6 +45,20 @@ const Settings = ({ overwriteBookmarkData }) => {
       setUploadedData(json);
     };
     reader.readAsText(file);
+  };
+
+  const overwriteBookmarkData = () => {
+    if (!uploadedData) {
+      console.warn("No bookmark data to upload");
+      return;
+    }
+    console.log("About to upload", uploadedData.length, "items");
+
+    overwriteBookmarkNodes(uploadedData).then((updatedNodes) =>
+      dispatch(updateTopLevelItems(updatedNodes))
+    );
+    // TODO: Make sure the JSON file is valid
+    setOpenModal(null);
   };
 
   return (
@@ -74,13 +92,7 @@ const Settings = ({ overwriteBookmarkData }) => {
               <button className="secondary-button" onClick={() => setOpenModal(null)}>
                 Cancel
               </button>
-              <button
-                className="primary-button"
-                onClick={() => {
-                  overwriteBookmarkData(uploadedData);
-                  setOpenModal(null);
-                }}
-              >
+              <button className="primary-button" onClick={overwriteBookmarkData}>
                 Upload
               </button>
             </span>

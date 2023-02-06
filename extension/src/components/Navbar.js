@@ -14,7 +14,7 @@ import NewItemForm from "./utility-components/NewItemForm";
 import { FORMS, ItemTypes } from "../utils/types";
 import Settings from "./Settings";
 
-const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem, overwriteBookmarkData }) => {
+const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
   const [openModal, setOpenModal] = useState(null);
   const [formData, setFormData] = useState({});
 
@@ -73,7 +73,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem, overwriteBook
   return (
     <>
       <Modal open={openModal === "settings"} onClose={() => setOpenModal(null)}>
-        <Settings overwriteBookmarkData={overwriteBookmarkData} />
+        <Settings />
       </Modal>
       <Modal open={openModal === "bookmark"} onClose={() => setOpenModal(null)}>
         <NewItemForm

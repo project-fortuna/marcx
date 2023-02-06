@@ -1,7 +1,7 @@
 /*global chrome*/
 
 import React, { useEffect, useMemo, useState } from "react";
-import { BookmarkNode, FAVICON_URL, ITEMS_PER_GROUP, ItemTypes } from "../utils/types";
+import { BookmarkNode, FAVICON_URL, ITEMS_PER_GROUP, ItemTypes, ROOT_ID } from "../utils/types";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
@@ -11,17 +11,21 @@ import OutboxIcon from "@mui/icons-material/Outbox";
 import Modal from "./utility-components/Modal";
 import Dropdown from "./utility-components/Dropdown";
 import "../styles/Group.css";
-import { getBookmarkNodes } from "../utils/functions";
+import { getBookmarkNodes, moveItemsIntoContainer } from "../utils/functions";
 import { useDrag, useDrop } from "react-dnd";
 import Board from "./Board";
 import { useItemsByPage } from "../utils/hooks";
 import PageBorder from "./PageBorder";
 import globeDark from "../images/globe-dark.png";
+import { useDispatch } from "react-redux";
+import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
-const Group = ({ group, moveItemsOut, moveItem }) => {
+const Group = ({ group }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [page, setPage] = useState(0);
+
+  const dispatch = useDispatch();
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.GROUP,
@@ -36,8 +40,10 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
   }, [group?.children]);
 
   const handleMoveAllItemsOut = () => {
-    // Move items out on the backend
-    moveItemsOut(children);
+    // Move items out to the top level
+    moveItemsIntoContainer(children, ROOT_ID).then((updatedNodes) =>
+      dispatch(updateTopLevelItems(updatedNodes))
+    );
 
     // Clear the current children list
     setChildren([]);
@@ -104,7 +110,9 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
       drop: (incomingItem, monitor) => {
         if (!monitor.didDrop()) {
           console.debug("Dropped outside!");
-          moveItemsOut([incomingItem]);
+          moveItemsIntoContainer([incomingItem], ROOT_ID).then((updatedNodes) =>
+            dispatch(updateTopLevelItems(updatedNodes))
+          );
         }
       },
       collect: (monitor) => ({
@@ -162,13 +170,7 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
                   borderRadius: "2rem",
                 }}
               ></div>
-              <Board
-                items={displayedChildren}
-                isGroup={true}
-                moveItemsOut={moveItemsOut}
-                moveItem={moveItem}
-                page={page}
-              />
+              <Board items={displayedChildren} isGroup={true} page={page} />
             </div>
             <PageBorder onHover={() => setPage(page + 1)} page={page} invisible>
               <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>

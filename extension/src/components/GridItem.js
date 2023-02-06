@@ -4,6 +4,9 @@ import Bookmark from "./Bookmark";
 import { ItemTypes } from "../utils/types";
 import { useDrop } from "react-dnd";
 import Group from "./Group";
+import { useDispatch } from "react-redux";
+import { updateTopLevelItems } from "../app/slices/topLevelItems";
+import { moveItemsIntoContainer, updateBookmarkNodes } from "../utils/functions";
 
 /** A droppable element that together builds a board for our bookmarks manager interface
  * TODO: Fix docstring
@@ -25,7 +28,42 @@ import Group from "./Group";
  * @returns {JSX.Element}
  * @constructor
  */
-const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup, convertContainer }) => {
+const GridItem = ({ index, item, inGroup }) => {
+  const dispatch = useDispatch();
+
+  /**
+   *
+   * @param {BookmarkNode} itemToMove
+   * @param {BookmarkNode} targetItem
+   */
+  const moveItem = (itemToMove, targetItem) => {
+    console.log(`Moving item ${itemToMove.id} (${itemToMove.title}) to index ${targetItem.index}`);
+    console.debug(`Target item is type '${targetItem.type}'`);
+    switch (targetItem.type) {
+      case ItemTypes.EMPTY:
+        updateBookmarkNodes([itemToMove.id], (item) => ({
+          ...item,
+          index: targetItem.index,
+        })).then((updatedNodes) => {
+          dispatch(updateTopLevelItems(updatedNodes));
+          // const updatedTopLevelItems = updatedNodes.filter(
+          //   (node) => node.parentId == ROOT_ID
+          // );
+          // setTopLevelItems(updatedTopLevelItems);
+        });
+        break;
+      case ItemTypes.FOLDER:
+      case ItemTypes.GROUP:
+        moveItemsIntoContainer([itemToMove], targetItem.id).then((updatedNodes) => {
+          dispatch(updateTopLevelItems(updatedNodes));
+        });
+        break;
+      default:
+        console.error("Invalid target item type, could not move");
+        break;
+    }
+  };
+
   const [{ isOverGrid, canDrop }, drop] = useDrop(
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
@@ -57,20 +95,11 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup, convertContain
   const displayedItem = useMemo(() => {
     switch (item.type) {
       case ItemTypes.FOLDER:
-        return (
-          <Folder folder={item} moveItemsOut={moveItemsOut} convertContainer={convertContainer} />
-        );
+        return <Folder folder={item} />;
       case ItemTypes.BOOKMARK:
         return <Bookmark bookmark={item} />;
       case ItemTypes.GROUP:
-        return (
-          <Group
-            group={item}
-            moveItemsOut={moveItemsOut}
-            moveItem={moveItem}
-            convertContainer={convertContainer}
-          />
-        );
+        return <Group group={item} />;
       default:
         return <></>;
     }

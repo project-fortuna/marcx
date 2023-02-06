@@ -15,7 +15,7 @@ import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
  *    * No two items have the same index
  *
  */
-const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer }) => {
+const Board = ({ items, isGroup, page }) => {
   const grids = useMemo(() => {
     if (!items) {
       return [];
@@ -35,17 +35,7 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer 
         const item = items[nextItemIdx];
         nextItemIdx++;
 
-        gridItems.push(
-          <GridItem
-            index={gridIdx}
-            key={item.id}
-            item={item}
-            moveItemsOut={moveItemsOut}
-            moveItem={moveItem}
-            inGroup={isGroup}
-            convertContainer={convertContainer}
-          />
-        );
+        gridItems.push(<GridItem index={gridIdx} key={item.id} item={item} inGroup={isGroup} />);
         continue;
       }
 
@@ -56,7 +46,6 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer 
           key={`empty-item-${gridIdx}`}
           // Make sure the index is the index across *all* pages
           item={{ index: page * numItems + gridIdx, type: ItemTypes.EMPTY }}
-          moveItem={moveItem}
           inGroup={isGroup}
         />
       );
