@@ -11,7 +11,13 @@ import OutboxIcon from "@mui/icons-material/Outbox";
 import Modal from "./utility-components/Modal";
 import Dropdown from "./utility-components/Dropdown";
 import "../styles/Group.css";
-import { getBookmarkNodes, moveItemsIntoContainer } from "../utils/functions";
+import {
+  convertFolderToGroup,
+  convertGroupToFolder,
+  deleteBookmarkNodes,
+  getBookmarkNodes,
+  moveItemsIntoContainer,
+} from "../utils/functions";
 import { useDrag, useDrop } from "react-dnd";
 import Board from "./Board";
 import { useItemsByPage } from "../utils/hooks";
@@ -19,52 +25,18 @@ import PageBorder from "./PageBorder";
 import globeDark from "../images/globe-dark.png";
 import { useDispatch } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
+import Folder from "@mui/icons-material/Folder";
+import Delete from "@mui/icons-material/Delete";
 
 const Group = ({ group }) => {
+  // React hooks
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [page, setPage] = useState(0);
 
-  const dispatch = useDispatch();
-
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.GROUP,
-    item: group,
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
-
   useEffect(() => {
     getChildren(group.id);
   }, [group?.children]);
-
-  const handleMoveAllItemsOut = () => {
-    // Move items out to the top level
-    moveItemsIntoContainer(children, ROOT_ID).then((updatedNodes) =>
-      dispatch(updateTopLevelItems(updatedNodes))
-    );
-
-    // Clear the current children list
-    setChildren([]);
-  };
-
-  /**
-   * Opens the primary folder menu in a modal
-   *
-   * Triggered by clicking the folder icon from the home screen icon
-   */
-  const openGroupModal = () => {
-    setOpen(true);
-    getChildren(group.id);
-  };
-
-  const getChildren = async (groupId) => {
-    const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
-    newChildren.sort((item1, item2) => item1.index - item2.index);
-    console.log("Got", newChildren);
-    setChildren(newChildren);
-  };
 
   const displayedThumbnailItems = useMemo(() => {
     if (!children) {
@@ -98,7 +70,17 @@ const Group = ({ group }) => {
     return thumbnailItems;
   }, [children]);
 
-  const displayedChildren = useItemsByPage(children, page, ITEMS_PER_GROUP);
+  // Redux hooks
+  const dispatch = useDispatch();
+
+  // React D&D Hooks
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemTypes.GROUP,
+    item: group,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
 
   const [{ isOver }, moveOutDrop] = useDrop(
     () => ({
@@ -136,6 +118,54 @@ const Group = ({ group }) => {
     []
   );
 
+  // Custom hooks
+  const displayedChildren = useItemsByPage(children, page, ITEMS_PER_GROUP);
+
+  /**
+   * Opens the primary folder menu in a modal
+   *
+   * Triggered by clicking the folder icon from the home screen icon
+   */
+  const openGroupModal = () => {
+    setOpen(true);
+    getChildren(group.id);
+  };
+
+  const getChildren = async (groupId) => {
+    const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
+    newChildren.sort((item1, item2) => item1.index - item2.index);
+    console.log("Got", newChildren);
+    setChildren(newChildren);
+  };
+
+  const handleMoveAllItemsOut = () => {
+    // Move items out to the top level
+    moveItemsIntoContainer(children, ROOT_ID).then((updatedNodes) =>
+      dispatch(updateTopLevelItems(updatedNodes))
+    );
+
+    // Clear the current children list
+    setChildren([]);
+  };
+
+  const deleteGroup = () => {
+    console.debug(`About to delete ${group.id} (${group.title})`);
+    deleteBookmarkNodes([group.id]).then((updatedNodes) => {
+      dispatch(updateTopLevelItems(updatedNodes));
+      setOpen(false);
+      return;
+    });
+  };
+
+  const convertToFolder = () => {
+    console.debug(`Converting "${group.title}" to folder`);
+
+    convertGroupToFolder(group.id).then((updatedNodes) => {
+      dispatch(updateTopLevelItems(updatedNodes));
+      setOpen(false);
+    });
+  };
+
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)} droppableBackgroundRef={moveOutDrop}>
@@ -147,7 +177,21 @@ const Group = ({ group }) => {
         </div>
         <div className="Group" ref={noDrop}>
           <header className="Group-header">
-            <h2>Page {page + 1}</h2>
+            <h1>{group.title}</h1>
+            <Dropdown buttonIcon={<MoreVertIcon />}>
+              <button id="move-all-out" onClick={handleMoveAllItemsOut}>
+                <OutboxIcon />
+                <label htmlFor="move-all-out">Move all folder contents out</label>
+              </button>
+              <button id="delete-group" onClick={deleteGroup}>
+                <Delete />
+                <label htmlFor="delete-group">Delete group</label>
+              </button>
+              <button id="convert-to-folder" onClick={convertToFolder}>
+                <Folder />
+                <label htmlFor="convert-to-folder">Convert to folder</label>
+              </button>
+            </Dropdown>
           </header>
           <main className="Group-main">
             <PageBorder onHover={() => page > 0 && setPage(page - 1)} page={page} left invisible>
@@ -179,14 +223,7 @@ const Group = ({ group }) => {
             </PageBorder>
           </main>
           <footer className="Group-footer">
-            <h1>{group.title}</h1>
-            <Dropdown buttonIcon={<MoreVertIcon />}>
-              <button id="move-all-out" onClick={handleMoveAllItemsOut}>
-                <OutboxIcon />
-                <label htmlFor="move-all-out">Move all folder contents out</label>
-              </button>
-              <button>Other</button>
-            </Dropdown>
+            <h2>Page {page + 1}</h2>
           </footer>
         </div>
       </Modal>

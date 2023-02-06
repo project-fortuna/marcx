@@ -36,6 +36,7 @@ export async function addNewBookmarkNode(item) {
  * @param {string[]} itemIds - List of items IDs to delete
  */
 export async function deleteBookmarkNodes(itemIds) {
+  // TODO: Make sure to delete the children to avoid leakage
   const currentNodes = await getBookmarkNodes();
   const updatedNodes = currentNodes.filter((item) => !itemIds.includes(item.id));
   await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
@@ -189,6 +190,20 @@ export async function convertFolderToGroup(folderId) {
         newIndex = getAvailableIndices(topLevelItems, 1)[0];
       }
       return { ...node, type: ItemTypes.GROUP, parentId: ROOT_ID, index: newIndex };
+    }
+    return node;
+  });
+  await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
+  return updatedNodes;
+}
+
+export async function convertGroupToFolder(groupId) {
+  const currentNodes = await getBookmarkNodes();
+
+  const updatedNodes = currentNodes.map((node) => {
+    if (node.id == groupId) {
+      // Groups remain at the same index because they must be at the top level
+      return { ...node, type: ItemTypes.FOLDER };
     }
     return node;
   });

@@ -157,12 +157,12 @@ const Folder = ({ folder, convertContainer }) => {
     const currentFolder = getCurrentFolder();
     console.debug(`About to delete ${currentFolder.id} (${currentFolder.title})`);
 
-    deleteBookmarkNodes([currentFolder.id]).then(() => {
+    deleteBookmarkNodes([currentFolder.id]).then((updatedNodes) => {
       // If the top-level folder is deleted, close the modal
       if (currentFolder.parentId == ROOT_ID) {
         console.debug("Deleting the top-level folder, closing modal");
+        dispatch(updateTopLevelItems(updatedNodes));
         setOpen(false);
-        // TODO: Remove from top level automatically
         return;
       }
 
