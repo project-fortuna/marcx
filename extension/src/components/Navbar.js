@@ -90,6 +90,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
               type="text"
               value={formData[FORMS.newBookmark.name] || ""}
               onChange={(e) => updateFormData({ [FORMS.newBookmark.name]: e.target.value })}
+              autoFocus
             />
           </div>
           <div className="form-item">
@@ -119,6 +120,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
               type="text"
               value={formData[FORMS.newGroup.name] || ""}
               onChange={(e) => updateFormData({ [FORMS.newGroup.name]: e.target.value })}
+              autoFocus
             />
           </div>
         </NewItemForm>
@@ -138,6 +140,7 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
               type="text"
               value={formData[FORMS.newFolder.name] || ""}
               onChange={(e) => updateFormData({ [FORMS.newFolder.name]: e.target.value })}
+              autoFocus
             />
           </div>
         </NewItemForm>
