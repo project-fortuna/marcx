@@ -1,3 +1,4 @@
+// External imports
 import React, { useState } from "react";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
@@ -8,11 +9,12 @@ import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import SettingsIcon from "@mui/icons-material/Settings";
 
+// Local imports
 import "../styles/Navbar.css";
+import Settings from "./Settings";
 import Modal from "./utility-components/Modal";
 import NewItemForm from "./utility-components/NewItemForm";
 import { FORMS, ItemTypes } from "../utils/types";
-import Settings from "./Settings";
 
 const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
   const [openModal, setOpenModal] = useState(null);

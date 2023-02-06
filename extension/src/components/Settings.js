@@ -1,5 +1,5 @@
+// External imports
 import React, { useState } from "react";
-import { getBookmarkNodes, overwriteBookmarkNodes } from "../utils/functions";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ToggleSwitch from "./utility-components/ToggleSwitch";
@@ -7,9 +7,14 @@ import SyncIcon from "@mui/icons-material/Sync";
 import DataObjectIcon from "@mui/icons-material/DataObject";
 import AppearanceIcon from "@mui/icons-material/WbSunny";
 import ImageIcon from "@mui/icons-material/Image";
+
+// Local imports
 import "../styles/Settings.css";
 import Modal from "./utility-components/Modal";
 import { ItemTypes } from "../utils/types";
+import { getBookmarkNodes, overwriteBookmarkNodes } from "../utils/functions";
+
+// Redux
 import { useDispatch } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
 

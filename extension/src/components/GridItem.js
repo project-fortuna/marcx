@@ -1,30 +1,23 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+// External imports
+import React, { useMemo } from "react";
+import { useDrop } from "react-dnd";
+
+// Local imports
+import Group from "./Group";
 import Folder from "./Folder";
 import Bookmark from "./Bookmark";
 import { ItemTypes } from "../utils/types";
-import { useDrop } from "react-dnd";
-import Group from "./Group";
+import { moveItemsIntoContainer, updateBookmarkNodes } from "../utils/functions";
+
+// Redux
 import { useDispatch } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
-import { moveItemsIntoContainer, updateBookmarkNodes } from "../utils/functions";
 
 /** A droppable element that together builds a board for our bookmarks manager interface
  * TODO: Fix docstring
  *
  * @param {object} props of the Grid item wrt to other Grid objects
  * @param {object} props.index a Bookmark or Group object
- * @param type ItemsType object indicating the type of element
- * @param userId the Google ID
- * @param inEditMode boolean representing whether the Grid can be edited/dragged or not
- * @param width the percentage of a grid width according to whether this is in a group or home screen
- * @param height the percentage of a grid height according to whether this is in a group or home screen
- * @param handleMoveGroup callback that will move the group after DnD
- * @param handleMoveBookmark callback that will move the bookmark after DnD
- * @param handleRemoveBookmark callback that will remove the bookmark after DnD
- * @param indexHasNoBookmarks callback that determines whether there is a bookmark
- *        at the desired drop location
- * @param indexHasNoElements callback that determines whether there is an element
- *        at the desired drop location
  * @returns {JSX.Element}
  * @constructor
  */

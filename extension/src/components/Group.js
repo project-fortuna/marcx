@@ -1,32 +1,34 @@
 /*global chrome*/
 
+// External imports
 import React, { useEffect, useMemo, useState } from "react";
-import { BookmarkNode, FAVICON_URL, ITEMS_PER_GROUP, ItemTypes, ROOT_ID } from "../utils/types";
-import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OutboxIcon from "@mui/icons-material/Outbox";
+import Folder from "@mui/icons-material/Folder";
+import Delete from "@mui/icons-material/Delete";
+import { useDrag, useDrop } from "react-dnd";
 
+// Local imports
+import "../styles/Group.css";
+import Board from "./Board";
+import PageBorder from "./PageBorder";
 import Modal from "./utility-components/Modal";
 import Dropdown from "./utility-components/Dropdown";
-import "../styles/Group.css";
+import { useItemsByPage } from "../utils/hooks";
 import {
-  convertFolderToGroup,
   convertGroupToFolder,
   deleteBookmarkNodes,
   getBookmarkNodes,
   moveItemsIntoContainer,
 } from "../utils/functions";
-import { useDrag, useDrop } from "react-dnd";
-import Board from "./Board";
-import { useItemsByPage } from "../utils/hooks";
-import PageBorder from "./PageBorder";
+import { FAVICON_URL, ITEMS_PER_GROUP, ItemTypes, ROOT_ID } from "../utils/types";
 import globeDark from "../images/globe-dark.png";
+
+// Redux
 import { useDispatch } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
-import Folder from "@mui/icons-material/Folder";
-import Delete from "@mui/icons-material/Delete";
 
 const Group = ({ group }) => {
   // React hooks

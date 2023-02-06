@@ -1,9 +1,7 @@
 /*global chrome*/
 
+// External imports
 import React, { useState } from "react";
-import { BookmarkNode, FAVICON_URL, ItemTypes, ROOT_ID } from "../utils/types";
-
-// Materical icons
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -11,25 +9,28 @@ import OutboxIcon from "@mui/icons-material/Outbox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupIcon from "@mui/icons-material/CropSquare";
+import { useDrag } from "react-dnd";
 
-import Modal from "./utility-components/Modal";
+// Local imports
 import "../styles/Folder.css";
+import Modal from "./utility-components/Modal";
+import Dropdown from "./utility-components/Dropdown";
+import { BookmarkNode, FAVICON_URL, ItemTypes, ROOT_ID } from "../utils/types";
 import {
   convertFolderToGroup,
   deleteBookmarkNodes,
   getBookmarkNodes,
   moveItemsIntoContainer,
 } from "../utils/functions";
-import Dropdown from "./utility-components/Dropdown";
-import { useDrag } from "react-dnd";
+
+// Redux
 import { useDispatch } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
-const Folder = ({ folder, convertContainer }) => {
+const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
-  const [folderOptionsOpen, setFolderOptionsOpen] = useState(false);
 
   const dispatch = useDispatch();
 

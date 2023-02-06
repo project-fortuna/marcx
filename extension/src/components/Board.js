@@ -1,11 +1,9 @@
-import React, { createContext, useEffect, useMemo, useState } from "react";
+// External imports
+import React, { useMemo } from "react";
+
+// Local imports
 import GridItem from "./GridItem";
 import "../styles/Board.css";
-// import Bookmark from "./Bookmark";
-// import Group from "./Group";
-// import { ItemTypes } from "../pages/Home";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DndProvider } from "react-dnd";
 import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
 
 /**

@@ -1,15 +1,11 @@
+// External imports
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useDrag } from "react-dnd";
+
+// Local imports
 import { FAVICON_URL, ItemTypes } from "../utils/types";
-// import "./Bookmark.css";
-// import "../../utilities.css";
-// import { Button, Icon, Input, Menu, Popup } from "semantic-ui-react";
 import globeLight from "../images/globe-light.png";
 import globeDark from "../images/globe-dark.png";
-// import globe_dark from "../../public/images/globe_dark.png";
-// import { useDrag } from "react-dnd";
-// import { ItemTypes } from "../pages/Home";
-// import { createContextFromEvent } from "../../utilities";
 
 const Bookmark = ({ bookmark }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
