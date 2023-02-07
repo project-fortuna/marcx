@@ -85,17 +85,6 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
           onUpdate={updateFormData}
         >
           <div className="form-item">
-            <label htmlFor={FORMS.newBookmark.name}>Bookmark name</label>
-            <input
-              className="text-input"
-              id={FORMS.newBookmark.name}
-              type="text"
-              value={formData[FORMS.newBookmark.name] || ""}
-              onChange={(e) => updateFormData({ [FORMS.newBookmark.name]: e.target.value })}
-              autoFocus
-            />
-          </div>
-          <div className="form-item">
             <label htmlFor={FORMS.newBookmark.url}>URL</label>
             <input
               className="text-input"
@@ -103,6 +92,17 @@ const Navbar = ({ page, onPreviousPage, onNextPage, createNewItem }) => {
               type="text"
               value={formData[FORMS.newBookmark.url] || ""}
               onChange={(e) => updateFormData({ [FORMS.newBookmark.url]: e.target.value })}
+              autoFocus
+            />
+          </div>
+          <div className="form-item">
+            <label htmlFor={FORMS.newBookmark.name}>Bookmark name</label>
+            <input
+              className="text-input"
+              id={FORMS.newBookmark.name}
+              type="text"
+              value={formData[FORMS.newBookmark.name] || ""}
+              onChange={(e) => updateFormData({ [FORMS.newBookmark.name]: e.target.value })}
             />
           </div>
         </NewItemForm>
