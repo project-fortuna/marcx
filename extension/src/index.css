@@ -89,7 +89,7 @@ button {
   border: none;
 }
 
-.grid-item {
+.board-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -98,7 +98,15 @@ button {
   text-decoration: none;
 }
 
-.grid-item-label {
+.board-item:hover {
+  cursor: pointer;
+}
+
+.board-item:hover .board-item-main:not(.wiggle) {
+  transform: scale(1.1);
+}
+
+.board-item-label {
   font-family: var(--font);
   font-size: 0.75rem;
   text-align: center;
@@ -110,19 +118,13 @@ button {
   max-width: 210px;
 }
 
-.grid-item-container {
+/* The container for the main feature of the board item (e.g. bookmark icon,
+group thumbnail, etc.) */
+.board-item-main {
   width: 72px;
   height: 72px;
   border-radius: 20%;
   transition: all 100ms ease-out;
-}
-
-.grid-item:hover {
-  cursor: pointer;
-}
-
-.grid-item:hover .grid-item-container:not(.wiggle) {
-  transform: scale(1.1);
 }
 
 /* Add scale to maintain scale from hover */

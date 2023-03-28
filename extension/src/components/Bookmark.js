@@ -27,21 +27,21 @@ const Bookmark = ({ bookmark }) => {
     <>
       <a
         ref={drag}
-        className={`grid-item`}
+        className={`board-item`}
         href={bookmark.url}
         target="_blank"
         rel="noopener noreferrer"
       >
         <img
           id="bookmarkImage"
-          className={`grid-item-container ${isDragging ? "wiggle" : ""}`}
+          className={`board-item-main ${isDragging ? "wiggle" : ""}`}
           style={{
             opacity: isDragging ? 0.5 : 1,
           }}
           src={displayedIcon}
           onError={handleIconError}
         />
-        <span className="grid-item-label">{bookmark.title}</span>
+        <span className="board-item-label">{bookmark.title}</span>
       </a>
     </>
   );

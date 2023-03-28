@@ -266,11 +266,11 @@ const Folder = ({ folder }) => {
           </ul>
         </div>
       </Modal>
-      <button ref={drag} className="grid-item" onClick={openFolderModal}>
-        <div className={`grid-item-container ${isDragging ? "wiggle" : ""}`}>
+      <button ref={drag} className="board-item" onClick={openFolderModal}>
+        <div className={`board-item-main ${isDragging ? "wiggle" : ""}`}>
           <FolderIcon style={{ width: "inherit", height: "inherit" }} />
         </div>
-        <span className="grid-item-label">{folder.title}</span>
+        <span className="board-item-label">{folder.title}</span>
       </button>
     </>
   );

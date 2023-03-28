@@ -229,13 +229,11 @@ const Group = ({ group }) => {
           </footer>
         </div>
       </Modal>
-      <button ref={drag} className="grid-item" onClick={openGroupModal}>
-        <article
-          className={`Group-thumbnail grid-item-container glass ${isDragging ? "wiggle" : ""}`}
-        >
+      <button ref={drag} className="board-item" onClick={openGroupModal}>
+        <article className={`Group-thumbnail board-item-main glass ${isDragging ? "wiggle" : ""}`}>
           {displayedThumbnailItems}
         </article>
-        <span className="grid-item-label">{group.title}</span>
+        <span className="board-item-label">{group.title}</span>
       </button>
     </>
   );
