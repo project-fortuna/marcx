@@ -18,6 +18,11 @@ const ROOT_ID = 0;
 const ITEMS_PER_PAGE = 48;
 const ITEMS_PER_GROUP = 9;
 
+const Themes = {
+  DARK: "dark",
+  LIGHT: "light",
+};
+
 const ItemTypes = {
   BOOKMARK: "bookmark",
   FOLDER: "folder",
@@ -54,6 +59,11 @@ const FORMS = {
   },
 };
 
+const DEFAULT_SETTINGS = {
+  theme: Themes.LIGHT,
+  backgroundImage: null,
+};
+
 module.exports = {
   FAVICON_URL,
   ROOT_ID,
@@ -61,6 +71,8 @@ module.exports = {
   ITEMS_PER_GROUP,
   TEST_BOOKMARK,
   TEST_GROUP,
+  Themes,
   ItemTypes,
   FORMS,
+  DEFAULT_SETTINGS,
 };

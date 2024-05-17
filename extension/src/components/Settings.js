@@ -15,12 +15,23 @@ import { ItemTypes } from "../utils/types";
 import { getBookmarkNodes, overwriteBookmarkNodes } from "../utils/functions";
 
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
+import { setWallpaper } from "../app/slices/settings";
+import SingleImageUpload from "./utility-components/SingleImageUpload";
+
+const SettingsModals = {
+  NONE: null,
+  DOWNLOAD: "download",
+  UPLOAD: "upload",
+  WALLPAPER: "change-wallpaper",
+};
 
 const Settings = () => {
-  const [openModal, setOpenModal] = useState(null);
+  const [openModal, setOpenModal] = useState(SettingsModals.NONE);
   const [uploadedData, setUploadedData] = useState(null);
+
+  const settings = useSelector((state) => state.settings);
 
   const dispatch = useDispatch();
 
@@ -68,7 +79,10 @@ const Settings = () => {
 
   return (
     <>
-      <Modal open={openModal === "upload"} onClose={() => setOpenModal(null)}>
+      <Modal
+        open={openModal === SettingsModals.UPLOAD}
+        onClose={() => setOpenModal(SettingsModals.NONE)}
+      >
         <div className="upload-modal standard-modal-container shadow">
           <h1>Upload bookmark data</h1>
           <h3>Loaded the following bookmark data:</h3>
@@ -104,6 +118,19 @@ const Settings = () => {
           </section>
         </div>
       </Modal>
+      <Modal
+        open={openModal === SettingsModals.WALLPAPER}
+        onClose={() => setOpenModal(SettingsModals.NONE)}
+      >
+        <div className="standard-modal-container shadow">
+          <h1>Change Wallpaper</h1>
+          <SingleImageUpload currentImage={settings.backgroundImage} />
+          <span>
+            <button class="secondary-button">Cancel</button>
+            <button class="primary-button">Save</button>
+          </span>
+        </div>
+      </Modal>
       <div className="Settings standard-modal-container shadow">
         <h1>Settings</h1>
         <section>
@@ -111,7 +138,7 @@ const Settings = () => {
             <AppearanceIcon />
             <h3>Appearance Settings</h3>
           </span>
-          <button className="primary-button">
+          <button className="primary-button" onClick={() => setOpenModal(SettingsModals.WALLPAPER)}>
             <ImageIcon />
             <label htmlFor="">Change Background (coming soon!)</label>
           </button>
@@ -129,7 +156,7 @@ const Settings = () => {
             <SyncIcon />
             <label htmlFor="">Sync Chrome Bookmarks (coming soon!)</label>
           </button>
-          <label className="primary-button" onClick={() => setOpenModal("upload")}>
+          <label className="primary-button" onClick={() => setOpenModal(SettingsModals.UPLOAD)}>
             <input
               type="file"
               className="invisible"
