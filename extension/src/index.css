@@ -12,8 +12,8 @@
   --white: hsl(0, 0%, 98%);
   --off-white: hsl(0, 0%, 94%);
 
-  --droppable-bgcolor: rgba(51, 208, 51, 0.5);
-  --not-droppable-bgcolor: rgba(255, 82, 82, 0.5);
+  --droppable-bgcolor: hsla(0, 0%, 90%, 0.5);
+  --not-droppable-bgcolor: hsla(0, 100%, 90%, 0.5);
 
   --warning-color: #d12626;
 
