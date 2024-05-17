@@ -3,10 +3,6 @@ description: Report an issue with MarcX
 labels: ["bug"]
 projects: ["project-fortuna/1"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        **Before you start, make sure you have been testing on the [development version of the site](https://ecuador-integration-git-develop-cddl.vercel.app/).**
   - type: textarea
     id: bug-description
     attributes:
@@ -15,17 +11,6 @@ body:
       placeholder: Bug description
     validations:
       required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: What browser(s) did you see this problem on?
-      multiple: true
-      options:
-        - Chrome
-        - Safari
-        - Firefox
-        - Microsoft Edge
-        - Other
   - type: textarea
     id: reproduction
     attributes:
