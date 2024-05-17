@@ -246,7 +246,10 @@ const Folder = ({ folder }) => {
                       {item.url}
                     </label>
                   </span>
-                  <Dropdown buttonIcon={<MoreVertIcon />} dropup={i >= children.length - 5}>
+                  <Dropdown
+                    buttonIcon={<MoreVertIcon />}
+                    dropup={i >= Math.max(5, children.length - 5)}
+                  >
                     <button id="move-out" onClick={() => handleMoveChildOut(item)}>
                       <OutboxIcon />
                       <label htmlFor="move-out">Move {item.type} out</label>
