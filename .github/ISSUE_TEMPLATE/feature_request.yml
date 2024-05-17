@@ -1,0 +1,27 @@
+name: "Feature Request"
+description: Request a feature or enhancement for MarcX
+labels: ["enhancement"]
+projects: ["project-fortuna/1"]
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe the feature
+      description: Briefly describe the feature/enhancement you would like to see included. **Include any relevant designs here as well if applicable.**
+      placeholder: Feature description
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - 1 (Nice to have)
+        - 2   (Would make my life easier)
+        - 3 (I cannot use MarcX without it)
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Notes and Information
