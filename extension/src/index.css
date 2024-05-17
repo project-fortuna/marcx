@@ -22,7 +22,7 @@
   --m: 16px;
   --l: 24px;
 
-  --font: "Roboto", sans-serif;
+  --font: "Quicksand", sans-serif;
 }
 
 @keyframes glow {
@@ -70,7 +70,7 @@ body {
 }
 
 .App {
-  background: linear-gradient(30deg, #cef6ff, #dddfff);
+  /* background: linear-gradient(30deg, #cef6ff, #dddfff); */
   /* background-color: white; */
   height: 100vh;
 }
