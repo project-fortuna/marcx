@@ -52,7 +52,16 @@ const Board = ({ items, isGroup, page }) => {
     return gridItems;
   }, [items, isGroup]);
 
-  return <div className={`board ${isGroup ? "group-board" : "home-board"}`}>{grids}</div>;
+  const handleContextMenu = (e) => {};
+
+  return (
+    <div
+      onContextMenu={handleContextMenu}
+      className={`board ${isGroup ? "group-board" : "home-board"}`}
+    >
+      {grids}
+    </div>
+  );
 };
 
 export default Board;
