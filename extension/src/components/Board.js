@@ -1,10 +1,11 @@
 // External imports
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 // Local imports
 import GridItem from "./GridItem";
 import "../styles/Board.css";
 import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
+import ContextMenu from "./ContextMenu";
 
 /**
  * Invariants:
@@ -14,6 +15,8 @@ import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
  *
  */
 const Board = ({ items, isGroup, page }) => {
+  const [contextMenu, setContextMenu] = useState({ isOpen: false });
+
   const grids = useMemo(() => {
     if (!items) {
       return [];
@@ -52,15 +55,30 @@ const Board = ({ items, isGroup, page }) => {
     return gridItems;
   }, [items, isGroup]);
 
-  const handleContextMenu = (e) => {};
+  const openContextMenu = (e) => {
+    e.preventDefault();
+    console.log("Opened context menu in", items[0]?.parentId);
+    console.log(e);
+    setContextMenu({ ...contextMenu, isOpen: true, x: e.pageX, y: e.pageY });
+  };
+
+  const closeContextMenu = (e) => {
+    e.preventDefault();
+    setContextMenu({ ...contextMenu, isOpen: false });
+  };
 
   return (
-    <div
-      onContextMenu={handleContextMenu}
-      className={`board ${isGroup ? "group-board" : "home-board"}`}
-    >
-      {grids}
-    </div>
+    <>
+      {contextMenu.isOpen && <ContextMenu {...contextMenu} />}
+      <div
+        onContextMenu={openContextMenu}
+        onBlur={closeContextMenu}
+        onClick={closeContextMenu}
+        className={`board ${isGroup ? "group-board" : "home-board"}`}
+      >
+        {grids}
+      </div>
+    </>
   );
 };
 
