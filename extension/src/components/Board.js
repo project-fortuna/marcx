@@ -63,12 +63,12 @@ const Board = ({ items, isGroup, page }) => {
   };
 
   const closeContextMenu = (e) => {
-    e.preventDefault();
     setContextMenu({ ...contextMenu, isOpen: false });
   };
 
   return (
     <>
+      {/* TODO: Move the context menu to be opened on individual grid items */}
       {contextMenu.isOpen && <ContextMenu {...contextMenu} onClick={closeContextMenu} />}
       <div
         onContextMenu={openContextMenu}
