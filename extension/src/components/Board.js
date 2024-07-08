@@ -69,7 +69,7 @@ const Board = ({ items, isGroup, page }) => {
 
   return (
     <>
-      {contextMenu.isOpen && <ContextMenu {...contextMenu} />}
+      {contextMenu.isOpen && <ContextMenu {...contextMenu} onClick={closeContextMenu} />}
       <div
         onContextMenu={openContextMenu}
         onBlur={closeContextMenu}

@@ -1,5 +1,8 @@
-import { useMemo } from "react";
-import { BookmarkNode } from "./types";
+import { useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateTopLevelItems } from "../app/slices/topLevelItems";
+import { addNewBookmarkNode, getAvailableIndices, getNewId } from "./functions";
+import { BookmarkNode, ItemTypes, ROOT_ID } from "./types";
 
 /**
  * Memoized array of items that should be currently displayed.
@@ -27,4 +30,39 @@ export function useItemsByPage(allItems, page, itemsPerPage) {
 
     return currentPageItems;
   }, [allItems, page]);
+}
+
+export function useNewItemCreator() {
+  const dispatch = useDispatch();
+  const topLevelItems = useSelector((state) => state.topLevelItems);
+
+  return useCallback(
+    async (newItem) => {
+      console.log("Creating new item");
+      console.log(newItem);
+
+      const availableIndex = getAvailableIndices([...topLevelItems], 1)[0];
+      const id = await getNewId();
+
+      // New item with default fields, can be overwritten by the incoming item
+      // object
+      const itemToAdd = {
+        id,
+        index: availableIndex,
+        title: "No title",
+        parentId: ROOT_ID,
+        type: ItemTypes.EMPTY,
+        dateAdded: Date.now(),
+        ...newItem,
+      };
+
+      const addedItem = await addNewBookmarkNode(itemToAdd);
+      console.log(`Successfully added new ${addedItem.type}`);
+      console.log(addedItem);
+      if (addedItem.parentId == ROOT_ID) {
+        dispatch(updateTopLevelItems(topLevelItems.concat(addedItem)));
+      }
+    },
+    [dispatch, topLevelItems]
+  );
 }

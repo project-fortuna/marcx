@@ -30,6 +30,7 @@ import { useItemsByPage } from "./utils/hooks";
 
 import { useSelector, useDispatch } from "react-redux";
 import { updateTopLevelItems } from "./app/slices/topLevelItems";
+import NewItemModals from "./components/NewItemModals";
 
 const App = () => {
   const [page, setPage] = useState(0);
@@ -110,6 +111,7 @@ const App = () => {
         New bookmarks have been added!
         {JSON.stringify(newItems)}
       </Modal> */}
+        <NewItemModals />
         <Navbar
           page={page}
           onNextPage={() => setPage(page + 1)}
