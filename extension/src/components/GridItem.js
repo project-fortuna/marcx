@@ -1,12 +1,12 @@
 // External imports
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useDrop } from "react-dnd";
 
 // Local imports
 import Group from "./Group";
 import Folder from "./Folder";
 import Bookmark from "./Bookmark";
-import { ItemTypes } from "../utils/types";
+import { ItemTypes, BookmarkNode } from "../utils/types";
 import { moveItemsIntoContainer, updateBookmarkNodes } from "../utils/functions";
 
 // Redux
@@ -21,7 +21,7 @@ import { updateTopLevelItems } from "../app/slices/topLevelItems";
  * @returns {JSX.Element}
  * @constructor
  */
-const GridItem = ({ index, item, inGroup }) => {
+const GridItem = ({ index, item, inGroup, onContextMenu }) => {
   const dispatch = useDispatch();
 
   /**
@@ -39,10 +39,6 @@ const GridItem = ({ index, item, inGroup }) => {
           index: targetItem.index,
         })).then((updatedNodes) => {
           dispatch(updateTopLevelItems(updatedNodes));
-          // const updatedTopLevelItems = updatedNodes.filter(
-          //   (node) => node.parentId == ROOT_ID
-          // );
-          // setTopLevelItems(updatedTopLevelItems);
         });
         break;
       case ItemTypes.FOLDER:
@@ -119,9 +115,19 @@ const GridItem = ({ index, item, inGroup }) => {
     return classes.join(" ");
   }, [inGroup, isOverGrid, canDrop]);
 
+  function onContextMenuWrapper(e, type) {
+    if (
+      (type === "outer" && item.type === ItemTypes.EMPTY) ||
+      (type === "inner" && item.type !== ItemTypes.EMPTY)
+    ) {
+      onContextMenu(e, item);
+      return;
+    }
+  }
+
   return (
-    <div ref={drop} className={className}>
-      {displayedItem}
+    <div ref={drop} className={className} onContextMenu={(e) => onContextMenuWrapper(e, "outer")}>
+      <div onContextMenu={(e) => onContextMenuWrapper(e, "inner")}>{displayedItem}</div>
     </div>
   );
 };

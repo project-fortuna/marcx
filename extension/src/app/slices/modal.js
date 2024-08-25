@@ -4,6 +4,7 @@ const initialState = {
   isOpen: false,
   type: null,
   formData: {},
+  context: {},
 };
 
 export const modalSlice = createSlice({
@@ -11,9 +12,10 @@ export const modalSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     openModal: (state, action) => {
-      const { type } = action.payload;
+      const { type, context } = action.payload;
       state.isOpen = true;
       state.type = type;
+      state.context = context;
     },
     closeModal: (state) => {
       state.isOpen = false;

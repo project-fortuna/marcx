@@ -11,7 +11,7 @@ import { BookmarkNode, ItemTypes, ROOT_ID } from "./types";
  * @param {function} [matchingFn] - Function that takes in a bookmark node and
  *    returns True or False. Only bookmark nodes that pass this matching
  *    function will be returned.
- * @returns {BookmarkNode[]} The list of bookmark nodes
+ * @returns {Promise<BookmarkNode[]>} The list of bookmark nodes
  */
 export async function getBookmarkNodes(matchingFn) {
   const res = await chrome.storage.local.get("bookmarkNodes");
@@ -40,6 +40,10 @@ export async function deleteBookmarkNodes(itemIds) {
   const currentNodes = await getBookmarkNodes();
   const updatedNodes = currentNodes.filter((item) => !itemIds.includes(item.id));
   await chrome.storage.local.set({ bookmarkNodes: updatedNodes });
+
+  if (currentNodes.length === updatedNodes.length) {
+    console.warn("Failed to delete bookmark nodes!", itemIds);
+  }
 
   return updatedNodes;
 }

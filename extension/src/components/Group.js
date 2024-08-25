@@ -16,6 +16,7 @@ import Board from "./Board";
 import PageBorder from "./PageBorder";
 import Modal from "./utility-components/Modal";
 import Dropdown from "./utility-components/Dropdown";
+import { BookmarkNode } from "../utils/types";
 import { useItemsByPage } from "../utils/hooks";
 import {
   convertGroupToFolder,
@@ -30,6 +31,12 @@ import globeDark from "../images/globe-dark.png";
 import { useDispatch } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
+/**
+ *
+ * @param {object} props
+ * @param {BookmarkNode} props.group
+ * @returns
+ */
 const Group = ({ group }) => {
   // React hooks
   const [open, setOpen] = useState(false);
@@ -216,7 +223,7 @@ const Group = ({ group }) => {
                   borderRadius: "2rem",
                 }}
               ></div>
-              <Board items={displayedChildren} isGroup={true} page={page} />
+              <Board items={displayedChildren} isGroup={true} page={page} id={group.id} />
             </div>
             <PageBorder onHover={() => setPage(page + 1)} page={page} invisible>
               <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>

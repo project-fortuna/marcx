@@ -22,6 +22,7 @@ const Dropdown = ({ children, buttonIcon, dropup, isContextMenu }) => {
 
   return (
     <div className="Dropdown-container">
+      {/* Context menus do not contain a toggle, they are basic dropdowns */}
       {!isContextMenu && (
         <button
           className="Dropdown-toggle-button"

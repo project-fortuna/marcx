@@ -1,7 +1,12 @@
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateTopLevelItems } from "../app/slices/topLevelItems";
-import { addNewBookmarkNode, getAvailableIndices, getNewId } from "./functions";
+import {
+  addNewBookmarkNode,
+  deleteBookmarkNodes,
+  getAvailableIndices,
+  getNewId,
+} from "./functions";
 import { BookmarkNode, ItemTypes, ROOT_ID } from "./types";
 
 /**
@@ -62,7 +67,35 @@ export function useNewItemCreator() {
       if (addedItem.parentId == ROOT_ID) {
         dispatch(updateTopLevelItems(topLevelItems.concat(addedItem)));
       }
+      // TODO: Make sure to update the boards for items added in a non-root board
     },
     [dispatch, topLevelItems]
+  );
+}
+
+export function useItemDeleter() {
+  const dispatch = useDispatch();
+
+  return useCallback(
+    /**
+     *
+     * @param {BookmarkNode[]} items
+     */
+    async (items) => {
+      console.debug("Deleting", items);
+      const updatedNodes = await deleteBookmarkNodes(items);
+
+      // // If the top-level folder is deleted, close the modal
+      // if (currentFolder.parentId == ROOT_ID) {
+      dispatch(updateTopLevelItems(updatedNodes));
+      // setOpen(false);
+      // return;
+      // }
+
+      // // Otherwise update the breadcrumbs (and children)
+      // setBreadcrumbs(breadcrumbs.slice(0, breadcrumbs.length - 1));
+      // getChildren(currentFolder.parentId);
+    },
+    [dispatch]
   );
 }

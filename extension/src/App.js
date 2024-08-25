@@ -120,7 +120,7 @@ const App = () => {
         />
         <main>
           <PageBorder page={page} onHover={() => page !== 0 && setPage(page - 1)} left />
-          <Board items={displayedTopLevelItems} page={page} />
+          <Board items={displayedTopLevelItems} page={page} id={ROOT_ID} />
           <PageBorder page={page} onHover={() => setPage(page + 1)} />
         </main>
       </div>

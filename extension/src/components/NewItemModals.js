@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearFormData, closeModal, updateFormData } from "../app/slices/modal";
 import { useNewItemCreator } from "../utils/hooks";
-import { FORMS, FormTypes, ItemTypes } from "../utils/types";
+import { FORMS, FormTypes, ItemTypes, BookmarkNode } from "../utils/types";
 import Modal from "./utility-components/Modal";
 import NewItemForm from "./utility-components/NewItemForm";
 
@@ -14,6 +14,9 @@ const NewItemModals = () => {
   const createNewItem = useNewItemCreator();
 
   const handleSubmitForm = () => {
+    // Creates the new item
+
+    /** @type {BookmarkNode} */
     let itemData = {};
     switch (modalData.type) {
       case FormTypes.NEW_BOOKMARK:
@@ -43,6 +46,19 @@ const NewItemModals = () => {
         return;
     }
 
+    // Check for any additional context to pass into the item creation
+    // e.g. the index if created from a context menu
+    const index = modalData.context?.item?.index;
+    const parentId = modalData.context?.item?.parentId;
+    // Overwrite the properties (if provided)
+    if (index !== undefined) {
+      itemData.index = index;
+    }
+
+    if (parentId !== undefined) {
+      itemData.parentId = parentId;
+    }
+
     // Create a new item
     createNewItem(itemData).then(() => {
       dispatch(clearFormData());
@@ -60,7 +76,7 @@ const NewItemModals = () => {
 
   return (
     <>
-      <Modal open={modalData.type === "new-bookmark"} onClose={close}>
+      <Modal open={modalData.type === "new-bookmark"} onClose={close} topLayer={true}>
         <NewItemForm onSubmit={handleSubmitForm} itemType={ItemTypes.BOOKMARK} formData={formData}>
           <div className="form-item">
             <label htmlFor={FORMS.newBookmark.url}>URL</label>
@@ -89,7 +105,7 @@ const NewItemModals = () => {
           </div>
         </NewItemForm>
       </Modal>
-      <Modal open={modalData.type === "new-group"} onClose={close}>
+      <Modal open={modalData.type === "new-group"} onClose={close} topLayer={true}>
         <NewItemForm onSubmit={handleSubmitForm} itemType={ItemTypes.GROUP} formData={formData}>
           <div className="form-item">
             <label htmlFor={FORMS.newGroup.name}>Group name</label>
@@ -104,7 +120,7 @@ const NewItemModals = () => {
           </div>
         </NewItemForm>
       </Modal>
-      <Modal open={modalData.type === "new-folder"} onClose={close}>
+      <Modal open={modalData.type === "new-folder"} onClose={close} topLayer={true}>
         <NewItemForm onSubmit={handleSubmitForm} itemType={ItemTypes.FOLDER} formData={formData}>
           <div className="form-item">
             <label htmlFor={FORMS.newFolder.name}>Folder name</label>
