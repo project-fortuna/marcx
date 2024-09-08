@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { openModal } from "../app/slices/modal";
 import { FormTypes, BookmarkNode, ItemTypes } from "../utils/types";
 import { useItemDeleter } from "../utils/hooks";
+import { setEditItemId } from "../app/slices/topLevelItems";
 
 /**
  *
@@ -61,7 +62,7 @@ const ContextMenu = ({ isOpen, x, y, onClick, contextItem }) => {
             {contextItem.type === ItemTypes.BOOKMARK ? (
               <button
                 onClick={() => {
-                  console.log("Edit");
+                  console.log("Edit bookmark");
                 }}
               >
                 <EditIcon />
@@ -70,7 +71,8 @@ const ContextMenu = ({ isOpen, x, y, onClick, contextItem }) => {
             ) : (
               <button
                 onClick={() => {
-                  console.log("edit");
+                  console.log("edit folder/group");
+                  dispatch(setEditItemId(contextItem.id));
                 }}
               >
                 <EditIcon />

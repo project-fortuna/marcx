@@ -1,7 +1,7 @@
 /*global chrome*/
 
 // External imports
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -21,17 +21,29 @@ import {
   deleteBookmarkNodes,
   getBookmarkNodes,
   moveItemsIntoContainer,
+  updateBookmarkNodes,
 } from "../utils/functions";
 
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setEditItemId } from "../app/slices/topLevelItems";
 
+/**
+ *
+ * @param {object} props
+ * @param {BookmarkNode} props.folder
+ * @returns
+ */
 const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
+  // const [editing, setEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(folder.title);
 
   const dispatch = useDispatch();
+
+  const isEditing = useSelector((state) => state.topLevelItems.editItemId === folder.id);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.FOLDER,
@@ -63,6 +75,10 @@ const Folder = ({ folder }) => {
    * Triggered by clicking the folder icon from the home screen icon
    */
   const openFolderModal = () => {
+    console.log(isEditing);
+    if (isEditing) {
+      return;
+    }
     setOpen(true);
     getChildren(folder.id);
   };
@@ -72,6 +88,21 @@ const Folder = ({ folder }) => {
     newChildren.sort((item1, item2) => item1.index - item2.index);
     console.log(`Got folder ${folderId}'s children:`, newChildren);
     setChildren(newChildren);
+  };
+
+  const onEditTitle = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const submitEdit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting title edit", editedTitle);
+    if (editedTitle.trim().length === 0) {
+      return;
+    }
+    // Update the bookmark node title
+    await updateBookmarkNodes([folder.id], (item) => ({ ...item, title: editedTitle }));
+    dispatch(setEditItemId(null));
   };
 
   /**
@@ -178,6 +209,7 @@ const Folder = ({ folder }) => {
 
   return (
     <>
+      {/* Opened folder content */}
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="standard-modal-container Folder-menu shadow">
           <span className="Folder-menu-header">
@@ -262,11 +294,18 @@ const Folder = ({ folder }) => {
           </ul>
         </div>
       </Modal>
+      {/* Folder icon */}
       <button ref={drag} className="board-item" onClick={openFolderModal}>
         <div className={`board-item-main ${isDragging ? "wiggle" : ""}`}>
           <FolderIcon style={{ width: "inherit", height: "inherit" }} />
         </div>
-        <span className="board-item-label">{folder.title}</span>
+        {isEditing ? (
+          <form onSubmit={submitEdit}>
+            <input value={editedTitle} onChange={onEditTitle} autoFocus />
+          </form>
+        ) : (
+          <span className="board-item-label">{folder.title}</span>
+        )}
       </button>
     </>
   );

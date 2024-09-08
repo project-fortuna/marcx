@@ -38,7 +38,7 @@ export function useItemsByPage(allItems, page, itemsPerPage) {
 
 export function useNewItemCreator() {
   const dispatch = useDispatch();
-  const topLevelItems = useSelector((state) => state.topLevelItems);
+  const topLevelItems = useSelector((state) => state.topLevelItems.items);
 
   return useCallback(
     async (newItem) => {

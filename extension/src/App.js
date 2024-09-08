@@ -34,7 +34,7 @@ import NewItemModals from "./components/NewItemModals";
 
 const App = () => {
   const [page, setPage] = useState(0);
-  const topLevelItems = useSelector((state) => state.topLevelItems);
+  const topLevelItems = useSelector((state) => state.topLevelItems.items);
   const dispatch = useDispatch();
 
   const [newItems, setNewItems] = useState([]);
