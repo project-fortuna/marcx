@@ -38,7 +38,6 @@ const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
-  // const [editing, setEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(folder.title);
 
   const dispatch = useDispatch();
@@ -184,7 +183,7 @@ const Folder = ({ folder }) => {
     const currentFolder = getCurrentFolder();
     console.debug(`About to delete ${currentFolder.id} (${currentFolder.title})`);
 
-    deleteBookmarkNodes([currentFolder.id]).then((updatedNodes) => {
+    deleteBookmarkNodes([currentFolder.id]).then(() => {
       // If the top-level folder is deleted, close the modal
       if (currentFolder.parentId == ROOT_ID) {
         console.debug("Deleting the top-level folder, closing modal");
@@ -202,7 +201,7 @@ const Folder = ({ folder }) => {
     const currentFolder = getCurrentFolder();
     console.debug(`Converting "${currentFolder.title}" to group`);
 
-    convertFolderToGroup(currentFolder.id).then((updatedNodes) => {
+    convertFolderToGroup(currentFolder.id).then(() => {
       setOpen(false);
     });
   };
