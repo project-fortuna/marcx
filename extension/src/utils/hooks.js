@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateTopLevelItems } from "../app/slices/topLevelItems";
 import {
   addNewBookmarkNode,
   deleteBookmarkNodes,
@@ -62,12 +61,7 @@ export function useNewItemCreator() {
       };
 
       const addedItem = await addNewBookmarkNode(itemToAdd);
-      console.log(`Successfully added new ${addedItem.type}`);
-      console.log(addedItem);
-      if (addedItem.parentId == ROOT_ID) {
-        dispatch(updateTopLevelItems(topLevelItems.concat(addedItem)));
-      }
-      // TODO: Make sure to update the boards for items added in a non-root board
+      console.log(`Successfully added new ${addedItem.type},`, addedItem);
     },
     [dispatch, topLevelItems]
   );
@@ -83,11 +77,10 @@ export function useItemDeleter() {
      */
     async (items) => {
       console.debug("Deleting", items);
-      const updatedNodes = await deleteBookmarkNodes(items);
+      await deleteBookmarkNodes(items);
 
       // // If the top-level folder is deleted, close the modal
       // if (currentFolder.parentId == ROOT_ID) {
-      dispatch(updateTopLevelItems(updatedNodes));
       // setOpen(false);
       // return;
       // }

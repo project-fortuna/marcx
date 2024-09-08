@@ -29,7 +29,6 @@ import globeDark from "../images/globe-dark.png";
 
 // Redux
 import { useDispatch } from "react-redux";
-import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
 /**
  *
@@ -101,9 +100,7 @@ const Group = ({ group }) => {
       drop: (incomingItem, monitor) => {
         if (!monitor.didDrop()) {
           console.debug("Dropped outside!");
-          moveItemsIntoContainer([incomingItem], ROOT_ID).then((updatedNodes) =>
-            dispatch(updateTopLevelItems(updatedNodes))
-          );
+          moveItemsIntoContainer([incomingItem], ROOT_ID);
         }
       },
       collect: (monitor) => ({
@@ -143,15 +140,13 @@ const Group = ({ group }) => {
   const getChildren = async (groupId) => {
     const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
     newChildren.sort((item1, item2) => item1.index - item2.index);
-    console.log("Got", newChildren);
+    console.log(`Got group ${groupId}'s children:`, newChildren);
     setChildren(newChildren);
   };
 
   const handleMoveAllItemsOut = () => {
     // Move items out to the top level
-    moveItemsIntoContainer(children, ROOT_ID).then((updatedNodes) =>
-      dispatch(updateTopLevelItems(updatedNodes))
-    );
+    moveItemsIntoContainer(children, ROOT_ID);
 
     // Clear the current children list
     setChildren([]);
@@ -159,8 +154,7 @@ const Group = ({ group }) => {
 
   const deleteGroup = () => {
     console.debug(`About to delete ${group.id} (${group.title})`);
-    deleteBookmarkNodes([group.id]).then((updatedNodes) => {
-      dispatch(updateTopLevelItems(updatedNodes));
+    deleteBookmarkNodes([group.id]).then(() => {
       setOpen(false);
       return;
     });
@@ -168,9 +162,7 @@ const Group = ({ group }) => {
 
   const convertToFolder = () => {
     console.debug(`Converting "${group.title}" to folder`);
-
-    convertGroupToFolder(group.id).then((updatedNodes) => {
-      dispatch(updateTopLevelItems(updatedNodes));
+    convertGroupToFolder(group.id).then(() => {
       setOpen(false);
     });
   };

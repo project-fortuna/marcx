@@ -26,6 +26,9 @@ export async function getBookmarkNodes(matchingFn) {
 
 export async function addNewBookmarkNode(item) {
   const currentNodes = await getBookmarkNodes();
+
+  // TODO: Add to group's children?
+
   await chrome.storage.local.set({ bookmarkNodes: currentNodes.concat(item) });
   return item;
 }

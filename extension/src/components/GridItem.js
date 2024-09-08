@@ -11,7 +11,6 @@ import { moveItemsIntoContainer, updateBookmarkNodes } from "../utils/functions"
 
 // Redux
 import { useDispatch } from "react-redux";
-import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
 /** A droppable element that together builds a board for our bookmarks manager interface
  * TODO: Fix docstring
@@ -37,15 +36,11 @@ const GridItem = ({ index, item, inGroup, onContextMenu }) => {
         updateBookmarkNodes([itemToMove.id], (item) => ({
           ...item,
           index: targetItem.index,
-        })).then((updatedNodes) => {
-          dispatch(updateTopLevelItems(updatedNodes));
-        });
+        }));
         break;
       case ItemTypes.FOLDER:
       case ItemTypes.GROUP:
-        moveItemsIntoContainer([itemToMove], targetItem.id).then((updatedNodes) => {
-          dispatch(updateTopLevelItems(updatedNodes));
-        });
+        moveItemsIntoContainer([itemToMove], targetItem.id);
         break;
       default:
         console.error("Invalid target item type, could not move");

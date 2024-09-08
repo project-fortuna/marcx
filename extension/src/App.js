@@ -50,16 +50,20 @@ const App = () => {
       dispatch(updateTopLevelItems(nodes));
     });
 
-    // Add chrome storage changed
+    // Add chrome storage event listener
     const listener = chrome.storage.onChanged.addListener((changes, namespace) => {
       // Find the new bookmark data
       for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-        console.log(
-          `Storage key "${key}" in namespace "${namespace}" changed.`
-          // `Old value was "${oldValue}", new value is "${newValue}".`
-        );
+        console.debug(`Storage key "${key}" in namespace "${namespace}" changed.`);
+        if (key === "bookmarkNodes") {
+          // Bookmark nodes were updated
+          dispatch(updateTopLevelItems(newValue));
+        }
+
         if (key === "newBookmarkNodes") {
-          console.log("Received new bookmark node");
+          // Received a new external bookmark node from Chrome's
+          // storage event listeners
+          console.log("Received new external bookmark node");
           setNewItems(newValue);
           addNewBookmarkNode(newValue);
         }
@@ -70,37 +74,6 @@ const App = () => {
       chrome.storage.onChanged.removeListener(listener);
     };
   }, []);
-
-  /**
-   *
-   * @param {object} newItem
-   */
-  const createNewItem = async (newItem) => {
-    console.log("Creating new item");
-    console.log(newItem);
-
-    const availableIndex = getAvailableIndices([...topLevelItems], 1)[0];
-    const id = await getNewId();
-
-    // New item with default fields, can be overwritten by the incoming item
-    // object
-    const itemToAdd = {
-      id,
-      index: availableIndex,
-      title: "No title",
-      parentId: ROOT_ID,
-      type: ItemTypes.EMPTY,
-      dateAdded: Date.now(),
-      ...newItem,
-    };
-
-    const addedItem = await addNewBookmarkNode(itemToAdd);
-    console.log(`Successfully added new ${addedItem.type}`);
-    console.log(addedItem);
-    if (addedItem.parentId == ROOT_ID) {
-      dispatch(updateTopLevelItems(topLevelItems.concat(addedItem)));
-    }
-  };
 
   const displayedTopLevelItems = useItemsByPage(topLevelItems, page, ITEMS_PER_PAGE);
 
@@ -116,7 +89,6 @@ const App = () => {
           page={page}
           onNextPage={() => setPage(page + 1)}
           onPreviousPage={() => setPage(page - 1)}
-          createNewItem={createNewItem}
         />
         <main>
           <PageBorder page={page} onHover={() => page !== 0 && setPage(page - 1)} left />

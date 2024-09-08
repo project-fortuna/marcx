@@ -88,7 +88,6 @@ const Board = ({ items, isGroup, page, id }) => {
 
   return (
     <>
-      {/* TODO: Move the context menu to be opened on individual grid items */}
       {contextMenu.isOpen && <ContextMenu {...contextMenu} onClick={closeContextMenu} />}
       <div onClick={closeContextMenu} className={`board ${isGroup ? "group-board" : "home-board"}`}>
         {grids}
