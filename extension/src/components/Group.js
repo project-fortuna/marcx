@@ -252,7 +252,7 @@ const Group = ({ group }) => {
           {displayedThumbnailItems}
         </article>
         {isEditing ? (
-          <form onSubmit={submitEdit}>
+          <form onSubmit={submitEdit} onBlur={() => dispatch(setEditItemId(null))}>
             <input type="text" value={editedTitle} onChange={onEditTitle} autoFocus />
           </form>
         ) : (

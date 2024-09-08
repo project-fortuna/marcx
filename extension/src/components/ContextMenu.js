@@ -59,26 +59,19 @@ const ContextMenu = ({ isOpen, x, y, onClick, contextItem }) => {
               <DeleteIcon />
               <label htmlFor="">Delete {contextItem.type}</label>
             </button>
-            {contextItem.type === ItemTypes.BOOKMARK ? (
-              <button
-                onClick={() => {
-                  console.log("Edit bookmark");
-                }}
-              >
-                <EditIcon />
-                <label htmlFor="">Edit {contextItem.type}</label>
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  console.log("edit folder/group");
-                  dispatch(setEditItemId(contextItem.id));
-                }}
-              >
-                <EditIcon />
-                <label htmlFor="">Rename {contextItem.type}</label>
-              </button>
-            )}
+
+            {/* Edit action */}
+            <button
+              onClick={() => {
+                console.log("Edit", contextItem.type);
+                dispatch(setEditItemId(contextItem.id));
+              }}
+            >
+              <EditIcon />
+              <label htmlFor="">
+                {contextItem.type === ItemTypes.BOOKMARK ? "Edit" : "Rename"} {contextItem.type}
+              </label>
+            </button>
           </>
         )}
       </Dropdown>

@@ -299,7 +299,7 @@ const Folder = ({ folder }) => {
           <FolderIcon style={{ width: "inherit", height: "inherit" }} />
         </div>
         {isEditing ? (
-          <form onSubmit={submitEdit}>
+          <form onSubmit={submitEdit} onBlur={() => dispatch(setEditItemId(null))}>
             <input value={editedTitle} onChange={onEditTitle} autoFocus />
           </form>
         ) : (
