@@ -16,7 +16,6 @@ import { getBookmarkNodes, overwriteBookmarkNodes } from "../utils/functions";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { updateTopLevelItems } from "../app/slices/topLevelItems";
 import { setWallpaper } from "../app/slices/settings";
 import SingleImageUpload from "./utility-components/SingleImageUpload";
 
@@ -70,9 +69,7 @@ const Settings = () => {
     }
     console.log("About to upload", uploadedData.length, "items");
 
-    overwriteBookmarkNodes(uploadedData).then((updatedNodes) =>
-      dispatch(updateTopLevelItems(updatedNodes))
-    );
+    overwriteBookmarkNodes(uploadedData);
     // TODO: Make sure the JSON file is valid
     setOpenModal(null);
   };

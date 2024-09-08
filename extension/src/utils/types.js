@@ -30,6 +30,12 @@ const ItemTypes = {
   EMPTY: "empty",
 };
 
+const FormTypes = {
+  NEW_BOOKMARK: "new-bookmark",
+  NEW_GROUP: "new-group",
+  NEW_FOLDER: "new-folder",
+};
+
 const TEST_BOOKMARK = {
   id: "9999",
   index: 3,
@@ -73,6 +79,7 @@ module.exports = {
   TEST_GROUP,
   Themes,
   ItemTypes,
+  FormTypes,
   FORMS,
   DEFAULT_SETTINGS,
 };

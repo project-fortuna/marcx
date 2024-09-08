@@ -25,7 +25,6 @@ import {
 
 // Redux
 import { useDispatch } from "react-redux";
-import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
 const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
@@ -44,9 +43,7 @@ const Folder = ({ folder }) => {
 
   const handleMoveAllItemsOut = () => {
     // Move items out to the top level
-    moveItemsIntoContainer(children, ROOT_ID).then((updatedNodes) =>
-      dispatch(updateTopLevelItems(updatedNodes))
-    );
+    moveItemsIntoContainer(children, ROOT_ID);
 
     // Clear the current children list
     setChildren([]);
@@ -54,9 +51,7 @@ const Folder = ({ folder }) => {
 
   const handleMoveChildOut = (item) => {
     // Move item out on the backend
-    moveItemsIntoContainer([item], ROOT_ID).then((updatedNodes) =>
-      dispatch(updateTopLevelItems(updatedNodes))
-    );
+    moveItemsIntoContainer([item], ROOT_ID);
 
     // Remove from the children list
     setChildren((curChildren) => curChildren.filter((child) => child.id != item.id));
@@ -75,7 +70,7 @@ const Folder = ({ folder }) => {
   const getChildren = async (folderId) => {
     const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === folderId);
     newChildren.sort((item1, item2) => item1.index - item2.index);
-    console.log("Got", newChildren);
+    console.log(`Got folder ${folderId}'s children:`, newChildren);
     setChildren(newChildren);
   };
 
@@ -162,7 +157,6 @@ const Folder = ({ folder }) => {
       // If the top-level folder is deleted, close the modal
       if (currentFolder.parentId == ROOT_ID) {
         console.debug("Deleting the top-level folder, closing modal");
-        dispatch(updateTopLevelItems(updatedNodes));
         setOpen(false);
         return;
       }
@@ -178,7 +172,6 @@ const Folder = ({ folder }) => {
     console.debug(`Converting "${currentFolder.title}" to group`);
 
     convertFolderToGroup(currentFolder.id).then((updatedNodes) => {
-      dispatch(updateTopLevelItems(updatedNodes));
       setOpen(false);
     });
   };

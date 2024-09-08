@@ -1,5 +1,12 @@
-import { useMemo } from "react";
-import { BookmarkNode } from "./types";
+import { useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addNewBookmarkNode,
+  deleteBookmarkNodes,
+  getAvailableIndices,
+  getNewId,
+} from "./functions";
+import { BookmarkNode, ItemTypes, ROOT_ID } from "./types";
 
 /**
  * Memoized array of items that should be currently displayed.
@@ -27,4 +34,61 @@ export function useItemsByPage(allItems, page, itemsPerPage) {
 
     return currentPageItems;
   }, [allItems, page]);
+}
+
+export function useNewItemCreator() {
+  const dispatch = useDispatch();
+  const topLevelItems = useSelector((state) => state.topLevelItems);
+
+  return useCallback(
+    async (newItem) => {
+      console.log("Creating new item");
+      console.log(newItem);
+
+      const availableIndex = getAvailableIndices([...topLevelItems], 1)[0];
+      const id = await getNewId();
+
+      // New item with default fields, can be overwritten by the incoming item
+      // object
+      const itemToAdd = {
+        id,
+        index: availableIndex,
+        title: "No title",
+        parentId: ROOT_ID,
+        type: ItemTypes.EMPTY,
+        dateAdded: Date.now(),
+        ...newItem,
+      };
+
+      const addedItem = await addNewBookmarkNode(itemToAdd);
+      console.log(`Successfully added new ${addedItem.type},`, addedItem);
+    },
+    [dispatch, topLevelItems]
+  );
+}
+
+export function useItemDeleter() {
+  const dispatch = useDispatch();
+
+  return useCallback(
+    /**
+     *
+     * @param {BookmarkNode[]} items
+     */
+    async (items) => {
+      console.debug("Deleting", items);
+      await deleteBookmarkNodes(items);
+
+      // // If the top-level folder is deleted, close the modal
+      // if (currentFolder.parentId == ROOT_ID) {
+      // setOpen(false);
+      // return;
+      // }
+
+      // // Otherwise update the breadcrumbs (and children)
+      // setBreadcrumbs(breadcrumbs.slice(0, breadcrumbs.length - 1));
+      // getChildren(currentFolder.parentId);
+    },
+    [dispatch]
+  );
 }

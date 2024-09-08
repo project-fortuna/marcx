@@ -5,22 +5,17 @@ export const topLevelItemsSlice = createSlice({
   name: "topLevelItems",
   initialState: null,
   reducers: {
-    updateTopLevelItems: (state, action) => {
+    updateTopLevelItems: (_, action) => {
       const newItems = action.payload;
       const updatedTopLevelItems = newItems.filter((node) => node.parentId == ROOT_ID);
+      console.log("Updating top level items to", updatedTopLevelItems);
       return updatedTopLevelItems;
     },
     moveItemsToTopLevel: (state, action) => {
       const items = action.payload;
       console.debug("Moving out the following items:");
       console.debug(items.map((item) => item.id));
-
-      moveItemsIntoContainer(items, ROOT_ID).then((updatedNodes) => {
-        const updatedTopLevelNodes = updatedNodes.filter((node) => node.parentId == ROOT_ID);
-        // Move the nodes to the top level in the front end after backend has
-        // been updated
-        setTopLevelItems(updatedTopLevelNodes);
-      });
+      moveItemsIntoContainer(items, ROOT_ID);
     },
   },
 });

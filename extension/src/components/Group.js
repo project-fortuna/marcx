@@ -16,6 +16,7 @@ import Board from "./Board";
 import PageBorder from "./PageBorder";
 import Modal from "./utility-components/Modal";
 import Dropdown from "./utility-components/Dropdown";
+import { BookmarkNode } from "../utils/types";
 import { useItemsByPage } from "../utils/hooks";
 import {
   convertGroupToFolder,
@@ -28,8 +29,13 @@ import globeDark from "../images/globe-dark.png";
 
 // Redux
 import { useDispatch } from "react-redux";
-import { updateTopLevelItems } from "../app/slices/topLevelItems";
 
+/**
+ *
+ * @param {object} props
+ * @param {BookmarkNode} props.group
+ * @returns
+ */
 const Group = ({ group }) => {
   // React hooks
   const [open, setOpen] = useState(false);
@@ -94,9 +100,7 @@ const Group = ({ group }) => {
       drop: (incomingItem, monitor) => {
         if (!monitor.didDrop()) {
           console.debug("Dropped outside!");
-          moveItemsIntoContainer([incomingItem], ROOT_ID).then((updatedNodes) =>
-            dispatch(updateTopLevelItems(updatedNodes))
-          );
+          moveItemsIntoContainer([incomingItem], ROOT_ID);
         }
       },
       collect: (monitor) => ({
@@ -136,15 +140,13 @@ const Group = ({ group }) => {
   const getChildren = async (groupId) => {
     const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
     newChildren.sort((item1, item2) => item1.index - item2.index);
-    console.log("Got", newChildren);
+    console.log(`Got group ${groupId}'s children:`, newChildren);
     setChildren(newChildren);
   };
 
   const handleMoveAllItemsOut = () => {
     // Move items out to the top level
-    moveItemsIntoContainer(children, ROOT_ID).then((updatedNodes) =>
-      dispatch(updateTopLevelItems(updatedNodes))
-    );
+    moveItemsIntoContainer(children, ROOT_ID);
 
     // Clear the current children list
     setChildren([]);
@@ -152,8 +154,7 @@ const Group = ({ group }) => {
 
   const deleteGroup = () => {
     console.debug(`About to delete ${group.id} (${group.title})`);
-    deleteBookmarkNodes([group.id]).then((updatedNodes) => {
-      dispatch(updateTopLevelItems(updatedNodes));
+    deleteBookmarkNodes([group.id]).then(() => {
       setOpen(false);
       return;
     });
@@ -161,9 +162,7 @@ const Group = ({ group }) => {
 
   const convertToFolder = () => {
     console.debug(`Converting "${group.title}" to folder`);
-
-    convertGroupToFolder(group.id).then((updatedNodes) => {
-      dispatch(updateTopLevelItems(updatedNodes));
+    convertGroupToFolder(group.id).then(() => {
       setOpen(false);
     });
   };
@@ -216,7 +215,7 @@ const Group = ({ group }) => {
                   borderRadius: "2rem",
                 }}
               ></div>
-              <Board items={displayedChildren} isGroup={true} page={page} />
+              <Board items={displayedChildren} isGroup={true} page={page} id={group.id} />
             </div>
             <PageBorder onHover={() => setPage(page + 1)} page={page} invisible>
               <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>
