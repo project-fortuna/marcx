@@ -258,6 +258,7 @@ const Folder = ({ folder }) => {
                     {item.type === ItemTypes.FOLDER ? (
                       <FolderIcon />
                     ) : (
+                      // TODO: Update the URL on error
                       <img src={`${FAVICON_URL}${item.url}`} alt="" />
                     )}
                     <label
