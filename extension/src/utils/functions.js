@@ -62,7 +62,6 @@ export async function updateBookmarkNodes(itemIds, updateFn) {
   const currentNodes = await getBookmarkNodes();
   const updatedNodes = currentNodes.map((item) => {
     if (itemIds.includes(item.id)) {
-      console.log("Updating");
       return updateFn(item);
     }
     return item;

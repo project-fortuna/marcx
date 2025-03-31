@@ -1,7 +1,7 @@
 /*global chrome*/
 
 // External imports
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -21,17 +21,28 @@ import {
   deleteBookmarkNodes,
   getBookmarkNodes,
   moveItemsIntoContainer,
+  updateBookmarkNodes,
 } from "../utils/functions";
 
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setEditItemId } from "../app/slices/topLevelItems";
 
+/**
+ *
+ * @param {object} props
+ * @param {BookmarkNode} props.folder
+ * @returns
+ */
 const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
+  const [editedTitle, setEditedTitle] = useState(folder.title);
 
   const dispatch = useDispatch();
+
+  const isEditing = useSelector((state) => state.topLevelItems.editItemId === folder.id);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.FOLDER,
@@ -63,6 +74,10 @@ const Folder = ({ folder }) => {
    * Triggered by clicking the folder icon from the home screen icon
    */
   const openFolderModal = () => {
+    console.log(isEditing);
+    if (isEditing) {
+      return;
+    }
     setOpen(true);
     getChildren(folder.id);
   };
@@ -72,6 +87,21 @@ const Folder = ({ folder }) => {
     newChildren.sort((item1, item2) => item1.index - item2.index);
     console.log(`Got folder ${folderId}'s children:`, newChildren);
     setChildren(newChildren);
+  };
+
+  const onEditTitle = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const submitEdit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting title edit", editedTitle);
+    if (editedTitle.trim().length === 0) {
+      return;
+    }
+    // Update the bookmark node title
+    await updateBookmarkNodes([folder.id], (item) => ({ ...item, title: editedTitle }));
+    dispatch(setEditItemId(null));
   };
 
   /**
@@ -153,7 +183,7 @@ const Folder = ({ folder }) => {
     const currentFolder = getCurrentFolder();
     console.debug(`About to delete ${currentFolder.id} (${currentFolder.title})`);
 
-    deleteBookmarkNodes([currentFolder.id]).then((updatedNodes) => {
+    deleteBookmarkNodes([currentFolder.id]).then(() => {
       // If the top-level folder is deleted, close the modal
       if (currentFolder.parentId == ROOT_ID) {
         console.debug("Deleting the top-level folder, closing modal");
@@ -171,13 +201,14 @@ const Folder = ({ folder }) => {
     const currentFolder = getCurrentFolder();
     console.debug(`Converting "${currentFolder.title}" to group`);
 
-    convertFolderToGroup(currentFolder.id).then((updatedNodes) => {
+    convertFolderToGroup(currentFolder.id).then(() => {
       setOpen(false);
     });
   };
 
   return (
     <>
+      {/* Opened folder content */}
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="standard-modal-container Folder-menu shadow">
           <span className="Folder-menu-header">
@@ -227,6 +258,7 @@ const Folder = ({ folder }) => {
                     {item.type === ItemTypes.FOLDER ? (
                       <FolderIcon />
                     ) : (
+                      // TODO: Update the URL on error
                       <img src={`${FAVICON_URL}${item.url}`} alt="" />
                     )}
                     <label
@@ -262,11 +294,18 @@ const Folder = ({ folder }) => {
           </ul>
         </div>
       </Modal>
+      {/* Folder icon */}
       <button ref={drag} className="board-item" onClick={openFolderModal}>
         <div className={`board-item-main ${isDragging ? "wiggle" : ""}`}>
           <FolderIcon style={{ width: "inherit", height: "inherit" }} />
         </div>
-        <span className="board-item-label">{folder.title}</span>
+        {isEditing ? (
+          <form onSubmit={submitEdit} onBlur={() => dispatch(setEditItemId(null))}>
+            <input value={editedTitle} onChange={onEditTitle} autoFocus />
+          </form>
+        ) : (
+          <span className="board-item-label">{folder.title}</span>
+        )}
       </button>
     </>
   );
