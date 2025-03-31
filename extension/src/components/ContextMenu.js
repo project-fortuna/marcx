@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { openModal } from "../app/slices/modal";
 import { FormTypes, BookmarkNode, ItemTypes } from "../utils/types";
 import { useItemDeleter } from "../utils/hooks";
+import { setEditItemId } from "../app/slices/topLevelItems";
 
 /**
  *
@@ -58,25 +59,19 @@ const ContextMenu = ({ isOpen, x, y, onClick, contextItem }) => {
               <DeleteIcon />
               <label htmlFor="">Delete {contextItem.type}</label>
             </button>
-            {contextItem.type === ItemTypes.BOOKMARK ? (
-              <button
-                onClick={() => {
-                  console.log("Edit");
-                }}
-              >
-                <EditIcon />
-                <label htmlFor="">Edit {contextItem.type}</label>
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  console.log("edit");
-                }}
-              >
-                <EditIcon />
-                <label htmlFor="">Rename {contextItem.type}</label>
-              </button>
-            )}
+
+            {/* Edit action */}
+            <button
+              onClick={() => {
+                console.log("Edit", contextItem.type);
+                dispatch(setEditItemId(contextItem.id));
+              }}
+            >
+              <EditIcon />
+              <label htmlFor="">
+                {contextItem.type === ItemTypes.BOOKMARK ? "Edit" : "Rename"} {contextItem.type}
+              </label>
+            </button>
           </>
         )}
       </Dropdown>

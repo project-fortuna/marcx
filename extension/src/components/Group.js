@@ -23,12 +23,14 @@ import {
   deleteBookmarkNodes,
   getBookmarkNodes,
   moveItemsIntoContainer,
+  updateBookmarkNodes,
 } from "../utils/functions";
 import { FAVICON_URL, ITEMS_PER_GROUP, ItemTypes, ROOT_ID } from "../utils/types";
 import globeDark from "../images/globe-dark.png";
 
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setEditItemId } from "../app/slices/topLevelItems";
 
 /**
  *
@@ -41,6 +43,7 @@ const Group = ({ group }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [page, setPage] = useState(0);
+  const [editedTitle, setEditedTitle] = useState(group.title);
 
   useEffect(() => {
     getChildren(group.id);
@@ -80,6 +83,7 @@ const Group = ({ group }) => {
 
   // Redux hooks
   const dispatch = useDispatch();
+  const isEditing = useSelector((state) => state.topLevelItems.editItemId === group.id);
 
   // React D&D Hooks
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -142,6 +146,21 @@ const Group = ({ group }) => {
     newChildren.sort((item1, item2) => item1.index - item2.index);
     console.log(`Got group ${groupId}'s children:`, newChildren);
     setChildren(newChildren);
+  };
+
+  const onEditTitle = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const submitEdit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting title edit", editedTitle);
+    if (editedTitle.trim().length === 0) {
+      return;
+    }
+    // Update the bookmark node title
+    await updateBookmarkNodes([group.id], (item) => ({ ...item, title: editedTitle }));
+    dispatch(setEditItemId(null));
   };
 
   const handleMoveAllItemsOut = () => {
@@ -232,7 +251,13 @@ const Group = ({ group }) => {
         <article className={`Group-thumbnail board-item-main glass ${isDragging ? "wiggle" : ""}`}>
           {displayedThumbnailItems}
         </article>
-        <span className="board-item-label">{group.title}</span>
+        {isEditing ? (
+          <form onSubmit={submitEdit} onBlur={() => dispatch(setEditItemId(null))}>
+            <input type="text" value={editedTitle} onChange={onEditTitle} autoFocus />
+          </form>
+        ) : (
+          <span className="board-item-label">{group.title}</span>
+        )}
       </button>
     </>
   );
