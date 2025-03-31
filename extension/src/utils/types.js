@@ -18,11 +18,22 @@ const ROOT_ID = 0;
 const ITEMS_PER_PAGE = 48;
 const ITEMS_PER_GROUP = 9;
 
+const Themes = {
+  DARK: "dark",
+  LIGHT: "light",
+};
+
 const ItemTypes = {
   BOOKMARK: "bookmark",
   FOLDER: "folder",
   GROUP: "group",
   EMPTY: "empty",
+};
+
+const FormTypes = {
+  NEW_BOOKMARK: "new-bookmark",
+  NEW_GROUP: "new-group",
+  NEW_FOLDER: "new-folder",
 };
 
 const TEST_BOOKMARK = {
@@ -54,6 +65,11 @@ const FORMS = {
   },
 };
 
+const DEFAULT_SETTINGS = {
+  theme: Themes.LIGHT,
+  backgroundImage: null,
+};
+
 module.exports = {
   FAVICON_URL,
   ROOT_ID,
@@ -61,6 +77,9 @@ module.exports = {
   ITEMS_PER_GROUP,
   TEST_BOOKMARK,
   TEST_GROUP,
+  Themes,
   ItemTypes,
+  FormTypes,
   FORMS,
+  DEFAULT_SETTINGS,
 };

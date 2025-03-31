@@ -12,6 +12,7 @@ import {
   getAvailableIndices,
   getNewId,
   convertFolderToGroup,
+  overwriteBookmarkNodes,
 } from "./utils/functions";
 import {
   ITEMS_PER_PAGE,
@@ -27,9 +28,15 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useItemsByPage } from "./utils/hooks";
 
+import { useSelector, useDispatch } from "react-redux";
+import { updateTopLevelItems } from "./app/slices/topLevelItems";
+import NewItemModals from "./components/NewItemModals";
+
 const App = () => {
   const [page, setPage] = useState(0);
-  const [topLevelItems, setTopLevelItems] = useState(null);
+  const topLevelItems = useSelector((state) => state.topLevelItems.items);
+  const dispatch = useDispatch();
+
   const [newItems, setNewItems] = useState([]);
 
   useEffect(() => {
@@ -39,20 +46,24 @@ const App = () => {
     });
 
     // Get ALL top level bookmark nodes (folders, groups, bookmarks)
-    getBookmarkNodes((node) => node.parentId == ROOT_ID).then((topLevelNodes) => {
-      setTopLevelItems(topLevelNodes);
+    getBookmarkNodes().then((nodes) => {
+      dispatch(updateTopLevelItems(nodes));
     });
 
-    // Add chrome storage changed
+    // Add chrome storage event listener
     const listener = chrome.storage.onChanged.addListener((changes, namespace) => {
       // Find the new bookmark data
       for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-        console.log(
-          `Storage key "${key}" in namespace "${namespace}" changed.`
-          // `Old value was "${oldValue}", new value is "${newValue}".`
-        );
+        console.debug(`Storage key "${key}" in namespace "${namespace}" changed.`);
+        if (key === "bookmarkNodes") {
+          // Bookmark nodes were updated
+          dispatch(updateTopLevelItems(newValue));
+        }
+
         if (key === "newBookmarkNodes") {
-          console.log("Received new bookmark node");
+          // Received a new external bookmark node from Chrome's
+          // storage event listeners
+          console.log("Received new external bookmark node");
           setNewItems(newValue);
           addNewBookmarkNode(newValue);
         }
@@ -64,97 +75,6 @@ const App = () => {
     };
   }, []);
 
-  /**
-   * Moves the given items to the primary board (top-level).
-   *
-   * @param {BookmarkNode[]} items - The list of items to move
-   */
-  const moveItemsToTopLevel = (items) => {
-    console.debug("Moving out the following items:");
-    console.debug(items.map((item) => item.id));
-
-    moveItemsIntoContainer(items, ROOT_ID).then((updatedNodes) => {
-      const updatedTopLevelNodes = updatedNodes.filter((node) => node.parentId == ROOT_ID);
-      // Move the nodes to the top level in the front end after backend has
-      // been updated
-      setTopLevelItems(updatedTopLevelNodes);
-    });
-  };
-
-  /**
-   *
-   * @param {BookmarkNode} itemToMove
-   * @param {BookmarkNode} targetItem
-   */
-  const moveItem = (itemToMove, targetItem) => {
-    console.log(`Moving item ${itemToMove.id} (${itemToMove.title}) to index ${targetItem.index}`);
-    console.debug(`Target item is type '${targetItem.type}'`);
-    switch (targetItem.type) {
-      case ItemTypes.EMPTY:
-        updateBookmarkNodes([itemToMove.id], (item) => ({
-          ...item,
-          index: targetItem.index,
-        })).then((updatedNodes) => {
-          const updatedTopLevelItems = updatedNodes.filter((node) => node.parentId == ROOT_ID);
-          setTopLevelItems(updatedTopLevelItems);
-        });
-        break;
-      case ItemTypes.FOLDER:
-      case ItemTypes.GROUP:
-        moveItemsIntoContainer([itemToMove], targetItem.id).then((updatedNodes) => {
-          setTopLevelItems(updatedNodes.filter((node) => node.parentId == ROOT_ID));
-        });
-        break;
-      default:
-        console.error("Invalid target item type, could not move");
-        break;
-    }
-  };
-
-  /**
-   *
-   * @param {object} newItem
-   */
-  const createNewItem = async (newItem) => {
-    console.log("Creating new item");
-    console.log(newItem);
-
-    const availableIndex = getAvailableIndices(topLevelItems, 1)[0];
-    const id = await getNewId();
-
-    // New item with default fields, can be overwritten by the incoming item
-    // object
-    const itemToAdd = {
-      id,
-      index: availableIndex,
-      title: "No title",
-      parentId: ROOT_ID,
-      type: ItemTypes.EMPTY,
-      dateAdded: Date.now(),
-      ...newItem,
-    };
-
-    const addedItem = await addNewBookmarkNode(itemToAdd);
-    console.log(`Successfully added new ${addedItem.type}`);
-    console.log(addedItem);
-    if (addedItem.parentId == ROOT_ID) {
-      setTopLevelItems(topLevelItems.concat(addedItem));
-    }
-  };
-
-  /**
-   *
-   * @param {string} itemId
-   * @param {string} currentType
-   */
-  const convertContainer = async (itemId, currentType) => {
-    if (currentType === ItemTypes.FOLDER) {
-      const updatedNodes = await convertFolderToGroup(itemId);
-      setTopLevelItems(updatedNodes.filter((node) => node.parentId == ROOT_ID));
-      return true;
-    }
-  };
-
   const displayedTopLevelItems = useItemsByPage(topLevelItems, page, ITEMS_PER_PAGE);
 
   return (
@@ -164,21 +84,15 @@ const App = () => {
         New bookmarks have been added!
         {JSON.stringify(newItems)}
       </Modal> */}
+        <NewItemModals />
         <Navbar
           page={page}
           onNextPage={() => setPage(page + 1)}
           onPreviousPage={() => setPage(page - 1)}
-          createNewItem={createNewItem}
         />
         <main>
           <PageBorder page={page} onHover={() => page !== 0 && setPage(page - 1)} left />
-          <Board
-            items={displayedTopLevelItems}
-            moveItemsOut={moveItemsToTopLevel}
-            moveItem={moveItem}
-            page={page}
-            convertContainer={convertContainer}
-          />
+          <Board items={displayedTopLevelItems} page={page} id={ROOT_ID} />
           <PageBorder page={page} onHover={() => setPage(page + 1)} />
         </main>
       </div>

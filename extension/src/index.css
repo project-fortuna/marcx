@@ -1,26 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
 :root {
-  --primary: #03045e;
+  --primary: hsl(239, 94%, 30%);
+  --primary--hover: hsl(239, 94%, 20%);
   --primary--dim: #0077b6;
   --darkgrey: #00b4d8;
   --medgrey: #48cae4;
   --grey: #90e0ef;
-  --white: #caf0f8;
 
   --group-bgcolor: hsla(0, 0%, 90%, 0.5);
 
   --white: hsl(0, 0%, 98%);
   --off-white: hsl(0, 0%, 94%);
 
-  --droppable-bgcolor: rgba(51, 208, 51, 0.5);
-  --not-droppable-bgcolor: rgba(255, 82, 82, 0.5);
+  --droppable-bgcolor: hsla(0, 0%, 90%, 0.5);
+  --not-droppable-bgcolor: hsla(0, 100%, 90%, 0.5);
+
+  --warning-color: #d12626;
 
   --xs: 4px;
   --s: 8px;
   --m: 16px;
   --l: 24px;
 
-  --font: "Roboto", sans-serif;
+  --font: "Quicksand", sans-serif;
 }
 
 @keyframes glow {
@@ -68,7 +70,7 @@ body {
 }
 
 .App {
-  background: linear-gradient(30deg, #cef6ff, #dddfff);
+  /* background: linear-gradient(30deg, #cef6ff, #dddfff); */
   /* background-color: white; */
   height: 100vh;
 }
@@ -87,7 +89,7 @@ button {
   border: none;
 }
 
-.grid-item {
+.board-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -96,7 +98,15 @@ button {
   text-decoration: none;
 }
 
-.grid-item-label {
+.board-item:hover {
+  cursor: pointer;
+}
+
+.board-item:hover .board-item-main:not(.wiggle) {
+  transform: scale(1.1);
+}
+
+.board-item-label {
   font-family: var(--font);
   font-size: 0.75rem;
   text-align: center;
@@ -108,19 +118,13 @@ button {
   max-width: 210px;
 }
 
-.grid-item-container {
+/* The container for the main feature of the board item (e.g. bookmark icon,
+group thumbnail, etc.) */
+.board-item-main {
   width: 72px;
   height: 72px;
   border-radius: 20%;
   transition: all 100ms ease-out;
-}
-
-.grid-item:hover {
-  cursor: pointer;
-}
-
-.grid-item:hover .grid-item-container:not(.wiggle) {
-  transform: scale(1.1);
 }
 
 /* Add scale to maintain scale from hover */
@@ -146,19 +150,43 @@ button {
   animation: wiggle 0.2s infinite linear;
 }
 
-.primary-button {
-  color: aliceblue;
-  background-color: #0077b6;
+.primary-button,
+.secondary-button {
   padding: 1rem 2rem;
   border-radius: 0.5rem;
 
   transition: all 0.1s ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.primary-button {
+  color: var(--white);
+  background-color: var(--primary);
+}
+
+.secondary-button {
+  border: 1px solid var(--primary--hover);
+  background-color: transparent;
 }
 
 .primary-button:hover {
-  background-color: #00507a;
+  background-color: var(--primary--hover);
   transform: scale(1.05);
   cursor: pointer;
+}
+
+.secondary-button:hover {
+  color: var(--white);
+  background-color: var(--primary--hover);
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.warning-text {
+  color: var(--warning-color);
 }
 
 .text-input {
@@ -184,9 +212,25 @@ button {
   gap: 0.4rem;
 }
 
+.standard-modal-container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
 .glass {
   background: linear-gradient(157.81deg, hsla(0, 0%, 67%, 0.4) 3.65%, hsla(0, 0%, 67%, 0.1) 96.08%);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid hsla(0, 0%, 50%, 0.397);
+}
+
+input.invisible {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
 }

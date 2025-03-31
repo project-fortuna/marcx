@@ -1,64 +1,53 @@
 /*global chrome*/
 
+// External imports
 import React, { useEffect, useMemo, useState } from "react";
-import { BookmarkNode, FAVICON_URL, ITEMS_PER_GROUP, ItemTypes } from "../utils/types";
-import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OutboxIcon from "@mui/icons-material/Outbox";
+import Folder from "@mui/icons-material/Folder";
+import Delete from "@mui/icons-material/Delete";
+import { useDrag, useDrop } from "react-dnd";
 
+// Local imports
+import "../styles/Group.css";
+import Board from "./Board";
+import PageBorder from "./PageBorder";
 import Modal from "./utility-components/Modal";
 import Dropdown from "./utility-components/Dropdown";
-import "../styles/Group.css";
-import { getBookmarkNodes } from "../utils/functions";
-import { useDrag, useDrop } from "react-dnd";
-import Board from "./Board";
+import { BookmarkNode } from "../utils/types";
 import { useItemsByPage } from "../utils/hooks";
-import PageBorder from "./PageBorder";
+import {
+  convertGroupToFolder,
+  deleteBookmarkNodes,
+  getBookmarkNodes,
+  moveItemsIntoContainer,
+  updateBookmarkNodes,
+} from "../utils/functions";
+import { FAVICON_URL, ITEMS_PER_GROUP, ItemTypes, ROOT_ID } from "../utils/types";
 import globeDark from "../images/globe-dark.png";
 
-const Group = ({ group, moveItemsOut, moveItem }) => {
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { setEditItemId } from "../app/slices/topLevelItems";
+
+/**
+ *
+ * @param {object} props
+ * @param {BookmarkNode} props.group
+ * @returns
+ */
+const Group = ({ group }) => {
+  // React hooks
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [page, setPage] = useState(0);
-
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.GROUP,
-    item: group,
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
+  const [editedTitle, setEditedTitle] = useState(group.title);
 
   useEffect(() => {
     getChildren(group.id);
   }, [group?.children]);
-
-  const handleMoveAllItemsOut = () => {
-    // Move items out on the backend
-    moveItemsOut(children);
-
-    // Clear the current children list
-    setChildren([]);
-  };
-
-  /**
-   * Opens the primary folder menu in a modal
-   *
-   * Triggered by clicking the folder icon from the home screen icon
-   */
-  const openGroupModal = () => {
-    setOpen(true);
-    getChildren(group.id);
-  };
-
-  const getChildren = async (groupId) => {
-    const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
-    newChildren.sort((item1, item2) => item1.index - item2.index);
-    console.log("Got", newChildren);
-    setChildren(newChildren);
-  };
 
   const displayedThumbnailItems = useMemo(() => {
     if (!children) {
@@ -92,7 +81,18 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
     return thumbnailItems;
   }, [children]);
 
-  const displayedChildren = useItemsByPage(children, page, ITEMS_PER_GROUP);
+  // Redux hooks
+  const dispatch = useDispatch();
+  const isEditing = useSelector((state) => state.topLevelItems.editItemId === group.id);
+
+  // React D&D Hooks
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemTypes.GROUP,
+    item: group,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
 
   const [{ isOver }, moveOutDrop] = useDrop(
     () => ({
@@ -104,7 +104,7 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
       drop: (incomingItem, monitor) => {
         if (!monitor.didDrop()) {
           console.debug("Dropped outside!");
-          moveItemsOut([incomingItem]);
+          moveItemsIntoContainer([incomingItem], ROOT_ID);
         }
       },
       collect: (monitor) => ({
@@ -128,6 +128,64 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
     []
   );
 
+  // Custom hooks
+  const displayedChildren = useItemsByPage(children, page, ITEMS_PER_GROUP);
+
+  /**
+   * Opens the primary folder menu in a modal
+   *
+   * Triggered by clicking the folder icon from the home screen icon
+   */
+  const openGroupModal = () => {
+    setOpen(true);
+    getChildren(group.id);
+  };
+
+  const getChildren = async (groupId) => {
+    const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === groupId);
+    newChildren.sort((item1, item2) => item1.index - item2.index);
+    console.log(`Got group ${groupId}'s children:`, newChildren);
+    setChildren(newChildren);
+  };
+
+  const onEditTitle = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const submitEdit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting title edit", editedTitle);
+    if (editedTitle.trim().length === 0) {
+      return;
+    }
+    // Update the bookmark node title
+    await updateBookmarkNodes([group.id], (item) => ({ ...item, title: editedTitle }));
+    dispatch(setEditItemId(null));
+  };
+
+  const handleMoveAllItemsOut = () => {
+    // Move items out to the top level
+    moveItemsIntoContainer(children, ROOT_ID);
+
+    // Clear the current children list
+    setChildren([]);
+  };
+
+  const deleteGroup = () => {
+    console.debug(`About to delete ${group.id} (${group.title})`);
+    deleteBookmarkNodes([group.id]).then(() => {
+      setOpen(false);
+      return;
+    });
+  };
+
+  const convertToFolder = () => {
+    console.debug(`Converting "${group.title}" to folder`);
+    convertGroupToFolder(group.id).then(() => {
+      setOpen(false);
+    });
+  };
+
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)} droppableBackgroundRef={moveOutDrop}>
@@ -139,7 +197,21 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
         </div>
         <div className="Group" ref={noDrop}>
           <header className="Group-header">
-            <h2>Page {page + 1}</h2>
+            <h1>{group.title}</h1>
+            <Dropdown buttonIcon={<MoreVertIcon />}>
+              <button id="move-all-out" onClick={handleMoveAllItemsOut}>
+                <OutboxIcon />
+                <label htmlFor="move-all-out">Move all folder contents out</label>
+              </button>
+              <button id="delete-group" onClick={deleteGroup}>
+                <Delete />
+                <label htmlFor="delete-group">Delete group</label>
+              </button>
+              <button id="convert-to-folder" onClick={convertToFolder}>
+                <Folder />
+                <label htmlFor="convert-to-folder">Convert to folder</label>
+              </button>
+            </Dropdown>
           </header>
           <main className="Group-main">
             <PageBorder onHover={() => page > 0 && setPage(page - 1)} page={page} left invisible>
@@ -157,18 +229,12 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
                 style={{
                   position: "absolute",
                   inset: "0",
-                  backdropFilter: "blur(2px)",
+                  backdropFilter: "blur(10px)",
                   zIndex: "-1",
                   borderRadius: "2rem",
                 }}
               ></div>
-              <Board
-                items={displayedChildren}
-                isGroup={true}
-                moveItemsOut={moveItemsOut}
-                moveItem={moveItem}
-                page={page}
-              />
+              <Board items={displayedChildren} isGroup={true} page={page} id={group.id} />
             </div>
             <PageBorder onHover={() => setPage(page + 1)} page={page} invisible>
               <button id="group-next" title="Next Page" onClick={() => setPage(page + 1)}>
@@ -177,24 +243,21 @@ const Group = ({ group, moveItemsOut, moveItem }) => {
             </PageBorder>
           </main>
           <footer className="Group-footer">
-            <h1>{group.title}</h1>
-            <Dropdown buttonIcon={<MoreVertIcon />}>
-              <button id="move-all-out" onClick={handleMoveAllItemsOut}>
-                <OutboxIcon />
-                <label htmlFor="move-all-out">Move all folder contents out</label>
-              </button>
-              <button>Other</button>
-            </Dropdown>
+            <h2>Page {page + 1}</h2>
           </footer>
         </div>
       </Modal>
-      <button ref={drag} className="grid-item" onClick={openGroupModal}>
-        <article
-          className={`Group-thumbnail grid-item-container glass ${isDragging ? "wiggle" : ""}`}
-        >
+      <button ref={drag} className="board-item" onClick={openGroupModal}>
+        <article className={`Group-thumbnail board-item-main glass ${isDragging ? "wiggle" : ""}`}>
           {displayedThumbnailItems}
         </article>
-        <span className="grid-item-label">{group.title}</span>
+        {isEditing ? (
+          <form onSubmit={submitEdit} onBlur={() => dispatch(setEditItemId(null))}>
+            <input type="text" value={editedTitle} onChange={onEditTitle} autoFocus />
+          </form>
+        ) : (
+          <span className="board-item-label">{group.title}</span>
+        )}
       </button>
     </>
   );

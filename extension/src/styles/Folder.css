@@ -2,11 +2,6 @@
   max-width: 80vw;
   width: 50vw;
   height: 80vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--white);
-  padding: 2rem;
-  border-radius: 1rem;
 }
 
 .Folder-menu-header {

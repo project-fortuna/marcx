@@ -9,11 +9,6 @@
   border-radius: 0.5rem;
 }
 
-.Group-thumbnail:hover {
-  /* FIXME: Should not blur the foreground items on hover */
-  backdrop-filter: none;
-}
-
 .Group-thumbnail > img,
 .Group-thumbnail > div {
   width: 1rem;
@@ -33,6 +28,7 @@
   border-radius: 1rem;
   padding: 0 1.5rem;
   height: 100%;
+  backdrop-filter: blur(2px);
 }
 
 .Group-main svg {

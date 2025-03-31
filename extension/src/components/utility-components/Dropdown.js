@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../styles/Dropdown.css";
 
-const Dropdown = ({ children, onClose, buttonIcon }) => {
+const Dropdown = ({ children, buttonIcon, dropup, isContextMenu }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dropdownMenu = useRef(null);
@@ -22,20 +22,32 @@ const Dropdown = ({ children, onClose, buttonIcon }) => {
 
   return (
     <div className="Dropdown-container">
-      <button
-        className="Dropdown-toggle-button"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
-        onDoubleClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        {buttonIcon}
-      </button>
-      {isOpen && (
-        <ul onClick={() => setIsOpen(false)} ref={dropdownMenu} className="Dropdown-list shadow">
+      {/* Context menus do not contain a toggle, they are basic dropdowns */}
+      {!isContextMenu && (
+        <button
+          className="Dropdown-toggle-button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          {buttonIcon}
+        </button>
+      )}
+      {(isOpen || isContextMenu) && (
+        <ul
+          onClick={() => setIsOpen(false)}
+          ref={dropdownMenu}
+          className="Dropdown-list shadow"
+          style={{
+            bottom: dropup ? "100%" : "auto",
+            top: !dropup && !isContextMenu ? "100%" : "auto",
+            position: isContextMenu ? "relative" : "absolute",
+          }}
+        >
           {children}
         </ul>
       )}

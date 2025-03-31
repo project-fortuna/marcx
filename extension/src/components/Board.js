@@ -1,21 +1,40 @@
-import React, { createContext, useEffect, useMemo, useState } from "react";
+// External imports
+import React, { useMemo, useState } from "react";
+
+// Local imports
 import GridItem from "./GridItem";
 import "../styles/Board.css";
-// import Bookmark from "./Bookmark";
-// import Group from "./Group";
-// import { ItemTypes } from "../pages/Home";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DndProvider } from "react-dnd";
-import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes } from "../utils/types";
+import { ITEMS_PER_GROUP, ITEMS_PER_PAGE, ItemTypes, BookmarkNode } from "../utils/types";
+import ContextMenu from "./ContextMenu";
+import { useItemDeleter } from "../utils/hooks";
 
 /**
  * Invariants:
  *  * `items`
  *    * Items are all sorted by index
  *    * No two items have the same index
+ * @param {object} props
+ * @param {BookmarkNode[]} props.items
+ * @param {boolean} props.isGroup
+ * @param {string} id - The ID of the board. Will match the ID of the item
+ *    that provides the board to the user (i.e. the home page or a group)
  *
  */
-const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer }) => {
+const Board = ({ items, isGroup, page, id }) => {
+  const [contextMenu, setContextMenu] = useState({ isOpen: false, contextItem: null });
+
+  const openContextMenu = (e, item) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Opened context menu in", item.index, item.type);
+    console.log(e);
+    setContextMenu({ ...contextMenu, isOpen: true, x: e.pageX, y: e.pageY, contextItem: item });
+  };
+
+  const closeContextMenu = (e) => {
+    setContextMenu({ ...contextMenu, isOpen: false });
+  };
+
   const grids = useMemo(() => {
     if (!items) {
       return [];
@@ -40,10 +59,8 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer 
             index={gridIdx}
             key={item.id}
             item={item}
-            moveItemsOut={moveItemsOut}
-            moveItem={moveItem}
             inGroup={isGroup}
-            convertContainer={convertContainer}
+            onContextMenu={openContextMenu}
           />
         );
         continue;
@@ -55,9 +72,13 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer 
           index={gridIdx}
           key={`empty-item-${gridIdx}`}
           // Make sure the index is the index across *all* pages
-          item={{ index: page * numItems + gridIdx, type: ItemTypes.EMPTY }}
-          moveItem={moveItem}
+          item={{
+            index: page * numItems + gridIdx,
+            type: ItemTypes.EMPTY,
+            parentId: id,
+          }}
           inGroup={isGroup}
+          onContextMenu={openContextMenu}
         />
       );
     }
@@ -65,7 +86,14 @@ const Board = ({ items, isGroup, moveItemsOut, moveItem, page, convertContainer 
     return gridItems;
   }, [items, isGroup]);
 
-  return <div className={`board ${isGroup ? "group-board" : "home-board"}`}>{grids}</div>;
+  return (
+    <>
+      {contextMenu.isOpen && <ContextMenu {...contextMenu} onClick={closeContextMenu} />}
+      <div onClick={closeContextMenu} className={`board ${isGroup ? "group-board" : "home-board"}`}>
+        {grids}
+      </div>
+    </>
+  );
 };
 
 export default Board;

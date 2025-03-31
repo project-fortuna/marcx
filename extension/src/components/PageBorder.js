@@ -1,9 +1,12 @@
+// External imports
 import React, { useEffect, useMemo, useRef } from "react";
 import { useDrop } from "react-dnd";
-import { ItemTypes } from "../utils/types";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+
+// Local imports
 import "../styles/PageBorder.css";
+import { ItemTypes } from "../utils/types";
 
 const PageBorder = ({ left, page, onHover, invisible, children }) => {
   const [{ isOver }, drop] = useDrop(

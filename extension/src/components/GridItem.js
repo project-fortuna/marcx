@@ -1,31 +1,53 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+// External imports
+import React, { useMemo, useState } from "react";
+import { useDrop } from "react-dnd";
+
+// Local imports
+import Group from "./Group";
 import Folder from "./Folder";
 import Bookmark from "./Bookmark";
-import { ItemTypes } from "../utils/types";
-import { useDrop } from "react-dnd";
-import Group from "./Group";
+import { ItemTypes, BookmarkNode } from "../utils/types";
+import { moveItemsIntoContainer, updateBookmarkNodes } from "../utils/functions";
+
+// Redux
+import { useDispatch } from "react-redux";
 
 /** A droppable element that together builds a board for our bookmarks manager interface
  * TODO: Fix docstring
  *
  * @param {object} props of the Grid item wrt to other Grid objects
  * @param {object} props.index a Bookmark or Group object
- * @param type ItemsType object indicating the type of element
- * @param userId the Google ID
- * @param inEditMode boolean representing whether the Grid can be edited/dragged or not
- * @param width the percentage of a grid width according to whether this is in a group or home screen
- * @param height the percentage of a grid height according to whether this is in a group or home screen
- * @param handleMoveGroup callback that will move the group after DnD
- * @param handleMoveBookmark callback that will move the bookmark after DnD
- * @param handleRemoveBookmark callback that will remove the bookmark after DnD
- * @param indexHasNoBookmarks callback that determines whether there is a bookmark
- *        at the desired drop location
- * @param indexHasNoElements callback that determines whether there is an element
- *        at the desired drop location
  * @returns {JSX.Element}
  * @constructor
  */
-const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup, convertContainer }) => {
+const GridItem = ({ index, item, inGroup, onContextMenu }) => {
+  const dispatch = useDispatch();
+
+  /**
+   *
+   * @param {BookmarkNode} itemToMove
+   * @param {BookmarkNode} targetItem
+   */
+  const moveItem = (itemToMove, targetItem) => {
+    console.log(`Moving item ${itemToMove.id} (${itemToMove.title}) to index ${targetItem.index}`);
+    console.debug(`Target item is type '${targetItem.type}'`);
+    switch (targetItem.type) {
+      case ItemTypes.EMPTY:
+        updateBookmarkNodes([itemToMove.id], (item) => ({
+          ...item,
+          index: targetItem.index,
+        }));
+        break;
+      case ItemTypes.FOLDER:
+      case ItemTypes.GROUP:
+        moveItemsIntoContainer([itemToMove], targetItem.id);
+        break;
+      default:
+        console.error("Invalid target item type, could not move");
+        break;
+    }
+  };
+
   const [{ isOverGrid, canDrop }, drop] = useDrop(
     () => ({
       accept: [ItemTypes.BOOKMARK, ItemTypes.FOLDER, ItemTypes.GROUP],
@@ -57,20 +79,11 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup, convertContain
   const displayedItem = useMemo(() => {
     switch (item.type) {
       case ItemTypes.FOLDER:
-        return (
-          <Folder folder={item} moveItemsOut={moveItemsOut} convertContainer={convertContainer} />
-        );
+        return <Folder folder={item} />;
       case ItemTypes.BOOKMARK:
         return <Bookmark bookmark={item} />;
       case ItemTypes.GROUP:
-        return (
-          <Group
-            group={item}
-            moveItemsOut={moveItemsOut}
-            moveItem={moveItem}
-            convertContainer={convertContainer}
-          />
-        );
+        return <Group group={item} />;
       default:
         return <></>;
     }
@@ -97,9 +110,19 @@ const GridItem = ({ index, item, moveItemsOut, moveItem, inGroup, convertContain
     return classes.join(" ");
   }, [inGroup, isOverGrid, canDrop]);
 
+  function onContextMenuWrapper(e, type) {
+    if (
+      (type === "outer" && item.type === ItemTypes.EMPTY) ||
+      (type === "inner" && item.type !== ItemTypes.EMPTY)
+    ) {
+      onContextMenu(e, item);
+      return;
+    }
+  }
+
   return (
-    <div ref={drop} className={className}>
-      {displayedItem}
+    <div ref={drop} className={className} onContextMenu={(e) => onContextMenuWrapper(e, "outer")}>
+      <div onContextMenu={(e) => onContextMenuWrapper(e, "inner")}>{displayedItem}</div>
     </div>
   );
 };

@@ -1,9 +1,7 @@
 /*global chrome*/
 
-import React, { useState } from "react";
-import { BookmarkNode, FAVICON_URL, ItemTypes, ROOT_ID } from "../utils/types";
-
-// Materical icons
+// External imports
+import React, { useRef, useState } from "react";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -11,18 +9,40 @@ import OutboxIcon from "@mui/icons-material/Outbox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupIcon from "@mui/icons-material/CropSquare";
-
-import Modal from "./utility-components/Modal";
-import "../styles/Folder.css";
-import { convertFolderToGroup, deleteBookmarkNodes, getBookmarkNodes } from "../utils/functions";
-import Dropdown from "./utility-components/Dropdown";
 import { useDrag } from "react-dnd";
 
-const Folder = ({ folder, moveItemsOut, convertContainer }) => {
+// Local imports
+import "../styles/Folder.css";
+import Modal from "./utility-components/Modal";
+import Dropdown from "./utility-components/Dropdown";
+import { BookmarkNode, FAVICON_URL, ItemTypes, ROOT_ID } from "../utils/types";
+import {
+  convertFolderToGroup,
+  deleteBookmarkNodes,
+  getBookmarkNodes,
+  moveItemsIntoContainer,
+  updateBookmarkNodes,
+} from "../utils/functions";
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { setEditItemId } from "../app/slices/topLevelItems";
+
+/**
+ *
+ * @param {object} props
+ * @param {BookmarkNode} props.folder
+ * @returns
+ */
+const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
-  const [folderOptionsOpen, setFolderOptionsOpen] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(folder.title);
+
+  const dispatch = useDispatch();
+
+  const isEditing = useSelector((state) => state.topLevelItems.editItemId === folder.id);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.FOLDER,
@@ -33,8 +53,8 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
   }));
 
   const handleMoveAllItemsOut = () => {
-    // Move items out on the backend
-    moveItemsOut(children);
+    // Move items out to the top level
+    moveItemsIntoContainer(children, ROOT_ID);
 
     // Clear the current children list
     setChildren([]);
@@ -42,7 +62,7 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
 
   const handleMoveChildOut = (item) => {
     // Move item out on the backend
-    moveItemsOut([item]);
+    moveItemsIntoContainer([item], ROOT_ID);
 
     // Remove from the children list
     setChildren((curChildren) => curChildren.filter((child) => child.id != item.id));
@@ -54,6 +74,10 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
    * Triggered by clicking the folder icon from the home screen icon
    */
   const openFolderModal = () => {
+    console.log(isEditing);
+    if (isEditing) {
+      return;
+    }
     setOpen(true);
     getChildren(folder.id);
   };
@@ -61,8 +85,23 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
   const getChildren = async (folderId) => {
     const newChildren = await getBookmarkNodes((bookmark) => bookmark.parentId === folderId);
     newChildren.sort((item1, item2) => item1.index - item2.index);
-    console.log("Got", newChildren);
+    console.log(`Got folder ${folderId}'s children:`, newChildren);
     setChildren(newChildren);
+  };
+
+  const onEditTitle = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const submitEdit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting title edit", editedTitle);
+    if (editedTitle.trim().length === 0) {
+      return;
+    }
+    // Update the bookmark node title
+    await updateBookmarkNodes([folder.id], (item) => ({ ...item, title: editedTitle }));
+    dispatch(setEditItemId(null));
   };
 
   /**
@@ -149,7 +188,6 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
       if (currentFolder.parentId == ROOT_ID) {
         console.debug("Deleting the top-level folder, closing modal");
         setOpen(false);
-        // TODO: Remove from top level automatically
         return;
       }
 
@@ -162,13 +200,17 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
   const convertToGroup = () => {
     const currentFolder = getCurrentFolder();
     console.debug(`Converting "${currentFolder.title}" to group`);
-    convertContainer(currentFolder.id, currentFolder.type).then(() => setOpen(false));
+
+    convertFolderToGroup(currentFolder.id).then(() => {
+      setOpen(false);
+    });
   };
 
   return (
     <>
+      {/* Opened folder content */}
       <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="Folder-menu shadow">
+        <div className="standard-modal-container Folder-menu shadow">
           <span className="Folder-menu-header">
             <nav>
               <span className="Folder-menu-breadcrumb">
@@ -204,7 +246,7 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
             </Dropdown>
           </span>
           <ul className="Folder-menu-item-list">
-            {children?.map((item) => {
+            {children?.map((item, i) => {
               return (
                 <li
                   key={item.id}
@@ -216,6 +258,7 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
                     {item.type === ItemTypes.FOLDER ? (
                       <FolderIcon />
                     ) : (
+                      // TODO: Update the URL on error
                       <img src={`${FAVICON_URL}${item.url}`} alt="" />
                     )}
                     <label
@@ -228,7 +271,10 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
                       {item.url}
                     </label>
                   </span>
-                  <Dropdown buttonIcon={<MoreVertIcon />}>
+                  <Dropdown
+                    buttonIcon={<MoreVertIcon />}
+                    dropup={i >= Math.max(5, children.length - 5)}
+                  >
                     <button id="move-out" onClick={() => handleMoveChildOut(item)}>
                       <OutboxIcon />
                       <label htmlFor="move-out">Move {item.type} out</label>
@@ -248,11 +294,18 @@ const Folder = ({ folder, moveItemsOut, convertContainer }) => {
           </ul>
         </div>
       </Modal>
-      <button ref={drag} className="grid-item" onClick={openFolderModal}>
-        <div className={`grid-item-container ${isDragging ? "wiggle" : ""}`}>
+      {/* Folder icon */}
+      <button ref={drag} className="board-item" onClick={openFolderModal}>
+        <div className={`board-item-main ${isDragging ? "wiggle" : ""}`}>
           <FolderIcon style={{ width: "inherit", height: "inherit" }} />
         </div>
-        <span className="grid-item-label">{folder.title}</span>
+        {isEditing ? (
+          <form onSubmit={submitEdit} onBlur={() => dispatch(setEditItemId(null))}>
+            <input value={editedTitle} onChange={onEditTitle} autoFocus />
+          </form>
+        ) : (
+          <span className="board-item-label">{folder.title}</span>
+        )}
       </button>
     </>
   );
